@@ -1,0 +1,41 @@
+{
+  "name": "solui",
+  "descrption": "Declarative UIs for smart contracts.",
+  "version": "0.1.0",
+  "dependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/register": "^7.4.4",
+    "@koa/cors": "^2.2.3",
+    "koa": "^2.7.0",
+    "lodash": "^4.17.11",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "koa-router": "^7.4.0",
+    "next": "^8.1.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "build": "next build",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "babel-eslint": "9.0.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-react-hooks": "^1.6.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "nodemon": "^1.18.11",
+    "react-scripts": "2.1.8"
+  }
+}
