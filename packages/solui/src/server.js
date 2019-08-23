@@ -12,7 +12,9 @@ process.on('unhandledRejection', (reason, p) => {
 })
 
 const init = async () => {
-  const app = next({ dev: process.env.NODE_ENV !== 'production' })
+  const app = next({
+    dev: process.env.NODE_ENV !== 'production',
+  })
 
   await app.prepare()
 

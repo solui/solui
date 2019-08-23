@@ -2,31 +2,33 @@
   "name": "solui",
   "descrption": "Declarative UIs for smart contracts.",
   "version": "0.1.0",
+  "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
     "@babel/register": "^7.4.4",
     "@koa/cors": "^2.2.3",
+    "chalk": "^2.4.2",
     "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
     "lodash": "^4.17.11",
+    "next": "^8.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "koa-router": "^7.4.0",
-    "next": "^8.1.0"
+    "yargs": "^14.0.0"
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint . && solhint contracts/**/*.sol",
     "build": "next build",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "nodemon bin/solui --artifcats=./build --ui=./contracts/ui.json",
+    "truffle": "babel-node node_modules/.bin/truffle",
+    "tc:devnet": "ganache-cli -a 10",
+    "tc:devnet-ci": "ganache-cli -a 10 >ganache.log 2>&1 &",
+    "tc:clean": "yarn truffle networks --clean",
+    "tc:deploy": "yarn truffle compile && yarn truffle migrate"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "devDependencies": {
+    "@babel/node": "^7.5.5",
     "babel-eslint": "9.0.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
@@ -36,6 +38,8 @@
     "eslint-plugin-react-hooks": "^1.6.0",
     "eslint-plugin-standard": "^4.0.0",
     "nodemon": "^1.18.11",
-    "react-scripts": "2.1.8"
+    "react-scripts": "2.1.8",
+    "solhint": "^2.2.0",
+    "truffle": "^5.0.33"
   }
 }

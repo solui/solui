@@ -46,6 +46,7 @@
   },
   "globals": {
     "sleepAsync": true,
+    "artifacts": true,
     "__DEV__": true,
     "window": true,
     "document": true,

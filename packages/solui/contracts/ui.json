@@ -1,0 +1,55 @@
+{
+  "deployInstance": {
+    "title": "Deploy new instance",
+    "inputs": {
+      "owner": {
+        "type": "address",
+        "valueEq": "{msg.sender}",
+        "addressType": [
+          "eoa"
+        ]
+      }
+    },
+    "execute": [
+      {
+        "type": "deploy",
+        "contract": "Ownable",
+        "parameters": {
+          "_owner": "owner"
+        }
+      }
+    ]
+  },
+  "showOwner": {
+    "title": "Show owner",
+    "execute": [
+      {
+        "type": "call",
+        "contract": "Ownable",
+        "method": "owner"
+      }
+    ]
+  },
+  "changeOwner": {
+    "title": "Change owner",
+    "inputs": {
+      "newOwner": {
+        "type": "address",
+        "valueNotEq": "{msg.sender}",
+        "addressType": [
+          "eoa"
+        ]
+      }
+    },
+    "execute": [
+      {
+        "type": "transaction",
+        "contract": "Ownable",
+        "method": "transferOwnership",
+        "parameters": {
+          "_newOwner": "newOwner"
+        }
+      }
+    ]
+  }
+}
