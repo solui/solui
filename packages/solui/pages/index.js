@@ -1,5 +1,7 @@
 import React from 'react'
 
-export default () => (
-  <span>test</span>
+export default ({ appState }) => (
+  <div>
+    <span>UI: {JSON.stringify(appState.ui)}</span>
+  </div>
 )
