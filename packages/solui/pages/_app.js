@@ -21,7 +21,7 @@ export default class MyApp extends App {
     return (
       <Container>
         <Head>
-          <title>solUI</title>
+          <title>solui</title>
         </Head>
         <Component {...otherProps} {...pageProps} />
       </Container>

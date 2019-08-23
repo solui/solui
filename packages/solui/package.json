@@ -9,6 +9,7 @@
     "@babel/register": "^7.4.4",
     "@koa/cors": "^2.2.3",
     "chalk": "^2.4.2",
+    "glob": "^7.1.4",
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.11",
@@ -20,7 +21,7 @@
   "scripts": {
     "lint": "eslint . && solhint contracts/**/*.sol",
     "build": "next build",
-    "start": "nodemon bin/solui --artifcats=./build --ui=./contracts/ui.json",
+    "start": "nodemon bin/solui --artifacts ./build/contracts --ui ./contracts/ui.json",
     "truffle": "babel-node node_modules/.bin/truffle",
     "tc:devnet": "ganache-cli -a 10",
     "tc:devnet-ci": "ganache-cli -a 10 >ganache.log 2>&1 &",
