@@ -1,8 +1,13 @@
 import React from 'react'
 import App, { Container } from 'next/app'
 import Head from 'next/head'
+import { ThemeProvider } from 'emotion-theming'
+import { Global } from '@emotion/core'
 
 import { APP_STATE_KEYS } from '../src/frontend'
+import resetStyles from './styles/reset'
+import baseStyles from './styles/base'
+import { getTheme } from './styles/themes'
 
 export default class MyApp extends App {
   static async getInitialProps ({ Component, ctx }) {
@@ -31,13 +36,17 @@ export default class MyApp extends App {
       <Container>
         <Head>
           <title>solui</title>
+          <Global styles={resetStyles}/>
+          <Global styles={baseStyles}/>
           <script type="text/javascript" dangerouslySetInnerHTML={{
             __html: `
               window.APP_STATE = ${JSON.stringify(finalAppState, null, 2)};
             `
           }}></script>
         </Head>
-        <Component {...otherProps} {...pageProps} appState={finalAppState} />
+        <ThemeProvider theme={getTheme()}>
+          <Component {...otherProps} {...pageProps} appState={finalAppState} />
+        </ThemeProvider>
       </Container>
     )
   }
