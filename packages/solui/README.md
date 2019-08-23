@@ -1,16 +1,5 @@
-# Ethrob
+# SolUI
 
-Live: https://ethrob.herokuapp.com
+Declarative UIs for smart contracts.
 
-## Development
-
-```shell
-yarn dev
-```
-
-## Deployment
-
-```shell
-heroku git:remote -a ethrob
-git push heroku master
-```
+_TBC..._
