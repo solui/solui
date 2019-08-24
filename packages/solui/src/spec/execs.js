@@ -39,7 +39,7 @@ const EXECS = {
       const { bytecode } = ctx.artifacts[contractId]
 
       if (!bytecode) {
-        ctx.errors.push(`Exec ${ctx.id} is a deployment but artifact is missing contract bytecode`)
+        ctx.errors.push(`Exec ${ctx.id} is a deployment but matching artifact is missing bytecode`)
       } else {
         const result = await ctx.callbacks.deployContract(ctx.id, bytecode)
         // further execs may need this output as input!

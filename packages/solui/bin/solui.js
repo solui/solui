@@ -10,16 +10,16 @@ const packageJson = require('../package.json')
 
 // CLI options
 const argv = yargs
-  .usage('Usage: $0 [options] --artifacts /path/to/artifacts-folder --ui path/to/ui.json')
+  .usage('Usage: $0 [options] --artifacts /path/to/artifacts-folder --spec path/to/ui.json')
   .describe('artifacts', 'Path to folder containing JSON artifcats for all contracts')
   .nargs('artifacts', 1)
-  .describe('ui', 'Path to UI specification JSON file')
-  .nargs('ui', 1)
+  .describe('spec', 'Path to UI specification JSON file')
+  .nargs('spec', 1)
   .describe('web-port', 'Port for web server')
   .nargs('port', 1)
   .default('port', '3001')
   .describe('version', 'Output version.')
-  .demandOption([ 'artifacts', 'ui' ])
+  .demandOption([ 'artifacts', 'spec' ])
   .help('h')
   .alias('h', 'help')
   .parse(process.argv.slice(1))
@@ -31,17 +31,17 @@ if (argv.version) {
 
 const {
   artifacts: artifactsDir,
-  ui: uiFile,
+  spec: specFile,
   port,
 } = argv
 
 // load UI spec
-let ui
+let spec
 try {
   // eslint-disable-next-line import/no-dynamic-require
-  ui = require(path.resolve(process.cwd(), uiFile))
+  spec = require(path.resolve(process.cwd(), specFile))
 } catch (err) {
-  throw new Error(`Error reading UI spec from ${uiFile}`)
+  throw new Error(`Error reading UI spec from ${specFile}`)
 }
 
 // load contract artifacts
@@ -66,10 +66,10 @@ const artifacts = files.reduce((m, f) => {
   return m
 }, {})
 
-startGenerator({ artifacts, ui, port })
+startGenerator({ artifacts, spec, port })
   .then(instance => {
     console.log(chalk.grey(`Loaded ${Object.keys(artifacts).length} contracts from directory: ${artifactsDir}`))
-    console.log(chalk.grey(`Loaded UI spec from: ${uiFile}`))
+    console.log(chalk.grey(`Loaded UI spec from: ${specFile}`))
     console.log(chalk.grey(`...`))
     console.log(chalk.white(`> solui web interface is now accessible at ${instance.getEndpoint()}`))
   })

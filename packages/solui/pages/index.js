@@ -23,7 +23,7 @@ const PanelContainer = styled.li`
   margin-bottom: 1rem;
 `
 
-export default ({ appState: { ui, artifacts } }) => {
+export default ({ appState: { spec, artifacts } }) => {
   const { panels, errors } = useMemo(() => {
     const stack = []
     let currentPanel = null
@@ -38,13 +38,13 @@ export default ({ appState: { ui, artifacts } }) => {
       }
     }
 
-    const processingErrors = processSpec({ ui, artifacts }, callbacks)
+    const processingErrors = processSpec({ spec, artifacts }, callbacks)
 
     return {
       panels: stack,
       errors: processingErrors
     }
-  }, [ ui, artifacts ])
+  }, [ spec, artifacts ])
 
   return (
     <Layout>

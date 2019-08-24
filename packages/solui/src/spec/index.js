@@ -8,7 +8,7 @@ const DEFAULT_CALLBACKS = {
   deployContract: async () => {},
 }
 
-export const process = async ({ ui, artifacts }, callbacks = {}) => {
+export const process = async ({ spec, artifacts }, callbacks = {}) => {
   const ctx = {
     artifacts,
     errors: [],
@@ -17,17 +17,17 @@ export const process = async ({ ui, artifacts }, callbacks = {}) => {
     callbacks: { ...DEFAULT_CALLBACKS, ...callbacks },
   }
 
-  if (_.isEmpty(ui)) {
+  if (_.isEmpty(spec)) {
     ctx.errors.push('UI spec is empty.')
   } else {
-    await promiseSerial(ui, async (id, config) => processPanel(ctx, id, config))
+    await promiseSerial(spec, async (id, config) => processPanel(ctx, id, config))
   }
 
   return ctx.errors
 }
 
-export const assertValid = async ({ ui, artifacts }) => {
-  const errors = await process({ ui, artifacts })
+export const assertValid = async ({ spec, artifacts }) => {
+  const errors = await process({ spec, artifacts })
 
   if (errors.length) {
     const e = new Error(`There were one or more validation errors. See details.`)
@@ -37,6 +37,6 @@ export const assertValid = async ({ ui, artifacts }) => {
 }
 
 // Execute a UI operation
-// export const executeUi = async ({ artifacts, execSteps, inputValues, web3 }) => {
-//
-// }
+export const executeUi = async ({ artifacts, ui, inputValues, web3 }) => {
+
+}

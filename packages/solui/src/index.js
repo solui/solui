@@ -7,10 +7,10 @@ import { assertValid } from './spec'
 import { APP_STATE_KEYS } from './constants'
 
 export class Generator {
-  constructor ({ port, artifacts, ui }) {
+  constructor ({ port, artifacts, spec }) {
     this.port = parseInt(port || '3001', 10)
     this.artifacts = artifacts
-    this.ui = ui
+    this.spec = spec
   }
 
   async start () {
