@@ -27,15 +27,24 @@ const validateContractMethod = (ctx, config) => {
 
 const EXECS = {
   deploy: {
-    validate: (ctx, config) => validateContract(ctx, config)
+    parse: (ctx, config) => {
+      validateContract(ctx, config)
+      ctx.processor.doExecStep(config)
+    }
   },
   call: {
-    validate: (ctx, config) => validateContract(ctx, config)
-        && validateContractMethod(ctx, config)
+    parse: (ctx, config) => {
+      validateContract(ctx, config)
+      validateContractMethod(ctx, config)
+      ctx.processor.doExecStep(config)
+    }
   },
   transaction: {
-    validate: (ctx, config) => validateContract(ctx, config)
-        && validateContractMethod(ctx, config)
+    parse: (ctx, config) => {
+      validateContract(ctx, config)
+      validateContractMethod(ctx, config)
+      ctx.processor.doExecStep(config)
+    }
   },
 }
 
@@ -58,7 +67,7 @@ export const parse = (ctx, execs) => {
           }
         })
 
-        EXECS[exConfig.type].validate(newCtx, exConfig)
+        EXECS[exConfig.type].parse(newCtx, exConfig)
       }
     })
   }

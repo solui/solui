@@ -3,8 +3,8 @@
     "title": "Deploy new instance",
     "inputs": {
       "owner": {
+        "title": "Owner",
         "type": "address",
-        "valueEq": "{msg.sender}",
         "addressType": [
           "eoa"
         ]
@@ -34,6 +34,7 @@
     "title": "Change owner",
     "inputs": {
       "newOwner": {
+        "title": "New owner",
         "type": "address",
         "valueNotEq": "{msg.sender}",
         "addressType": [

@@ -1,1 +1,1 @@
-export { validate } from './parser'
+export { assertSpecValidity, parse } from './parser'

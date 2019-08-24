@@ -14,10 +14,14 @@ export const parse = (ctx, inputs) => {
   _.each(inputs, (inputConfig, inputId) => {
     const logPrefix = `${ctx.parentId}.${inputId}`
 
+    if (!_.get(inputConfig, 'title')) {
+      ctx.errors.push(`Input ${logPrefix} must have a title`)
+    }
+
     if (!INPUTS[_.get(inputConfig, 'type')]) {
       ctx.errors.push(`Input ${logPrefix} must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
-    } else {
-      ctx.processor.processInput(ctx, inputId, inputConfig)
     }
+
+    ctx.processor.doInput(inputId, inputConfig)
   })
 }

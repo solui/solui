@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { ThemeProvider } from 'emotion-theming'
 import { Global } from '@emotion/core'
 
-import { APP_STATE_KEYS } from '../src/frontend'
+import { APP_STATE_KEYS } from '../src/constants'
 import resetStyles from './styles/reset'
 import baseStyles from './styles/base'
 import { getTheme } from './styles/themes'

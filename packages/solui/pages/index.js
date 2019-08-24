@@ -2,21 +2,51 @@ import React from 'react'
 import styled from '@emotion/styled'
 
 import Layout from './components/Layout'
+import { PanelBuilder } from './components/Panel'
+import SpecErrors from './components/SpecErrors'
+import { parse } from '../src/spec'
+import { flex } from './styles/fragments'
 
-const Segments = styled.ul`
+const Panels = styled.ul`
   list-style: none;
+  ${flex({ justify: 'flex-start', align: 'flex-start' })}
 `
 
-const Segment = styled.li`
+const PanelContainer = styled.li`
   display: block;
+  border: 1px solid ${({ theme }) => theme.panelBorderColor};
+  padding: 1rem;
+  margin-bottom: 1rem;
 `
 
-export default ({ appState: { ui } }) => (
-  <Layout>
-    <Segments>
-      {Object.keys(ui).map(id => (
-        <Segment key={id}>{id}</Segment>
-      ))}
-    </Segments>
-  </Layout>
-)
+export default ({ appState: { ui, artifacts } }) => {
+  const panels = []
+  let currentPanel = null
+
+  const processor = {
+    doInput: (id, cfg) => currentPanel.addInput(id, cfg),
+    doExecStep: cfg => currentPanel.addExecutionStep(cfg),
+    startPanel: (id, cfg) => {
+      currentPanel = new PanelBuilder(id, cfg)
+    },
+    endPanel: () => {
+      panels.push(currentPanel)
+    }
+  }
+
+  const errors = parse({ ui, artifacts }, processor)
+
+  return (
+    <Layout>
+      <Panels>
+        {errors.length ? <SpecErrors errors={errors} /> : (
+          panels.map(panel => (
+            <PanelContainer key={panel.id}>
+              {panel.getRenderedContent()}
+            </PanelContainer>
+          ))
+        )}
+      </Panels>
+    </Layout>
+  )
+}
