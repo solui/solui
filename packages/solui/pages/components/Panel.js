@@ -9,17 +9,14 @@ const Title = styled.h2`
   margin-bottom: 1em;
 `
 
-const inputStateReducer = (state, action) => ({
+const inputStateReducer = (state, { id, value, valid, error }) => ({
   ...state,
-  [action.id]: {
-    value: action.value,
-    valid: action.valid,
-  }
+  [id]: { value, valid, error },
 })
 
 // initial reducer state
 const createInitialInputState = inputs => inputs.reduce((m, { id }) => {
-  m[id] = { value: '', valid: false }
+  m[id] = { value: '', valid: false, error: '' }
   return m
 }, {})
 
@@ -31,7 +28,7 @@ export const Panel = ({ title, inputs }) => {
 
   // input change handlers
   const onInputChange = useMemo(() => inputs.reduce((m, { id }) => {
-    m[id] = (value, valid) => updateInputState({ id, value, valid })
+    m[id] = (value, valid, error) => updateInputState({ id, value, valid, error })
     return m
   }, {}), [ updateInputState, inputs ])
 
@@ -56,8 +53,8 @@ export const Panel = ({ title, inputs }) => {
           key={id}
           id={id}
           onChange={onInputChange[id]}
-          value={inputState[id].value}
           config={config}
+          {...inputState[id]}
         />
       ))}
       <button onClick={onExecute} disabled={!allInputsValid}>
