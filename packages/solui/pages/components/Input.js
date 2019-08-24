@@ -1,5 +1,6 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useEffect, useCallback, useMemo } from 'react'
 import styled from '@emotion/styled'
+import { isAddress } from 'web3-utils'
 
 import Error from './Error'
 
@@ -9,27 +10,25 @@ const Container = styled.div`
 
 const getPlaceholder = ({ type }) => type
 
-export default ({ network, id, onChange, value, error, config: { title, type } }) => {
-  const onTextChange = useCallback(e => {
-    const { value: v } = e.currentTarget
+export default ({ id, onChange, setValidationResult, value, error, config: { title, type } }) => {
+  const placeholder = useMemo(() => getPlaceholder({ type }), [ type ])
 
-    const { web3 } = network
+  const onTextChange = useCallback(e => onChange(e.currentTarget), [ onChange ])
 
+  // validation takes place after initial render and on subsequent renders
+  useEffect(() => {
     let isValid
-
     switch (type) {
       case 'address': {
-        isValid = web3.utils.isAddress(v)
+        isValid = isAddress(value)
         break
       }
       default:
         isValid = false
     }
 
-    onChange(v, isValid, '')
-  }, [ network, type, onChange ])
-
-  const placeholder = useMemo(() => getPlaceholder({ type }), [ type ])
+    setValidationResult(isValid, '')
+  }, [ type, value, setValidationResult ])
 
   return (
     <Container>
@@ -40,6 +39,7 @@ export default ({ network, id, onChange, value, error, config: { title, type } }
         onChange={onTextChange}
         value={value}
         placeholder={placeholder}
+        size={64}
       />
       {error ? <Error error={error} /> : null}
     </Container>

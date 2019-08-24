@@ -1,3 +1,5 @@
+import { isAddress } from 'web3-utils'
+
 import _ from '../utils/lodash'
 
 const INPUTS = {
@@ -18,8 +20,23 @@ export const parse = (ctx, inputs) => {
       ctx.errors.push(`Input ${logPrefix} must have a title`)
     }
 
-    if (!INPUTS[_.get(inputConfig, 'type')]) {
+    const type = _.get(inputConfig, 'type')
+    if (!INPUTS[type]) {
       ctx.errors.push(`Input ${logPrefix} must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
+    }
+
+    const initialValue = _.get(inputConfig, 'initialValue')
+    if (initialValue) {
+      switch (type) {
+        case 'address': {
+          if (!isAddress(initialValue)) {
+            ctx.errors.push(`Input ${logPrefix} initial value must be a valid Ethereum address`)
+          }
+          break
+        }
+        default:
+          // do nothing
+      }
     }
 
     ctx.processor.doInput(inputId, inputConfig)

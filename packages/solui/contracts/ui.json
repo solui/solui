@@ -5,6 +5,7 @@
       "owner": {
         "title": "Owner",
         "type": "address",
+        "initialValue": "0x0000000000000000000000000000000000000000",
         "addressType": [
           "eoa"
         ]

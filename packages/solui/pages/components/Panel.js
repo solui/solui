@@ -10,14 +10,14 @@ const Title = styled.h2`
   margin-bottom: 1em;
 `
 
-const inputStateReducer = (state, { id, value, valid, error }) => ({
+const inputStateReducer = (state, { id, ...toUpdate }) => ({
   ...state,
-  [id]: { value, valid, error },
+  [id]: { ...state[id], ...toUpdate },
 })
 
 // initial reducer state
-const createInitialInputState = inputs => inputs.reduce((m, { id }) => {
-  m[id] = { value: '', valid: false, error: '' }
+const createInitialInputState = inputs => inputs.reduce((m, { id, config: { initialValue } }) => {
+  m[id] = { value: initialValue || '', valid: true }
   return m
 }, {})
 
@@ -28,10 +28,19 @@ export const Panel = ({ title, inputs }) => {
   )
 
   // input change handlers
-  const onInputChange = useMemo(() => inputs.reduce((m, { id }) => {
-    m[id] = (value, valid, error) => updateInputState({ id, value, valid, error })
-    return m
-  }, {}), [ updateInputState, inputs ])
+  const { setValidationResult, onChange } = useMemo(() => {
+    const changeHandlers = inputs.reduce((m, { id }) => {
+      m[id] = value => updateInputState({ id, value })
+      return m
+    }, {})
+
+    const validationResultSetters = inputs.reduce((m, { id }) => {
+      m[id] = (valid, error) => updateInputState({ id, valid, error })
+      return m
+    }, {})
+
+    return { setValidationResult: validationResultSetters, onChange: changeHandlers }
+  }, [ updateInputState, inputs ])
 
   // check input validity
   const allInputsValid = useMemo(() => (
@@ -54,7 +63,8 @@ export const Panel = ({ title, inputs }) => {
           <Input
             key={id}
             id={id}
-            onChange={onInputChange[id]}
+            onChange={onChange[id]}
+            setValidationResult={setValidationResult[id]}
             config={config}
             network={network}
             {...inputState[id]}
