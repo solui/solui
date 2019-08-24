@@ -53,14 +53,15 @@ export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
 
             const contract = new web3.eth.Contract(abi)
 
-            const receipt = await contract.deploy({
+            const inst = await contract.deploy({
               data: bytecode,
               arguments: args,
             }).send({ from })
 
-            console.warn(receipt)
+            return inst.options.address
           } catch (err) {
             errors.push(`Error executing ${id}: ${err}`)
+            return null
           }
         }
       },

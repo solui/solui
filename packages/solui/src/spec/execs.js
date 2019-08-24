@@ -55,10 +55,8 @@ const EXECS = {
         // build args
         const methodAbi = abi.find(def => def.type === 'constructor')
         const args = buildMethodArgs(methodAbi, config.params, ctx.inputs)
-
         // do it!
         const result = await ctx.callbacks.deployContract(ctx.id, { abi, bytecode, args })
-
         // further execs may need this output as input!
         if (config.saveAsInput) {
           ctx.inputs[config.saveAsInput] = result
