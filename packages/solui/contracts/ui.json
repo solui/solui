@@ -29,17 +29,36 @@
   },
   "showOwner": {
     "title": "Show owner",
+    "inputs": {
+      "contract1": {
+        "title": "Contract address",
+        "type": "address",
+        "addressType": [ "contract" ]
+      }
+    },
     "execs": [
       {
         "type": "call",
         "contract": "Ownable",
-        "method": "owner"
+        "address": "contract1",
+        "method": "owner",
+        "saveResultAs": "ownerAddress"
       }
-    ]
+    ],
+    "output": {
+      "title": "Current owner",
+      "type": "address",
+      "param": "ownerAddress"
+    }
   },
   "changeOwner": {
     "title": "Change owner",
     "inputs": {
+      "contract1": {
+        "title": "Contract address",
+        "type": "address",
+        "addressType": [ "contract" ]
+      },
       "newOwner": {
         "title": "New owner",
         "type": "address",
@@ -53,6 +72,7 @@
       {
         "type": "transaction",
         "contract": "Ownable",
+        "address": "contract1",
         "method": "transferOwnership",
         "params": {
           "_newOwner": "newOwner"

@@ -1,5 +1,5 @@
 import { _, promiseSerial } from '../utils'
-import { inputIsPresent } from './specUtils'
+import { inputIsPresent, getBytecode, getAbi, getMethod } from './specUtils'
 
 const validateContract = (ctx, config) => {
   // check contract
@@ -34,6 +34,15 @@ const validateContractMethod = (ctx, config) => {
           ctx.errors.push(`Exec ${ctx.id} parameter ${paramId} maps from an invalid input: ${inputId}`)
         }
       })
+
+      // check contract address mapping
+      if (!_.get(config, 'address')) {
+        ctx.errors.push(`Exec ${ctx.id} must specify contract address mapping`)
+      } else {
+        if (!inputIsPresent(ctx, config.address)) {
+          ctx.errors.push(`Exec ${ctx.id} contract address maps from an invalid input: ${config.address}`)
+        }
+      }
     }
   }
 }
@@ -48,14 +57,16 @@ const EXECS = {
     process: async (ctx, config) => {
       validateContract(ctx, config)
 
-      const contractId = _.get(config, 'contract')
-      const { abi, bytecode } = ctx.artifacts[contractId]
+      const contractId = config.contract
+
+      const abi = getAbi(ctx, contractId)
+      const bytecode = getBytecode(ctx, contractId)
 
       if (!bytecode) {
         ctx.errors.push(`Exec ${ctx.id} is a deployment but matching artifact is missing bytecode`)
       } else {
         // build args
-        const methodAbi = abi.find(def => def.type === 'constructor')
+        const methodAbi = getMethod(ctx, contractId, 'constructor')
         const args = buildMethodArgs(methodAbi, config.params, ctx.inputs)
         // do it!
         const result = await ctx.callbacks.deployContract(ctx.id, { abi, bytecode, args })
@@ -70,7 +81,26 @@ const EXECS = {
     process: async (ctx, config) => {
       validateContract(ctx, config)
       validateContractMethod(ctx, config)
-      // TODO: method call
+
+      if (!config.saveResultAs) {
+        ctx.errors.push(`Exec ${ctx.id} must save its result into a param`)
+      }
+
+      const contractId = config.contract
+
+      // build args
+      const abi = getAbi(ctx, contractId)
+      const methodAbi = getMethod(ctx, contractId, config.method)
+      const args = buildMethodArgs(methodAbi, config.params, ctx.inputs)
+      // do it!
+      ctx.inputs[config.saveResultAs] = await ctx.callbacks.callMethod(
+        ctx.id, {
+          abi,
+          method: config.method,
+          args,
+          address: ctx.inputs[config.address],
+        }
+      )
     }
   },
   transaction: {
