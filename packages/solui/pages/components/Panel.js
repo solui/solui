@@ -2,6 +2,7 @@ import React, { useCallback, useReducer, useMemo } from 'react'
 import styled from '@emotion/styled'
 
 import Input from './Input'
+import { GlobalContext } from '../_global'
 
 const Title = styled.h2`
   font-weight: bold;
@@ -48,15 +49,19 @@ export const Panel = ({ title, inputs }) => {
   return (
     <div>
       <Title>{title}</Title>
-      {inputs.map(({ id, config }) => (
-        <Input
-          key={id}
-          id={id}
-          onChange={onInputChange[id]}
-          config={config}
-          {...inputState[id]}
-        />
-      ))}
+      <GlobalContext.Consumer>
+        {({ network }) => inputs.map(({ id, config }) => (
+          <Input
+            key={id}
+            id={id}
+            onChange={onInputChange[id]}
+            config={config}
+            network={network}
+            {...inputState[id]}
+          />
+        ))}
+      </GlobalContext.Consumer>
+
       <button onClick={onExecute} disabled={!allInputsValid}>
         Execute
       </button>
@@ -80,7 +85,13 @@ export class PanelBuilder {
     this.execSteps.push(config)
   }
 
-  getRenderedContent () {
-    return <Panel title={this.title} inputs={this.inputs} execSteps={this.execSteps} />
+  buildContent () {
+    return (
+      <Panel
+        title={this.title}
+        inputs={this.inputs}
+        execSteps={this.execSteps}
+      />
+    )
   }
 }

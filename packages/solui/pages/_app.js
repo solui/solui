@@ -4,10 +4,13 @@ import Head from 'next/head'
 import { ThemeProvider } from 'emotion-theming'
 import { Global } from '@emotion/core'
 
+import _ from '../src/utils/lodash'
+import { GlobalContext } from './_global'
 import { APP_STATE_KEYS } from '../src/constants'
 import resetStyles from './styles/reset'
 import baseStyles from './styles/base'
 import { getTheme } from './styles/themes'
+import { getNetwork } from './utils/network'
 
 export default class MyApp extends App {
   static async getInitialProps ({ Component, ctx }) {
@@ -24,6 +27,26 @@ export default class MyApp extends App {
     })
 
     return ret
+  }
+
+  state = {}
+
+  componentDidUpdate () {
+    (async () => {
+      try {
+        const n = await getNetwork()
+        if (n && _.get(n, 'id') !== _.get(this.state.network, 'id')) {
+          this.setState({ network: n })
+        }
+      } catch (err) {
+        console.warn(err)
+        this.setState({ network: null })
+      }
+    })()
+  }
+
+  componentDidMount () {
+    this.componentDidUpdate()
   }
 
   render () {
@@ -44,9 +67,15 @@ export default class MyApp extends App {
             `
           }}></script>
         </Head>
-        <ThemeProvider theme={getTheme()}>
-          <Component {...otherProps} {...pageProps} appState={finalAppState} />
-        </ThemeProvider>
+        <GlobalContext.Provider value={{ network: this.state.network }}>
+          <ThemeProvider theme={getTheme()}>
+            <Component
+              {...otherProps}
+              {...pageProps}
+              appState={finalAppState}
+            />
+          </ThemeProvider>
+        </GlobalContext.Provider>
       </Container>
     )
   }
