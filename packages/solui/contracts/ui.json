@@ -70,7 +70,7 @@
     },
     "execs": [
       {
-        "type": "transaction",
+        "type": "send",
         "contract": "Ownable",
         "address": "contract1",
         "method": "transferOwnership",

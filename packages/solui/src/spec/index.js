@@ -7,6 +7,7 @@ const DEFAULT_CALLBACKS = {
   getInput: async () => {},
   deployContract: async () => {},
   callMethod: async () => {},
+  sendTransaction: async () => {},
 }
 
 export const process = async ({ spec, artifacts }, callbacks = {}) => {
@@ -48,6 +49,18 @@ export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
       callbacks: {
         ...DEFAULT_CALLBACKS,
         getInput: id => inputs[id],
+        sendTransaction: async (id, { abi, method, address, args }) => {
+          try {
+            const [ from ] = await web3.eth.getAccounts()
+
+            const contract = new web3.eth.Contract(abi, address)
+
+            return contract.methods[method](...args).send({ from })
+          } catch (err) {
+            errors.push(`Error executing ${id}: ${err}`)
+            return null
+          }
+        },
         callMethod: async (id, { abi, method, address, args }) => {
           try {
             const [ from ] = await web3.eth.getAccounts()

@@ -52,6 +52,15 @@ const buildMethodArgs = (methodAbi, params, inputs) => (
   (methodAbi.inputs || []).map(({ name }) => inputs[params[name]])
 )
 
+const prepareContractCall = (ctx, config) => {
+  const contractId = config.contract
+  const abi = getAbi(ctx, contractId)
+  const methodAbi = getMethod(ctx, contractId, config.method)
+  const args = buildMethodArgs(methodAbi, config.params, ctx.inputs)
+
+  return { abi, args }
+}
+
 const EXECS = {
   deploy: {
     process: async (ctx, config) => {
@@ -59,15 +68,13 @@ const EXECS = {
 
       const contractId = config.contract
 
-      const abi = getAbi(ctx, contractId)
       const bytecode = getBytecode(ctx, contractId)
 
       if (!bytecode) {
         ctx.errors.push(`Exec ${ctx.id} is a deployment but matching artifact is missing bytecode`)
       } else {
-        // build args
-        const methodAbi = getMethod(ctx, contractId, 'constructor')
-        const args = buildMethodArgs(methodAbi, config.params, ctx.inputs)
+        // prep
+        const { abi, args } = prepareContractCall(ctx, { ...config, method: 'constructor' })
         // do it!
         const result = await ctx.callbacks.deployContract(ctx.id, { abi, bytecode, args })
         // further execs may need this output as input!
@@ -86,12 +93,9 @@ const EXECS = {
         ctx.errors.push(`Exec ${ctx.id} must save its result into a param`)
       }
 
-      const contractId = config.contract
+      // prep
+      const { abi, args } = prepareContractCall(ctx, config)
 
-      // build args
-      const abi = getAbi(ctx, contractId)
-      const methodAbi = getMethod(ctx, contractId, config.method)
-      const args = buildMethodArgs(methodAbi, config.params, ctx.inputs)
       // do it!
       ctx.inputs[config.saveResultAs] = await ctx.callbacks.callMethod(
         ctx.id, {
@@ -103,11 +107,23 @@ const EXECS = {
       )
     }
   },
-  transaction: {
+  send: {
     process: async (ctx, config) => {
       validateContract(ctx, config)
       validateContractMethod(ctx, config)
-      // TODO: transaction
+
+      // prep
+      const { abi, args } = prepareContractCall(ctx, config)
+
+      // do it!
+      ctx.inputs[config.saveResultAs] = await ctx.callbacks.sendTransaction(
+        ctx.id, {
+          abi,
+          method: config.method,
+          args,
+          address: ctx.inputs[config.address],
+        }
+      )
     }
   },
 }
