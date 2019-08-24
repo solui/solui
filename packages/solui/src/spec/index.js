@@ -45,6 +45,7 @@ export const executeUi = async ({ artifacts, ui, inputs }) => (
       errors,
       inputs,
       callbacks: {
+        ...DEFAULT_CALLBACKS,
         deployContract: async id => {
           try {
             throw new Error('blah')

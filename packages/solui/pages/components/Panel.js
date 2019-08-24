@@ -57,10 +57,12 @@ export const Panel = ({ onRun, id: panelId, title, inputs }) => {
 
   // execute it!
   const onExecute = useCallback(() => {
-    if (allInputsValid) {
-      setExecError(null)
-      onRun({ panelId, inputState }).catch(setExecError)
+    if (!allInputsValid) {
+      console.error('Please fix inputs')
+      return
     }
+    setExecError(null)
+    onRun({ panelId, inputState }).catch(setExecError)
   }, [ onRun, allInputsValid, panelId, inputState ])
 
   return (

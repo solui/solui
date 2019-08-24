@@ -6,7 +6,12 @@ export default ({ error }) => {
   return (
     <div>
       {error.map(e => (
-        <p key={e.toString()}>{e.toString()}</p>
+        <div key={e.toString()}>
+          <p>{e.toString()}</p>
+          {e.details ? e.details.map(d => (
+            <p key={d.toString()}>- {d.toString()}</p>
+          )) : null}
+        </div>
       ))}
     </div>
   )

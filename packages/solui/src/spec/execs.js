@@ -67,7 +67,7 @@ const EXECS = {
 
 export const processList = async (ctx, execs) => (
   promiseSerial(execs, async (execId, execConfig) => {
-    const newCtx = { ...ctx, id: `${ctx.parentId}.${execId}` }
+    const newCtx = { ...ctx, id: `${ctx.parentId}.execs.${execId}` }
 
     // check execution step type
     const type = _.get(execConfig, 'type')

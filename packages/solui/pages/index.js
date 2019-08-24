@@ -37,32 +37,30 @@ export default ({ network, appState: { spec, artifacts } }) => {
     }
   }, [ spec, artifacts, network ])
 
-  // after initial render
+  // update panels
   useEffect(() => {
-    if (!processedResult) {
-      (async () => {
-        const stack = []
-        let currentPanel = null
+    (async () => {
+      const stack = []
+      let currentPanel = null
 
-        const callbacks = {
-          getInput: (id, config) => currentPanel.addInput(id, config),
-          startUi: (id, config) => {
-            currentPanel = new PanelBuilder({ id, config, onRun })
-          },
-          endUi: () => {
-            stack.push(currentPanel)
-          }
+      const callbacks = {
+        getInput: (id, config) => currentPanel.addInput(id, config),
+        startUi: (id, config) => {
+          currentPanel = new PanelBuilder({ id, config, onRun })
+        },
+        endUi: () => {
+          stack.push(currentPanel)
         }
+      }
 
-        const processingErrors = await processSpec({ spec, artifacts }, callbacks)
+      const processingErrors = await processSpec({ spec, artifacts }, callbacks)
 
-        setProcessedResult({
-          panels: stack,
-          errors: processingErrors
-        })
-      })()
-    }
-  }, [ processedResult, onRun, spec, artifacts ])
+      setProcessedResult({
+        panels: stack,
+        errors: processingErrors
+      })
+    })()
+  }, [ onRun, spec, artifacts ])
 
   return (
     <Layout>

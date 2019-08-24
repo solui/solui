@@ -13,7 +13,7 @@ const INPUTS = {
 
 export const processList = async (ctx, inputs) => (
   promiseSerial(inputs, async (inputId, inputConfig) => {
-    const newCtx = { ...ctx, id: `${ctx.parentId}.${inputId}` }
+    const newCtx = { ...ctx, id: `${ctx.parentId}.inputs.${inputId}` }
 
     if (!_.get(inputConfig, 'title')) {
       ctx.errors.push(`Input ${newCtx.id} must have a title`)
@@ -38,6 +38,6 @@ export const processList = async (ctx, inputs) => (
       }
     }
 
-    ctx.inputs[inputId] = await ctx.callbacks.getInput(newCtx.id, inputConfig)
+    ctx.inputs[inputId] = await ctx.callbacks.getInput(inputId, inputConfig)
   })
 )
