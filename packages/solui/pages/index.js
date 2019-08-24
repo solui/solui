@@ -5,7 +5,7 @@ import Layout from './components/Layout'
 import { PanelBuilder } from './components/Panel'
 import Error from './components/Error'
 import NetworkInfo from './components/NetworkInfo'
-import { parse } from '../src/spec'
+import { process as processSpec } from '../src/spec'
 import { flex } from './styles/fragments'
 import { GlobalContext } from './_global'
 
@@ -29,19 +29,18 @@ export default ({ appState: { ui, artifacts } }) => {
     let currentPanel = null
 
     const processor = {
-      doInput: (id, cfg) => currentPanel.addInput(id, cfg),
-      doExecStep: cfg => currentPanel.addExecutionStep(cfg),
-      startPanel: (id, cfg) => {
+      getInput: (id, cfg) => currentPanel.addInput(id, cfg),
+      startUi: (id, cfg) => {
         currentPanel = new PanelBuilder(id, cfg)
       },
-      endPanel: () => {
+      endUi: () => {
         stack.push(currentPanel)
       }
     }
 
-    const parserErrors = parse({ ui, artifacts }, processor)
+    const processingErrors = processSpec({ ui, artifacts }, processor)
 
-    return { panels: stack, errors: parserErrors }
+    return { panels: stack, errors: processingErrors }
   }, [ ui, artifacts ])
 
   return (

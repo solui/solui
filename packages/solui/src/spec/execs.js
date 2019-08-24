@@ -2,24 +2,29 @@ import _ from '../utils/lodash'
 
 const validateContract = (ctx, config) => {
   // check contract
-  if (!_.get(config, 'contract')) {
-    ctx.errors.push(`Execution step ${ctx.id} must have a contract`)
-  } else if (ctx.artifacts && !ctx.artifacts[config.contract]) {
-    ctx.errors.push(`Execution step ${ctx.id} must have a valid contract`)
+  const contractId = _.get(config, 'contract')
+
+  if (!contractId) {
+    ctx.errors.push(`Exec ${ctx.id} must have a contract`)
+  } else if (ctx.artifacts && !ctx.artifacts[contractId]) {
+    ctx.errors.push(`Exec ${ctx.id} must have a contract present in the artifacts list`)
   }
 }
 
 const validateContractMethod = (ctx, config) => {
-  if (!_.get(config, 'method')) {
-    ctx.errors.push(`Execution step ${ctx.id} must have a method`)
+  const contractId = _.get(config, 'contract')
+  const method = _.get(config, 'method')
+
+  if (!method) {
+    ctx.errors.push(`Exec ${ctx.id} must have a method`)
   } else {
     if (ctx.artifacts) {
-      const matchingMethod = _.get(ctx.artifacts[config.contract], `abi`, []).find(def => (
-        def.name === config.method
+      const matchingMethod = _.get(ctx.artifacts[contractId], `abi`, []).find(def => (
+        def.name === method
       ))
 
       if (_.get(matchingMethod, 'type') !== 'function') {
-        ctx.errors.push(`Execution step ${ctx.id} must specify a valid contract method`)
+        ctx.errors.push(`Exec ${ctx.id} must specify a valid contract method`)
       }
     }
   }
@@ -27,48 +32,64 @@ const validateContractMethod = (ctx, config) => {
 
 const EXECS = {
   deploy: {
-    parse: (ctx, config) => {
+    process: async (ctx, config) => {
       validateContract(ctx, config)
-      ctx.processor.doExecStep(config)
+
+      const contractId = _.get(config, 'contract')
+      const { bytecode } = ctx.artifacts[contractId]
+
+      if (!bytecode) {
+        ctx.errors.push(`Exec ${ctx.id} is a deployment but artifact is missing contract bytecode`)
+      } else {
+        const result = await ctx.process.deployContract(ctx.id, bytecode)
+        // further execs may need this output as input!
+        if (config.saveAsInput) {
+          ctx.inputs[config.saveAsInput] = result
+        }
+      }
     }
   },
   call: {
-    parse: (ctx, config) => {
+    process: async (ctx, config) => {
       validateContract(ctx, config)
       validateContractMethod(ctx, config)
-      ctx.processor.doExecStep(config)
+      // TODO: method call
     }
   },
   transaction: {
-    parse: (ctx, config) => {
+    process: async (ctx, config) => {
       validateContract(ctx, config)
       validateContractMethod(ctx, config)
-      ctx.processor.doExecStep(config)
+      // TODO: transaction
     }
   },
 }
 
-export const parse = (ctx, execs) => {
-  // need atleast 1 execution step
-  if (!_.get(execs, '0')) {
-    ctx.errors.push(`${ctx.parentId} must have atleast 1 execution step`)
-  } else {
-    _.each(execs, (exConfig, exNum) => {
-      const newCtx = { ...ctx, id: `${ctx.parentId}.${exNum}` }
+export const process = async (ctx, execs) => {
+  let i = 0
 
-      // check execution step type
-      if (!EXECS[_.get(exConfig, 'type')]) {
-        ctx.errors.push(`Execution step ${newCtx.id} must have a valid type: ${Object.keys(EXECS).join(', ')}`)
-      } else {
-        // check parameter mappings
-        _.each(_.get(exConfig, 'parameters', {}), (inputId, paramId) => {
-          if (!_.get(ctx, `panel.inputs.${inputId}`)) {
-            ctx.errors.push(`Execution step ${newCtx.id} parameter ${paramId} maps from an invalid input: ${inputId}`)
-          }
-        })
+  while (execs.length > i) {
+    const newCtx = { ...ctx, id: `${ctx.parentId}.${i}` }
 
-        EXECS[exConfig.type].parse(newCtx, exConfig)
-      }
-    })
+    const execConfig = execs[i]
+
+    // check execution step type
+    const type = _.get(execConfig, 'type')
+
+    if (!EXECS[type]) {
+      ctx.errors.push(`Exec ${newCtx.id} must have a valid type: ${Object.keys(EXECS).join(', ')}`)
+    } else {
+      // check parameter mappings
+      _.each(_.get(execConfig, 'parameters', {}), (inputId, paramId) => {
+        if (!_.get(ctx, `inputs.${inputId}`)) {
+          ctx.errors.push(`Exec ${newCtx.id} parameter ${paramId} maps from an invalid input: ${inputId}`)
+        }
+      })
+
+      // eslint-disable-next-line no-await-in-loop
+      await EXECS[type].process(newCtx, execConfig)
+    }
+
+    i += 1
   }
 }

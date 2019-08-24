@@ -1,21 +1,26 @@
 import _ from '../utils/lodash'
 
-import { parse as parseInputs } from './inputs'
-import { parse as parseExecs } from './execs'
+import { process as processInputs } from './inputs'
+import { process as processExecs } from './execs'
 
-export const parse = (ctx, id, config) => {
+export const process = async (ctx, id, config) => {
   // need title
   if (!_.get(config, 'title')) {
     ctx.errors.push(`${id} must have a title`)
   }
 
-  ctx.processor.startPanel(id, config)
+  await ctx.processor.startUi(id, config)
 
   ctx.panel = { ...config, id }
   ctx.parentId = id
 
-  parseInputs(ctx, _.get(config, 'inputs', {}))
-  parseExecs(ctx, _.get(config, 'execute', []))
+  await processInputs(ctx, _.get(config, 'inputs', {}))
 
-  ctx.processor.endPanel(id, config)
+  if (!_.get(config, 'execs.0')) {
+    ctx.errors.push(`${id} must have atleast 1 execution step`)
+  }
+
+  await processExecs(ctx, _.get(config, 'execs', {}))
+
+  await ctx.processor.endUi(id, config)
 }

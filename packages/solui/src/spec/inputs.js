@@ -11,18 +11,17 @@ const INPUTS = {
   bytes32: true,
 }
 
-export const parse = (ctx, inputs) => {
-  // check inputs
-  _.each(inputs, (inputConfig, inputId) => {
-    const logPrefix = `${ctx.parentId}.${inputId}`
+export const process = async (ctx, inputs) => (
+  Promise.all(_.map(inputs, async (inputId, inputConfig) => {
+    const newCtx = { ...ctx, id: `${ctx.parentId}.${inputId}` }
 
     if (!_.get(inputConfig, 'title')) {
-      ctx.errors.push(`Input ${logPrefix} must have a title`)
+      ctx.errors.push(`Input ${newCtx.id} must have a title`)
     }
 
     const type = _.get(inputConfig, 'type')
     if (!INPUTS[type]) {
-      ctx.errors.push(`Input ${logPrefix} must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
+      ctx.errors.push(`Input ${newCtx.id} must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
     }
 
     const initialValue = _.get(inputConfig, 'initialValue')
@@ -30,7 +29,7 @@ export const parse = (ctx, inputs) => {
       switch (type) {
         case 'address': {
           if (!isAddress(initialValue)) {
-            ctx.errors.push(`Input ${logPrefix} initial value must be a valid Ethereum address`)
+            ctx.errors.push(`Input ${newCtx.id} initial value must be a valid Ethereum address`)
           }
           break
         }
@@ -39,6 +38,6 @@ export const parse = (ctx, inputs) => {
       }
     }
 
-    ctx.processor.doInput(inputId, inputConfig)
-  })
-}
+    ctx.inputs[inputId] = await ctx.processor.getInput(newCtx.id, inputConfig)
+  }))
+)

@@ -11,7 +11,7 @@
         ]
       }
     },
-    "execute": [
+    "exec": [
       {
         "type": "deploy",
         "contract": "Ownable",
@@ -23,7 +23,7 @@
   },
   "showOwner": {
     "title": "Show owner",
-    "execute": [
+    "exec": [
       {
         "type": "call",
         "contract": "Ownable",
@@ -43,7 +43,7 @@
         ]
       }
     },
-    "execute": [
+    "exec": [
       {
         "type": "transaction",
         "contract": "Ownable",

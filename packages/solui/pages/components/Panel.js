@@ -12,6 +12,7 @@ const Title = styled.h2`
 
 const inputStateReducer = (state, { id, ...toUpdate }) => ({
   ...state,
+  // we will update different properties at different times, hence overwrite only what's changed
   [id]: { ...state[id], ...toUpdate },
 })
 
@@ -28,6 +29,7 @@ export const Panel = ({ title, inputs }) => {
   )
 
   // input change handlers
+  // setValidationResult() will typically get called after onChange()
   const { setValidationResult, onChange } = useMemo(() => {
     const changeHandlers = inputs.reduce((m, { id }) => {
       m[id] = value => updateInputState({ id, value })
@@ -91,7 +93,7 @@ export class PanelBuilder {
     this.inputs.push({ id, config })
   }
 
-  addExecutionStep (config) {
+  addExecutionStep (id, config) {
     this.execSteps.push(config)
   }
 
