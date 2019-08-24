@@ -6,16 +6,14 @@
         "title": "Owner",
         "type": "address",
         "initialValue": "0x0000000000000000000000000000000000000000",
-        "addressType": [
-          "eoa"
-        ]
+        "addressType": [ "eoa" ]
       }
     },
     "execs": [
       {
         "type": "deploy",
         "contract": "Ownable",
-        "params": {
+        "args": {
           "_owner": "owner"
         },
         "saveResultAs": "contractAddress"
@@ -62,10 +60,7 @@
       "newOwner": {
         "title": "New owner",
         "type": "address",
-        "valueNotEq": "{msg.sender}",
-        "addressType": [
-          "eoa"
-        ]
+        "addressType": [ "eoa" ]
       }
     },
     "execs": [
@@ -74,7 +69,7 @@
         "contract": "Ownable",
         "address": "contract1",
         "method": "transferOwnership",
-        "params": {
+        "args": {
           "_newOwner": "newOwner"
         }
       }

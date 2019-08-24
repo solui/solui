@@ -1,14 +1,14 @@
 import { _, promiseSerial } from '../utils'
-import { inputIsPresent, getBytecode, getAbi, getMethod } from './specUtils'
+import { inputIsPresent, methodArgExists, getBytecode, getAbi, getMethod } from './specUtils'
 
 const validateContract = (ctx, config) => {
   // check contract
   const contractId = _.get(config, 'contract')
 
   if (!contractId) {
-    ctx.errors.push(`Exec ${ctx.id} must have a contract`)
+    ctx.errors.add(ctx.id, `must have a contract`)
   } else if (ctx.artifacts && !ctx.artifacts[contractId]) {
-    ctx.errors.push(`Exec ${ctx.id} must have a contract present in the artifacts list`)
+    ctx.errors.add(ctx.id, `must have a contract present in the artifacts list`)
   }
 }
 
@@ -17,30 +17,34 @@ const validateContractMethod = (ctx, config) => {
   const method = _.get(config, 'method')
 
   if (!method) {
-    ctx.errors.push(`Exec ${ctx.id} must have a method`)
+    ctx.errors.add(ctx.id, `must have a method`)
   } else {
     if (ctx.artifacts) {
-      const matchingMethod = _.get(ctx.artifacts[contractId], `abi`, []).find(def => (
-        def.name === method
-      ))
+      const methodAbi = getMethod(ctx, contractId, method)
 
-      if (_.get(matchingMethod, 'type') !== 'function') {
-        ctx.errors.push(`Exec ${ctx.id} must specify a valid contract method`)
+      if (!methodAbi) {
+        ctx.errors.add(ctx.id, `must specify a valid contract method`)
       }
 
-      // check parameter mappings
-      _.each(_.get(config, 'params', {}), (inputId, paramId) => {
+      // check arg mappings
+      _.each(_.get(config, 'args', {}), (inputId, argId) => {
+        if (!methodArgExists(methodAbi, argId)) {
+          ctx.errors.add(ctx.id, `method ${method} does not have arg: ${argId}`)
+        }
+
         if (!inputIsPresent(ctx, inputId)) {
-          ctx.errors.push(`Exec ${ctx.id} parameter ${paramId} maps from an invalid input: ${inputId}`)
+          ctx.errors.add(ctx.id, `method argument ${argId} maps from an invalid input: ${inputId}`)
         }
       })
 
       // check contract address mapping
-      if (!_.get(config, 'address')) {
-        ctx.errors.push(`Exec ${ctx.id} must specify contract address mapping`)
-      } else {
-        if (!inputIsPresent(ctx, config.address)) {
-          ctx.errors.push(`Exec ${ctx.id} contract address maps from an invalid input: ${config.address}`)
+      if ('deploy' !== config.type) {
+        if (!_.get(config, 'address')) {
+          ctx.errors.add(ctx.id, `must specify contract address mapping`)
+        } else {
+          if (!inputIsPresent(ctx, config.address)) {
+            ctx.errors.add(ctx.id, `contract address maps from an invalid input: ${config.address}`)
+          }
         }
       }
     }
@@ -48,15 +52,15 @@ const validateContractMethod = (ctx, config) => {
 }
 
 
-const buildMethodArgs = (methodAbi, params, inputs) => (
-  (methodAbi.inputs || []).map(({ name }) => inputs[params[name]])
+const buildMethodArgs = (methodAbi, args, inputs) => (
+  (methodAbi.inputs || []).map(({ name }) => inputs[args[name]])
 )
 
 const prepareContractCall = (ctx, config) => {
   const contractId = config.contract
   const abi = getAbi(ctx, contractId)
   const methodAbi = getMethod(ctx, contractId, config.method)
-  const args = buildMethodArgs(methodAbi, config.params, ctx.inputs)
+  const args = buildMethodArgs(methodAbi, config.args, ctx.inputs)
 
   return { abi, args }
 }
@@ -65,13 +69,14 @@ const EXECS = {
   deploy: {
     process: async (ctx, config) => {
       validateContract(ctx, config)
+      validateContractMethod(ctx, { ...config, method: 'constructor' })
 
       const contractId = config.contract
 
       const bytecode = getBytecode(ctx, contractId)
 
       if (!bytecode) {
-        ctx.errors.push(`Exec ${ctx.id} is a deployment but matching artifact is missing bytecode`)
+        ctx.errors.add(ctx.id, `is a deployment but matching artifact is missing bytecode`)
       } else {
         // prep
         const { abi, args } = prepareContractCall(ctx, { ...config, method: 'constructor' })
@@ -90,7 +95,7 @@ const EXECS = {
       validateContractMethod(ctx, config)
 
       if (!config.saveResultAs) {
-        ctx.errors.push(`Exec ${ctx.id} must save its result into a param`)
+        ctx.errors.add(ctx.id, `must save its result into a param`)
       }
 
       // prep
@@ -136,7 +141,7 @@ export const processList = async (ctx, execs) => (
     const type = _.get(execConfig, 'type')
 
     if (!EXECS[type]) {
-      ctx.errors.push(`Exec ${newCtx.id} must have a valid type: ${Object.keys(EXECS).join(', ')}`)
+      ctx.errors.add(ctx.id, `must have a valid type: ${Object.keys(EXECS).join(', ')}`)
     } else {
       // eslint-disable-next-line no-await-in-loop
       await EXECS[type].process(newCtx, execConfig)

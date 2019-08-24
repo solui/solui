@@ -16,12 +16,12 @@ export const processList = async (ctx, inputs) => (
     const newCtx = { ...ctx, id: `${ctx.parentId}.inputs.${inputId}` }
 
     if (!_.get(inputConfig, 'title')) {
-      ctx.errors.push(`Input ${newCtx.id} must have a title`)
+      ctx.errors.add(newCtx.id, `must have a title`)
     }
 
     const type = _.get(inputConfig, 'type')
     if (!INPUTS[type]) {
-      ctx.errors.push(`Input ${newCtx.id} must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
+      ctx.errors.add(newCtx.id, `must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
     }
 
     const initialValue = _.get(inputConfig, 'initialValue')
@@ -29,7 +29,7 @@ export const processList = async (ctx, inputs) => (
       switch (type) {
         case 'address': {
           if (!isAddress(initialValue)) {
-            ctx.errors.push(`Input ${newCtx.id} initial value must be a valid Ethereum address`)
+            ctx.errors.add(newCtx.id, `initial value must be a valid Ethereum address`)
           }
           break
         }

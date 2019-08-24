@@ -7,7 +7,7 @@ import { process as processOutput } from './output'
 export const process = async (ctx, id, config) => {
   // need title
   if (!_.get(config, 'title')) {
-    ctx.errors.push(`${id} must have a title`)
+    ctx.errors.add(`${id} must have a title`)
   }
 
   await ctx.callbacks.startUi(id, config)
@@ -18,7 +18,7 @@ export const process = async (ctx, id, config) => {
   await processInputs(ctx, _.get(config, 'inputs', {}))
 
   if (!_.get(config, 'execs.0')) {
-    ctx.errors.push(`${id} must have atleast 1 execution step`)
+    ctx.errors.add(`${id} must have atleast 1 execution step`)
   }
 
   await processExecs(ctx, _.get(config, 'execs', {}))

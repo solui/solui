@@ -17,17 +17,19 @@ export default ({ id, onChange, setValidationResult, value, error, config: { tit
 
   // validation takes place after initial render and on subsequent renders
   useEffect(() => {
-    let isValid
-    switch (type) {
-      case 'address': {
-        isValid = isAddress(value)
-        break
+    (async () => {
+      let isValid
+      switch (type) {
+        case 'address': {
+          isValid = isAddress(value)
+          break
+        }
+        default:
+          isValid = false
       }
-      default:
-        isValid = false
-    }
 
-    setValidationResult(isValid, '')
+      setValidationResult(isValid, '')
+    })()
   }, [ type, value, setValidationResult ])
 
   return (
