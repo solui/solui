@@ -78,7 +78,7 @@ export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
       e.details = errors
       reject(e)
     } else {
-      resolve()
+      resolve(ctx.output)
     }
   })
 )

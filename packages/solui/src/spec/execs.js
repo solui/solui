@@ -1,4 +1,5 @@
 import { _, promiseSerial } from '../utils'
+import { inputIsPresent } from './specUtils'
 
 const validateContract = (ctx, config) => {
   // check contract
@@ -29,13 +30,14 @@ const validateContractMethod = (ctx, config) => {
 
       // check parameter mappings
       _.each(_.get(config, 'params', {}), (inputId, paramId) => {
-        if (_.get(ctx, `inputs.${inputId}`) !== undefined) {
+        if (!inputIsPresent(ctx, inputId)) {
           ctx.errors.push(`Exec ${ctx.id} parameter ${paramId} maps from an invalid input: ${inputId}`)
         }
       })
     }
   }
 }
+
 
 const buildMethodArgs = (methodAbi, params, inputs) => (
   (methodAbi.inputs || []).map(({ name }) => inputs[params[name]])
@@ -58,8 +60,8 @@ const EXECS = {
         // do it!
         const result = await ctx.callbacks.deployContract(ctx.id, { abi, bytecode, args })
         // further execs may need this output as input!
-        if (config.saveAsInput) {
-          ctx.inputs[config.saveAsInput] = result
+        if (config.saveResultAs) {
+          ctx.inputs[config.saveResultAs] = result
         }
       }
     }

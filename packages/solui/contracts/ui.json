@@ -17,9 +17,15 @@
         "contract": "Ownable",
         "params": {
           "_owner": "owner"
-        }
+        },
+        "saveResultAs": "contractAddress"
       }
-    ]
+    ],
+    "output": {
+      "title": "New contract address",
+      "type": "address",
+      "param": "contractAddress"
+    }
   },
   "showOwner": {
     "title": "Show owner",

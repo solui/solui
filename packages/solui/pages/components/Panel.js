@@ -2,7 +2,7 @@ import React, { useState, useCallback, useReducer, useMemo } from 'react'
 import styled from '@emotion/styled'
 
 import Input from './Input'
-import Error from './Error'
+import Result from './Result'
 import { GlobalContext } from '../_global'
 
 const Title = styled.h2`
@@ -23,8 +23,8 @@ const createInitialInputState = inputs => inputs.reduce((m, { id, config: { init
   return m
 }, {})
 
-export const Panel = ({ onRun, id: panelId, title, inputs }) => {
-  const [ execError, setExecError ] = useState()
+export const Panel = ({ onRun, id: panelId, config, inputs }) => {
+  const [ execResult, setExecResult ] = useState()
 
   // reducer
   const [ inputState, updateInputState ] = useReducer(
@@ -36,7 +36,7 @@ export const Panel = ({ onRun, id: panelId, title, inputs }) => {
   const { setValidationResult, onChange } = useMemo(() => {
     const changeHandlers = inputs.reduce((m, { id }) => {
       m[id] = value => {
-        setExecError(null)
+        setExecResult(null)
         updateInputState({ id, value })
       }
       return m
@@ -62,7 +62,7 @@ export const Panel = ({ onRun, id: panelId, title, inputs }) => {
       return
     }
 
-    setExecError(null)
+    setExecResult(null)
 
     onRun({
       panelId,
@@ -70,20 +70,22 @@ export const Panel = ({ onRun, id: panelId, title, inputs }) => {
         m[k] = inputState[k].value
         return m
       }, {})
-    }).catch(setExecError)
+    })
+      .then(value => setExecResult({ value }))
+      .catch(error => setExecResult({ error }))
   }, [ onRun, allInputsValid, panelId, inputState ])
 
   return (
     <div>
-      <Title>{title}</Title>
+      <Title>{config.title}</Title>
       <GlobalContext.Consumer>
-        {({ network }) => inputs.map(({ id, config }) => (
+        {({ network }) => inputs.map(({ id, config: inputConfig }) => (
           <Input
             key={id}
             id={id}
             onChange={onChange[id]}
             setValidationResult={setValidationResult[id]}
-            config={config}
+            config={inputConfig}
             network={network}
             {...inputState[id]}
           />
@@ -94,7 +96,9 @@ export const Panel = ({ onRun, id: panelId, title, inputs }) => {
         Execute
       </button>
 
-      {execError ? <Error error={execError} /> : null}
+      {execResult ? (
+        <Result result={execResult} config={config.output} />
+      ) : null}
     </div>
   )
 }
@@ -103,7 +107,6 @@ export class PanelBuilder {
   constructor ({ id, config, onRun }) {
     this.attrs = {
       id,
-      title: config.title,
       config,
       onRun,
       inputs: [],

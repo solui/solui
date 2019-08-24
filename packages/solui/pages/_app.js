@@ -29,7 +29,9 @@ export default class MyApp extends App {
     return ret
   }
 
-  state = {}
+  state = {
+    renderingError: null,
+  }
 
   componentDidUpdate () {
     (async () => {
@@ -49,13 +51,22 @@ export default class MyApp extends App {
     this.componentDidUpdate()
   }
 
+  componentDidCatch (error, info) {
+    console.error(error, info)
+    this.setState({ renderingError: true })
+  }
+
   render () {
     const { Component, pageProps, appState, ...otherProps } = this.props
 
     // on client window.APP_STATE will be used
     const finalAppState = appState || window.APP_STATE
 
-    return (
+    const { renderingError, network } = this.state
+
+    return renderingError ? (
+      <div>There was a rendering error (see Developer Console). Please reload the UI.</div>
+    ) : (
       <Container>
         <Head>
           <title>solui</title>
@@ -67,13 +78,13 @@ export default class MyApp extends App {
             `
           }}></script>
         </Head>
-        <GlobalContext.Provider value={{ network: this.state.network }}>
+        <GlobalContext.Provider value={{ network }}>
           <ThemeProvider theme={getTheme()}>
             <Component
               {...otherProps}
               {...pageProps}
               appState={finalAppState}
-              network={this.state.network}
+              network={network}
             />
           </ThemeProvider>
         </GlobalContext.Provider>

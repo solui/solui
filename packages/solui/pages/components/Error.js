@@ -1,10 +1,18 @@
+import React from 'react'
+import styled from '@emotion/styled'
+
+const Container = styled.div`
+  background-color: ${({ theme }) => theme.errorBgColor};
+  padding: 1rem;
+`
+
 export default ({ error }) => {
   if (!Array.isArray(error)) {
     error = [ error ]
   }
 
   return (
-    <div>
+    <Container>
       {error.map(e => (
         <div key={e.toString()}>
           <p>{e.toString()}</p>
@@ -13,6 +21,6 @@ export default ({ error }) => {
           )) : null}
         </div>
       ))}
-    </div>
+    </Container>
   )
 }

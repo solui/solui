@@ -27,14 +27,16 @@ export default ({ network, appState: { spec, artifacts } }) => {
 
   // callback to execute a panel
   const onRun = useCallback(async ({ panelId, inputs }) => {
-    if (network) {
-      await executeUi({
-        artifacts,
-        ui: { id: panelId, config: spec[panelId] },
-        inputs,
-        web3: network.web3,
-      })
+    if (!network) {
+      throw new Error('Network not available')
     }
+
+    return executeUi({
+      artifacts,
+      ui: { id: panelId, config: spec[panelId] },
+      inputs,
+      web3: network.web3,
+    })
   }, [ spec, artifacts, network ])
 
   // update panels
