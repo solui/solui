@@ -1,4 +1,4 @@
-import _ from '../utils/lodash'
+import { _ } from '../utils'
 
 import { process as processInputs } from './inputs'
 import { process as processExecs } from './execs'
@@ -9,7 +9,7 @@ export const process = async (ctx, id, config) => {
     ctx.errors.push(`${id} must have a title`)
   }
 
-  await ctx.processor.startUi(id, config)
+  await ctx.callbacks.startUi(id, config)
 
   ctx.panel = { ...config, id }
   ctx.parentId = id
@@ -22,5 +22,5 @@ export const process = async (ctx, id, config) => {
 
   await processExecs(ctx, _.get(config, 'execs', {}))
 
-  await ctx.processor.endUi(id, config)
+  await ctx.callbacks.endUi(id, config)
 }

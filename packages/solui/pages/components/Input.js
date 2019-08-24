@@ -13,7 +13,7 @@ const getPlaceholder = ({ type }) => type
 export default ({ id, onChange, setValidationResult, value, error, config: { title, type } }) => {
   const placeholder = useMemo(() => getPlaceholder({ type }), [ type ])
 
-  const onTextChange = useCallback(e => onChange(e.currentTarget), [ onChange ])
+  const onTextChange = useCallback(e => onChange(e.currentTarget.value), [ onChange ])
 
   // validation takes place after initial render and on subsequent renders
   useEffect(() => {

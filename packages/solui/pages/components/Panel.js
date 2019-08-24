@@ -86,23 +86,18 @@ export class PanelBuilder {
     this.id = id
     this.title = config.title
     this.inputs = []
-    this.execSteps = []
   }
 
   addInput (id, config) {
     this.inputs.push({ id, config })
   }
 
-  addExecutionStep (id, config) {
-    this.execSteps.push(config)
-  }
-
   buildContent () {
     return (
       <Panel
+        key={this.id}
         title={this.title}
         inputs={this.inputs}
-        execSteps={this.execSteps}
       />
     )
   }

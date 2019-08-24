@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { ThemeProvider } from 'emotion-theming'
 import { Global } from '@emotion/core'
 
-import _ from '../src/utils/lodash'
+import { _ } from '../src/utils'
 import { GlobalContext } from './_global'
 import { APP_STATE_KEYS } from '../src/constants'
 import resetStyles from './styles/reset'

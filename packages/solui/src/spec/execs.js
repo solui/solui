@@ -1,4 +1,4 @@
-import _ from '../utils/lodash'
+import { _, promiseSerial } from '../utils'
 
 const validateContract = (ctx, config) => {
   // check contract
@@ -41,7 +41,7 @@ const EXECS = {
       if (!bytecode) {
         ctx.errors.push(`Exec ${ctx.id} is a deployment but artifact is missing contract bytecode`)
       } else {
-        const result = await ctx.process.deployContract(ctx.id, bytecode)
+        const result = await ctx.callbacks.deployContract(ctx.id, bytecode)
         // further execs may need this output as input!
         if (config.saveAsInput) {
           ctx.inputs[config.saveAsInput] = result
@@ -65,13 +65,9 @@ const EXECS = {
   },
 }
 
-export const process = async (ctx, execs) => {
-  let i = 0
-
-  while (execs.length > i) {
-    const newCtx = { ...ctx, id: `${ctx.parentId}.${i}` }
-
-    const execConfig = execs[i]
+export const process = async (ctx, execs) => (
+  promiseSerial(execs, async (execId, execConfig) => {
+    const newCtx = { ...ctx, id: `${ctx.parentId}.${execId}` }
 
     // check execution step type
     const type = _.get(execConfig, 'type')
@@ -80,7 +76,7 @@ export const process = async (ctx, execs) => {
       ctx.errors.push(`Exec ${newCtx.id} must have a valid type: ${Object.keys(EXECS).join(', ')}`)
     } else {
       // check parameter mappings
-      _.each(_.get(execConfig, 'parameters', {}), (inputId, paramId) => {
+      _.each(_.get(execConfig, 'params', {}), (inputId, paramId) => {
         if (!_.get(ctx, `inputs.${inputId}`)) {
           ctx.errors.push(`Exec ${newCtx.id} parameter ${paramId} maps from an invalid input: ${inputId}`)
         }
@@ -89,7 +85,5 @@ export const process = async (ctx, execs) => {
       // eslint-disable-next-line no-await-in-loop
       await EXECS[type].process(newCtx, execConfig)
     }
-
-    i += 1
-  }
-}
+  })
+)

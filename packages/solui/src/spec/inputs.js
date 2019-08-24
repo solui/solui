@@ -1,6 +1,6 @@
 import { isAddress } from 'web3-utils'
 
-import _ from '../utils/lodash'
+import { _, promiseSerial } from '../utils'
 
 const INPUTS = {
   address: true,
@@ -12,7 +12,7 @@ const INPUTS = {
 }
 
 export const process = async (ctx, inputs) => (
-  Promise.all(_.map(inputs, async (inputId, inputConfig) => {
+  promiseSerial(inputs, async (inputId, inputConfig) => {
     const newCtx = { ...ctx, id: `${ctx.parentId}.${inputId}` }
 
     if (!_.get(inputConfig, 'title')) {
@@ -38,6 +38,6 @@ export const process = async (ctx, inputs) => (
       }
     }
 
-    ctx.inputs[inputId] = await ctx.processor.getInput(newCtx.id, inputConfig)
-  }))
+    ctx.inputs[inputId] = await ctx.callbacks.getInput(newCtx.id, inputConfig)
+  })
 )

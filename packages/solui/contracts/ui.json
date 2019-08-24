@@ -11,11 +11,11 @@
         ]
       }
     },
-    "exec": [
+    "execs": [
       {
         "type": "deploy",
         "contract": "Ownable",
-        "parameters": {
+        "params": {
           "_owner": "owner"
         }
       }
@@ -23,7 +23,7 @@
   },
   "showOwner": {
     "title": "Show owner",
-    "exec": [
+    "execs": [
       {
         "type": "call",
         "contract": "Ownable",
@@ -43,12 +43,12 @@
         ]
       }
     },
-    "exec": [
+    "execs": [
       {
         "type": "transaction",
         "contract": "Ownable",
         "method": "transferOwnership",
-        "parameters": {
+        "params": {
           "_newOwner": "newOwner"
         }
       }

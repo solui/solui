@@ -28,7 +28,7 @@ export default ({ appState: { ui, artifacts } }) => {
     const stack = []
     let currentPanel = null
 
-    const processor = {
+    const callbacks = {
       getInput: (id, cfg) => currentPanel.addInput(id, cfg),
       startUi: (id, cfg) => {
         currentPanel = new PanelBuilder(id, cfg)
@@ -38,9 +38,12 @@ export default ({ appState: { ui, artifacts } }) => {
       }
     }
 
-    const processingErrors = processSpec({ ui, artifacts }, processor)
+    const processingErrors = processSpec({ ui, artifacts }, callbacks)
 
-    return { panels: stack, errors: processingErrors }
+    return {
+      panels: stack,
+      errors: processingErrors
+    }
   }, [ ui, artifacts ])
 
   return (
