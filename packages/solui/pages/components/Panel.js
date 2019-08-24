@@ -61,8 +61,16 @@ export const Panel = ({ onRun, id: panelId, title, inputs }) => {
       console.error('Please fix inputs')
       return
     }
+
     setExecError(null)
-    onRun({ panelId, inputState }).catch(setExecError)
+
+    onRun({
+      panelId,
+      inputs: Object.keys(inputState).reduce((m, k) => {
+        m[k] = inputState[k].value
+        return m
+      }, {})
+    }).catch(setExecError)
   }, [ onRun, allInputsValid, panelId, inputState ])
 
   return (

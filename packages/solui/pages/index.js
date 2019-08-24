@@ -26,12 +26,12 @@ export default ({ network, appState: { spec, artifacts } }) => {
   const [ processedResult, setProcessedResult ] = useState()
 
   // callback to execute a panel
-  const onRun = useCallback(async ({ panelId, inputState }) => {
+  const onRun = useCallback(async ({ panelId, inputs }) => {
     if (network) {
       await executeUi({
         artifacts,
         ui: { id: panelId, config: spec[panelId] },
-        inputs: inputState,
+        inputs,
         web3: network.web3,
       })
     }
@@ -44,7 +44,10 @@ export default ({ network, appState: { spec, artifacts } }) => {
       let currentPanel = null
 
       const callbacks = {
-        getInput: (id, config) => currentPanel.addInput(id, config),
+        getInput: (id, config) => {
+          currentPanel.addInput(id, config)
+          return true
+        },
         startUi: (id, config) => {
           currentPanel = new PanelBuilder({ id, config, onRun })
         },

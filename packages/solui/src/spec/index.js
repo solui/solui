@@ -4,7 +4,7 @@ import { process as processPanel } from './panel'
 const DEFAULT_CALLBACKS = {
   startUi: async () => {},
   endUi: async () => {},
-  getInput: async () => true,
+  getInput: async () => {},
   deployContract: async () => {},
 }
 
@@ -36,19 +36,29 @@ export const assertValid = async ({ spec, artifacts }) => {
 }
 
 // Execute a UI operation
-export const executeUi = async ({ artifacts, ui, inputs }) => (
+export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
   new Promise(async (resolve, reject) => {
     const errors = []
 
     const ctx = {
       artifacts,
       errors,
-      inputs,
+      inputs: {},
       callbacks: {
         ...DEFAULT_CALLBACKS,
-        deployContract: async id => {
+        getInput: id => inputs[id],
+        deployContract: async (id, { abi, bytecode, args }) => {
           try {
-            throw new Error('blah')
+            const [ from ] = await web3.eth.getAccounts()
+
+            const contract = new web3.eth.Contract(abi)
+
+            const receipt = await contract.deploy({
+              data: bytecode,
+              arguments: args,
+            }).send({ from })
+
+            console.warn(receipt)
           } catch (err) {
             errors.push(`Error executing ${id}: ${err}`)
           }

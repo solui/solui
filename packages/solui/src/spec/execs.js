@@ -26,9 +26,20 @@ const validateContractMethod = (ctx, config) => {
       if (_.get(matchingMethod, 'type') !== 'function') {
         ctx.errors.push(`Exec ${ctx.id} must specify a valid contract method`)
       }
+
+      // check parameter mappings
+      _.each(_.get(config, 'params', {}), (inputId, paramId) => {
+        if (_.get(ctx, `inputs.${inputId}`) !== undefined) {
+          ctx.errors.push(`Exec ${ctx.id} parameter ${paramId} maps from an invalid input: ${inputId}`)
+        }
+      })
     }
   }
 }
+
+const buildMethodArgs = (methodAbi, params, inputs) => (
+  (methodAbi.inputs || []).map(({ name }) => inputs[params[name]])
+)
 
 const EXECS = {
   deploy: {
@@ -36,12 +47,18 @@ const EXECS = {
       validateContract(ctx, config)
 
       const contractId = _.get(config, 'contract')
-      const { bytecode } = ctx.artifacts[contractId]
+      const { abi, bytecode } = ctx.artifacts[contractId]
 
       if (!bytecode) {
         ctx.errors.push(`Exec ${ctx.id} is a deployment but matching artifact is missing bytecode`)
       } else {
-        const result = await ctx.callbacks.deployContract(ctx.id, bytecode)
+        // build args
+        const methodAbi = abi.find(def => def.type === 'constructor')
+        const args = buildMethodArgs(methodAbi, config.params, ctx.inputs)
+
+        // do it!
+        const result = await ctx.callbacks.deployContract(ctx.id, { abi, bytecode, args })
+
         // further execs may need this output as input!
         if (config.saveAsInput) {
           ctx.inputs[config.saveAsInput] = result
@@ -75,13 +92,6 @@ export const processList = async (ctx, execs) => (
     if (!EXECS[type]) {
       ctx.errors.push(`Exec ${newCtx.id} must have a valid type: ${Object.keys(EXECS).join(', ')}`)
     } else {
-      // check parameter mappings
-      _.each(_.get(execConfig, 'params', {}), (inputId, paramId) => {
-        if (!_.get(ctx, `inputs.${inputId}`)) {
-          ctx.errors.push(`Exec ${newCtx.id} parameter ${paramId} maps from an invalid input: ${inputId}`)
-        }
-      })
-
       // eslint-disable-next-line no-await-in-loop
       await EXECS[type].process(newCtx, execConfig)
     }
