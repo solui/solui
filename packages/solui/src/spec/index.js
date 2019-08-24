@@ -13,7 +13,6 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
     artifacts,
     errors: [],
     inputs: {},
-    outputs: {},
     callbacks: { ...DEFAULT_CALLBACKS, ...callbacks },
   }
 
@@ -23,11 +22,11 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
     await promiseSerial(spec, async (id, config) => processPanel(ctx, id, config))
   }
 
-  return ctx.errors
+  return ctx
 }
 
 export const assertValid = async ({ spec, artifacts }) => {
-  const errors = await process({ spec, artifacts })
+  const { errors } = await process({ spec, artifacts })
 
   if (errors.length) {
     const e = new Error(`There were one or more validation errors. See details.`)
@@ -37,6 +36,37 @@ export const assertValid = async ({ spec, artifacts }) => {
 }
 
 // Execute a UI operation
-export const executeUi = async ({ artifacts, ui, inputValues, web3 }) => {
+export const executeUi = async ({ artifacts, ui, inputs }) => (
+  new Promise(async (resolve, reject) => {
+    const errors = []
 
-}
+    const ctx = {
+      artifacts,
+      errors,
+      inputs,
+      callbacks: {
+        deployContract: async id => {
+          try {
+            throw new Error('blah')
+          } catch (err) {
+            errors.push(`Error executing ${id}: ${err}`)
+          }
+        }
+      },
+    }
+
+    try {
+      await processPanel(ctx, ui.id, ui.config)
+    } catch (err) {
+      errors.push(`Error executing UI: ${err}`)
+    }
+
+    if (errors.length) {
+      const e = new Error('Execution error, see details.')
+      e.details = errors
+      reject(e)
+    } else {
+      resolve()
+    }
+  })
+)

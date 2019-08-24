@@ -1,13 +1,12 @@
-import React, { useMemo } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from '@emotion/styled'
 
 import Layout from './components/Layout'
 import { PanelBuilder } from './components/Panel'
 import Error from './components/Error'
 import NetworkInfo from './components/NetworkInfo'
-import { process as processSpec } from '../src/spec'
+import { process as processSpec, executeUi } from '../src/spec'
 import { flex } from './styles/fragments'
-import { GlobalContext } from './_global'
 
 const Container = styled.div``
 
@@ -23,49 +22,66 @@ const PanelContainer = styled.li`
   margin-bottom: 1rem;
 `
 
-export default ({ appState: { spec, artifacts } }) => {
-  const { panels, errors } = useMemo(() => {
-    const stack = []
-    let currentPanel = null
+export default ({ network, appState: { spec, artifacts } }) => {
+  const [ processedResult, setProcessedResult ] = useState()
 
-    const callbacks = {
-      getInput: (id, cfg) => currentPanel.addInput(id, cfg),
-      startUi: (id, cfg) => {
-        currentPanel = new PanelBuilder(id, cfg)
-      },
-      endUi: () => {
-        stack.push(currentPanel)
-      }
+  // callback to execute a panel
+  const onRun = useCallback(async ({ panelId, inputState }) => {
+    if (network) {
+      await executeUi({
+        artifacts,
+        ui: { id: panelId, config: spec[panelId] },
+        inputs: inputState,
+        web3: network.web3,
+      })
     }
+  }, [ spec, artifacts, network ])
 
-    const processingErrors = processSpec({ spec, artifacts }, callbacks)
+  // after initial render
+  useEffect(() => {
+    if (!processedResult) {
+      (async () => {
+        const stack = []
+        let currentPanel = null
 
-    return {
-      panels: stack,
-      errors: processingErrors
+        const callbacks = {
+          getInput: (id, config) => currentPanel.addInput(id, config),
+          startUi: (id, config) => {
+            currentPanel = new PanelBuilder({ id, config, onRun })
+          },
+          endUi: () => {
+            stack.push(currentPanel)
+          }
+        }
+
+        const processingErrors = await processSpec({ spec, artifacts }, callbacks)
+
+        setProcessedResult({
+          panels: stack,
+          errors: processingErrors
+        })
+      })()
     }
-  }, [ spec, artifacts ])
+  }, [ processedResult, onRun, spec, artifacts ])
 
   return (
     <Layout>
-      <GlobalContext.Consumer>
-        {({ network }) => (
-          (!network) ? <div>Waiting for Ethereum network connection</div> : (
-            <Container>
-              <NetworkInfo network={network} />
-              <Panels>
-                {errors.length ? <Error error={errors} /> : (
-                  panels.map(panel => (
-                    <PanelContainer key={panel.id}>
-                      {panel.buildContent()}
-                    </PanelContainer>
-                  ))
-                )}
-              </Panels>
-            </Container>
-          )
-        )}
-      </GlobalContext.Consumer>
+      {(!network) ? <div>Waiting for Ethereum network connection</div> : (
+        <Container>
+          <NetworkInfo network={network} />
+          {(!processedResult) ? <div>Loading...</div> : (
+            <Panels>
+              {processedResult.errors.length ? <Error error={processedResult.errors} /> : (
+                processedResult.panels.map(panel => (
+                  <PanelContainer key={panel.id}>
+                    {panel.buildContent()}
+                  </PanelContainer>
+                ))
+              )}
+            </Panels>
+          )}
+        </Container>
+      )}
     </Layout>
   )
 }

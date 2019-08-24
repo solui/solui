@@ -73,6 +73,7 @@ export default class MyApp extends App {
               {...otherProps}
               {...pageProps}
               appState={finalAppState}
+              network={this.state.network}
             />
           </ThemeProvider>
         </GlobalContext.Provider>

@@ -65,7 +65,7 @@ const EXECS = {
   },
 }
 
-export const process = async (ctx, execs) => (
+export const processList = async (ctx, execs) => (
   promiseSerial(execs, async (execId, execConfig) => {
     const newCtx = { ...ctx, id: `${ctx.parentId}.${execId}` }
 

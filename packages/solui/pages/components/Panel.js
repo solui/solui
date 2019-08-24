@@ -1,7 +1,8 @@
-import React, { useCallback, useReducer, useMemo } from 'react'
+import React, { useState, useCallback, useReducer, useMemo } from 'react'
 import styled from '@emotion/styled'
 
 import Input from './Input'
+import Error from './Error'
 import { GlobalContext } from '../_global'
 
 const Title = styled.h2`
@@ -22,7 +23,9 @@ const createInitialInputState = inputs => inputs.reduce((m, { id, config: { init
   return m
 }, {})
 
-export const Panel = ({ title, inputs }) => {
+export const Panel = ({ onRun, id: panelId, title, inputs }) => {
+  const [ execError, setExecError ] = useState()
+
   // reducer
   const [ inputState, updateInputState ] = useReducer(
     inputStateReducer, inputs, createInitialInputState
@@ -32,7 +35,10 @@ export const Panel = ({ title, inputs }) => {
   // setValidationResult() will typically get called after onChange()
   const { setValidationResult, onChange } = useMemo(() => {
     const changeHandlers = inputs.reduce((m, { id }) => {
-      m[id] = value => updateInputState({ id, value })
+      m[id] = value => {
+        setExecError(null)
+        updateInputState({ id, value })
+      }
       return m
     }, {})
 
@@ -49,13 +55,13 @@ export const Panel = ({ title, inputs }) => {
     Object.values(inputState).reduce((m, { valid }) => m && valid, true)
   ), [ inputState ])
 
-
-  // execute handler
+  // execute it!
   const onExecute = useCallback(() => {
     if (allInputsValid) {
-      console.log(inputState)
+      setExecError(null)
+      onRun({ panelId, inputState }).catch(setExecError)
     }
-  }, [ allInputsValid, inputState ])
+  }, [ onRun, allInputsValid, panelId, inputState ])
 
   return (
     <div>
@@ -77,28 +83,34 @@ export const Panel = ({ title, inputs }) => {
       <button onClick={onExecute} disabled={!allInputsValid}>
         Execute
       </button>
+
+      {execError ? <Error error={execError} /> : null}
     </div>
   )
 }
 
 export class PanelBuilder {
-  constructor (id, config) {
-    this.id = id
-    this.title = config.title
-    this.inputs = []
+  constructor ({ id, config, onRun }) {
+    this.attrs = {
+      id,
+      title: config.title,
+      config,
+      onRun,
+      inputs: [],
+    }
+  }
+
+  get id () {
+    return this.attrs.id
   }
 
   addInput (id, config) {
-    this.inputs.push({ id, config })
+    this.attrs.inputs.push({ id, config })
   }
 
   buildContent () {
     return (
-      <Panel
-        key={this.id}
-        title={this.title}
-        inputs={this.inputs}
-      />
+      <Panel {...this.attrs} key={this.attrs.id} />
     )
   }
 }

@@ -11,7 +11,7 @@ const INPUTS = {
   bytes32: true,
 }
 
-export const process = async (ctx, inputs) => (
+export const processList = async (ctx, inputs) => (
   promiseSerial(inputs, async (inputId, inputConfig) => {
     const newCtx = { ...ctx, id: `${ctx.parentId}.${inputId}` }
 

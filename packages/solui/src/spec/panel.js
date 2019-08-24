@@ -1,7 +1,7 @@
 import { _ } from '../utils'
 
-import { process as processInputs } from './inputs'
-import { process as processExecs } from './execs'
+import { processList as processInputs } from './inputs'
+import { processList as processExecs } from './execs'
 
 export const process = async (ctx, id, config) => {
   // need title
