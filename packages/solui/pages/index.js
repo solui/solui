@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 
 import Layout from './components/Layout'
 import { PanelBuilder } from './components/Panel'
-import SpecErrors from './components/SpecErrors'
+import Error from './components/Error'
 import { parse } from '../src/spec'
 import { flex } from './styles/fragments'
 
@@ -39,7 +39,7 @@ export default ({ appState: { ui, artifacts } }) => {
   return (
     <Layout>
       <Panels>
-        {errors.length ? <SpecErrors errors={errors} /> : (
+        {errors.length ? <Error error={errors} /> : (
           panels.map(panel => (
             <PanelContainer key={panel.id}>
               {panel.getRenderedContent()}

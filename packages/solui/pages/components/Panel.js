@@ -9,11 +9,17 @@ const Title = styled.h2`
   margin-bottom: 1em;
 `
 
-const inputStateReducer = (state, action) => ({ ...state, [action.id]: action.value })
+const inputStateReducer = (state, action) => ({
+  ...state,
+  [action.id]: {
+    value: action.value,
+    valid: action.valid,
+  }
+})
 
 // initial reducer state
 const createInitialInputState = inputs => inputs.reduce((m, { id }) => {
-  m[id] = ''
+  m[id] = { value: '', valid: false }
   return m
 }, {})
 
@@ -25,14 +31,22 @@ export const Panel = ({ title, inputs }) => {
 
   // input change handlers
   const onInputChange = useMemo(() => inputs.reduce((m, { id }) => {
-    m[id] = value => updateInputState({ id, value })
+    m[id] = (value, valid) => updateInputState({ id, value, valid })
     return m
   }, {}), [ updateInputState, inputs ])
 
+  // check input validity
+  const allInputsValid = useMemo(() => (
+    Object.values(inputState).reduce((m, { valid }) => m && valid, true)
+  ), [ inputState ])
+
+
   // execute handler
   const onExecute = useCallback(() => {
-    console.log(inputState)
-  }, [ inputState ])
+    if (allInputsValid) {
+      console.log(inputState)
+    }
+  }, [ allInputsValid, inputState ])
 
   return (
     <div>
@@ -42,11 +56,13 @@ export const Panel = ({ title, inputs }) => {
           key={id}
           id={id}
           onChange={onInputChange[id]}
-          value={inputState[id]}
+          value={inputState[id].value}
           config={config}
         />
       ))}
-      <button onClick={onExecute}>Execute</button>
+      <button onClick={onExecute} disabled={!allInputsValid}>
+        Execute
+      </button>
     </div>
   )
 }
