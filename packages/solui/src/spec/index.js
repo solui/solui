@@ -1,4 +1,4 @@
-import { _, promiseSerial } from '../utils'
+import { _, promiseSerial, createErrorWithDetails } from '../utils'
 import { ProcessingErrors } from './specUtils'
 import { process as processPanel } from './panel'
 
@@ -28,24 +28,48 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
   return ctx
 }
 
-export const assertValid = async ({ spec, artifacts }) => {
+export const assertSpecValid = async ({ spec, artifacts }) => {
   const { errors } = await process({ spec, artifacts })
 
   if (errors.notEmpty) {
-    const e = new Error(`There were one or more validation errors. See details.`)
-    e.details = errors.toStringArray()
-    throw e
+    throw createErrorWithDetails('There were one or more validation errors. See details.', errors.toStringArray())
   }
 }
+
+export const validateUi = async ({ artifacts, ui, inputs }) => (
+  new Promise(async (resolve, reject) => {
+    const ctx = {
+      artifacts,
+      errors: new ProcessingErrors(),
+      inputs: {},
+      callbacks: {
+        ...DEFAULT_CALLBACKS,
+        getInput: id => inputs[id],
+      },
+    }
+
+    try {
+      await processPanel(ctx, ui.id, ui.config)
+    } catch (err) {
+      ctx.errors.add(`Error validating UI: ${err}`)
+    }
+
+    if (ctx.errors.notEmpty) {
+      reject(
+        createErrorWithDetails('There were one or more validation errors. See details.', ctx.errors.toObject())
+      )
+    } else {
+      resolve()
+    }
+  })
+)
 
 // Execute a UI operation
 export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
   new Promise(async (resolve, reject) => {
-    const errors = new ProcessingErrors()
-
     const ctx = {
       artifacts,
-      errors,
+      errors: new ProcessingErrors(),
       inputs: {},
       callbacks: {
         ...DEFAULT_CALLBACKS,
@@ -58,7 +82,7 @@ export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
 
             return contract.methods[method](...args).send({ from })
           } catch (err) {
-            errors.add(id, `Error executing: ${err}`)
+            ctx.errors.add(id, `Error executing: ${err}`)
             return null
           }
         },
@@ -70,7 +94,7 @@ export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
 
             return contract.methods[method](...args).call({ from })
           } catch (err) {
-            errors.add(id, `Error executing: ${err}`)
+            ctx.errors.add(id, `Error executing: ${err}`)
             return null
           }
         },
@@ -87,7 +111,7 @@ export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
 
             return inst.options.address
           } catch (err) {
-            errors.add(id, `Error executing: ${err}`)
+            ctx.errors.add(id, `Error executing: ${err}`)
             return null
           }
         }
@@ -97,13 +121,13 @@ export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
     try {
       await processPanel(ctx, ui.id, ui.config)
     } catch (err) {
-      errors.add(`Error executing UI: ${err}`)
+      ctx.errors.add(`Error executing UI: ${err}`)
     }
 
-    if (errors.notEmpty) {
-      const e = new Error('Execution error, see details.')
-      e.details = errors.toStringArray()
-      reject(e)
+    if (ctx.errors.notEmpty) {
+      reject(
+        createErrorWithDetails('There were one or more execution errors. See details.', ctx.errors.toStringArray())
+      )
     } else {
       resolve(ctx.output)
     }

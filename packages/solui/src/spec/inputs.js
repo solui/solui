@@ -38,6 +38,22 @@ export const processList = async (ctx, inputs) => (
       }
     }
 
-    ctx.inputs[inputId] = await ctx.callbacks.getInput(inputId, inputConfig)
+    const result = await ctx.callbacks.getInput(newCtx.id, inputId, inputConfig)
+
+    if (result) {
+      // check result
+      switch (type) {
+        case 'address': {
+          if (!isAddress(result)) {
+            ctx.errors.add(newCtx.id, `value must be a valid Ethereum address`)
+          }
+          break
+        }
+        default:
+          // do nothing
+      }
+    }
+
+    ctx.inputs[inputId] = result
   })
 )

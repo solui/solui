@@ -3,7 +3,7 @@ import cors from '@koa/cors'
 import Router from 'koa-router'
 import next from 'next'
 
-import { assertValid } from './spec'
+import { assertSpecValid } from './spec'
 import { APP_STATE_KEYS } from './constants'
 
 export class Generator {
@@ -58,7 +58,7 @@ export class Generator {
 }
 
 export const startGenerator = async cfg => {
-  await assertValid(cfg)
+  await assertSpecValid(cfg)
 
   const g = new Generator(cfg)
   await g.start()

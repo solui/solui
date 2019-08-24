@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import styled from '@emotion/styled'
 
+import { _ } from '../src/utils'
 import Layout from './components/Layout'
 import { PanelBuilder } from './components/Panel'
 import Error from './components/Error'
 import NetworkInfo from './components/NetworkInfo'
-import { process as processSpec, executeUi } from '../src/spec'
+import { process as processSpec, executeUi, validateUi } from '../src/spec'
 import { flex } from './styles/fragments'
 
 const Container = styled.div``
@@ -39,6 +40,20 @@ export default ({ network, appState: { spec, artifacts } }) => {
     })
   }, [ spec, artifacts, network ])
 
+  // callback to validate a panel's inputs
+  const onValidate = useCallback(async ({ panelId, inputs }) => {
+    if (!network) {
+      throw new Error('Network not available')
+    }
+
+    return validateUi({
+      artifacts,
+      ui: { id: panelId, config: spec[panelId] },
+      inputs,
+      web3: network.web3,
+    })
+  }, [ spec, artifacts, network ])
+
   // update panels
   useEffect(() => {
     (async () => {
@@ -46,12 +61,12 @@ export default ({ network, appState: { spec, artifacts } }) => {
       let currentPanel = null
 
       const callbacks = {
-        getInput: (id, config) => {
-          currentPanel.addInput(id, config)
+        getInput: (id, name, config) => {
+          currentPanel.addInput(id, name, config)
           return true
         },
         startUi: (id, config) => {
-          currentPanel = new PanelBuilder({ id, config, onRun })
+          currentPanel = new PanelBuilder({ id, config, onRun, onValidate })
         },
         endUi: () => {
           stack.push(currentPanel)
@@ -65,7 +80,7 @@ export default ({ network, appState: { spec, artifacts } }) => {
         errors: processingErrors
       })
     })()
-  }, [ onRun, spec, artifacts ])
+  }, [ onRun, onValidate, spec, artifacts ])
 
   return (
     <Layout>

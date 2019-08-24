@@ -49,6 +49,10 @@ export class ProcessingErrors {
     return id ? `${id}: ${msg}` : msg
   }
 
+  toObject () {
+    return this.notEmpty ? this.errors : null
+  }
+
   toStringArray () {
     let e = [ ...this.errors[''].map(msg => this._format({ msg })) ]
     Object.keys(this.errors).forEach(id => {
