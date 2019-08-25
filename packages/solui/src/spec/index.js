@@ -1,5 +1,5 @@
 import { _, promiseSerial, createErrorWithDetails } from '../utils'
-import { ProcessingErrors } from './specUtils'
+import { ProcessingErrors, getWeb3Account } from './specUtils'
 import { process as processPanel } from './panel'
 
 const DEFAULT_CALLBACKS = {
@@ -36,12 +36,14 @@ export const assertSpecValid = async ({ spec, artifacts }) => {
   }
 }
 
-export const validateUi = async ({ artifacts, ui, inputs }) => (
+// validate a panel
+export const validateUi = async ({ artifacts, ui, inputs, web3 }) => (
   new Promise(async (resolve, reject) => {
     const ctx = {
       artifacts,
       errors: new ProcessingErrors(),
       inputs: {},
+      web3,
       callbacks: {
         ...DEFAULT_CALLBACKS,
         getInput: id => inputs[id],
@@ -64,19 +66,20 @@ export const validateUi = async ({ artifacts, ui, inputs }) => (
   })
 )
 
-// Execute a UI operation
+// Execute a panel
 export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
   new Promise(async (resolve, reject) => {
     const ctx = {
       artifacts,
       errors: new ProcessingErrors(),
       inputs: {},
+      web3,
       callbacks: {
         ...DEFAULT_CALLBACKS,
         getInput: id => inputs[id],
         sendTransaction: async (id, { abi, method, address, args }) => {
           try {
-            const [ from ] = await web3.eth.getAccounts()
+            const from = await getWeb3Account(web3)
 
             const contract = new web3.eth.Contract(abi, address)
 
@@ -88,7 +91,7 @@ export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
         },
         callMethod: async (id, { abi, method, address, args }) => {
           try {
-            const [ from ] = await web3.eth.getAccounts()
+            const from = await getWeb3Account(web3)
 
             const contract = new web3.eth.Contract(abi, address)
 
@@ -100,7 +103,7 @@ export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
         },
         deployContract: async (id, { abi, bytecode, args }) => {
           try {
-            const [ from ] = await web3.eth.getAccounts()
+            const from = await getWeb3Account(web3)
 
             const contract = new web3.eth.Contract(abi)
 

@@ -5,8 +5,14 @@ import { processList as processExecs } from './execs'
 import { process as processOutput } from './output'
 
 export const process = async (ctx, id, config) => {
+  if (_.isEmpty(config)) {
+    ctx.errors.add(`${id} must not be empty`)
+  }
+
+  const { title, inputs, execs, output } = config
+
   // need title
-  if (!_.get(config, 'title')) {
+  if (!title) {
     ctx.errors.add(`${id} must have a title`)
   }
 
@@ -15,15 +21,15 @@ export const process = async (ctx, id, config) => {
   ctx.panel = { ...config, id }
   ctx.parentId = id
 
-  await processInputs(ctx, _.get(config, 'inputs', {}))
+  await processInputs(ctx, inputs || {})
 
-  if (!_.get(config, 'execs.0')) {
+  if (!(execs || [])[0]) {
     ctx.errors.add(`${id} must have atleast 1 execution step`)
   }
 
-  await processExecs(ctx, _.get(config, 'execs', {}))
+  await processExecs(ctx, execs)
 
-  await processOutput(ctx, _.get(config, 'output'))
+  await processOutput(ctx, output)
 
   await ctx.callbacks.endUi(id, config)
 }

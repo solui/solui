@@ -1,3 +1,5 @@
+import { isAddress } from 'web3-utils'
+
 import { _ } from '../utils'
 
 export const inputIsPresent = (ctx, key) => (
@@ -62,4 +64,49 @@ export class ProcessingErrors {
     })
     return e
   }
+}
+
+export const checkAddressIsValid = async (ctx, value, allowedTypes) => {
+  if (!isAddress(value)) {
+    ctx.errors.add(ctx.id, `must be a valid address`)
+  } else {
+    // do the on-chain check...
+
+    const { web3 } = ctx
+
+    if (!allowedTypes || !web3) {
+      return
+    }
+
+    if (!Array.isArray(allowedTypes)) {
+      ctx.errors.add(ctx.id, `allowedTypes must be an array`)
+    } else {
+      let isContract = false
+      try {
+        // check if there is code at the address
+        const code = await web3.eth.getCode(value)
+        isContract = ('0x' !== code)
+
+        if (isContract && !allowedTypes.includes('contract')) {
+          ctx.errors.add(ctx.id, 'must not be a contract address')
+        }
+
+        if (!isContract && !allowedTypes.includes('eoa')) {
+          ctx.errors.add(ctx.id, 'must be a contract address')
+        }
+      } catch (err) {
+        ctx.errors.add(ctx.id, 'got an internal error while checking for code at address')
+      }
+    }
+  }
+}
+
+export const getWeb3Account = async web3 => {
+  const [ account ] = await web3.eth.getAccounts()
+
+  if (!account) {
+    throw new Error('Unable to get Ethereum address. Ensure your dapp browser / Metamask is properly connected.')
+  }
+
+  return account
 }

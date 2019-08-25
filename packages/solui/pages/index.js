@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import styled from '@emotion/styled'
 
-import { _ } from '../src/utils'
 import Layout from './components/Layout'
 import { PanelBuilder } from './components/Panel'
 import Error from './components/Error'

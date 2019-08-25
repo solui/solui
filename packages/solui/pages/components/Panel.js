@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import Input from './Input'
 import Result from './Result'
 import { GlobalContext } from '../_global'
-import { _, createErrorWithDetails } from '../../src/utils'
+import { _ } from '../../src/utils'
 
 const Title = styled.h2`
   font-weight: bold;
@@ -21,7 +21,7 @@ const inputValueReducer = (state, { id, value }) => {
 }
 
 const inputValidationReducer = (state, { id, valid, error }) => {
-  if (state[id].valid !== valid) {
+  if (JSON.stringify(state[id]) !== JSON.stringify({ valid, error })) {
     return { ...state, [id]: { valid, error } }
   } else {
     return state
@@ -103,7 +103,7 @@ export const Panel = ({ onRun, onValidate, id: panelId, config, inputs }) => {
       }
 
       // update validation results for all inputs
-      Object.keys(inputValidation).forEach(inputId => {
+      Object.keys(inputValue).forEach(inputId => {
         if (errorDetails[inputId]) {
           updateInputValidation({ id: inputId, valid: false, error: errorDetails[inputId] })
         } else {
@@ -111,7 +111,11 @@ export const Panel = ({ onRun, onValidate, id: panelId, config, inputs }) => {
         }
       })
     })()
-  }, [ panelId, onValidate, inputValue, inputValidation, updateInputValidation ])
+  }, /*
+    important to only run this when input values change, not when validation
+    state changes, otherwise we may end up in infinite loop
+   */
+  [ panelId, onValidate, inputValue, updateInputValidation ])
 
 
   return (
@@ -126,8 +130,7 @@ export const Panel = ({ onRun, onValidate, id: panelId, config, inputs }) => {
             config={inputConfig}
             network={network}
             value={inputValue[id]}
-            valid={inputValidation[id].valid}
-            error={inputValidation[id].error}
+            {...inputValidation[id]}
           />
         ))}
       </GlobalContext.Consumer>
