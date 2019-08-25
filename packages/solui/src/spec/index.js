@@ -19,10 +19,14 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
     callbacks: { ...DEFAULT_CALLBACKS, ...callbacks },
   }
 
-  if (_.isEmpty(spec)) {
-    ctx.errors.add('UI spec is empty')
+  if (!_.get(spec, 'title')) {
+    ctx.errors.add('UI spec must have a title')
   } else {
-    await promiseSerial(spec, async (id, config) => processPanel(ctx, id, config))
+    if (!_.isEmpty(spec, 'panels')) {
+      ctx.errors.add('UI spec must have atleast one panel')
+    } else {
+      await promiseSerial(spec.panels, async (id, config) => processPanel(ctx, id, config))
+    }
   }
 
   return ctx
