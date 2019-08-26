@@ -2,6 +2,8 @@ import { isAddress } from 'web3-utils'
 
 import { _ } from '../utils'
 
+export const isValidId = id => (!(/[^A-Za-z0-9-]/gm.exec(id)))
+
 export const inputIsPresent = (ctx, key) => (
   Object.keys(_.get(ctx, 'inputs', {})).includes(key)
 )

@@ -1,5 +1,6 @@
 {
-  "title": "The ownable!",
+  "id": "solui-repo-ownable",
+  "description": "The ownable!",
   "panels": {
     "deployInstance": {
       "title": "Deploy new instance",

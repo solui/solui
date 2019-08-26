@@ -136,9 +136,9 @@ const EXECS = {
   },
 }
 
-export const processList = async (ctx, execs) => (
+export const processList = async (parentCtx, execs) => (
   promiseSerial(execs, async (execId, execConfig) => {
-    const newCtx = { ...ctx, id: `${ctx.parentId}.execs.${execId}` }
+    const ctx = { ...parentCtx, id: `${parentCtx.id}.exec[${execId}]` }
 
     if (_.isEmpty(execConfig)) {
       ctx.errors.add(ctx.id, `must not be empty`)
@@ -150,7 +150,7 @@ export const processList = async (ctx, execs) => (
         ctx.errors.add(ctx.id, `must have a valid type: ${Object.keys(EXECS).join(', ')}`)
       } else {
         // eslint-disable-next-line no-await-in-loop
-        await EXECS[type].process(newCtx, execConfig)
+        await EXECS[type].process(ctx, execConfig)
       }
     }
   })

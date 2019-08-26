@@ -4,27 +4,28 @@ import { processList as processInputs } from './inputs'
 import { processList as processExecs } from './execs'
 import { process as processOutput } from './output'
 
-export const process = async (ctx, id, config) => {
+export const process = async (parentCtx, id, config) => {
+  const ctx = { ...parentCtx, id: `${parentCtx.id}.panel[${id}]` }
+
   if (_.isEmpty(config)) {
-    ctx.errors.add(`${id} must not be empty`)
+    ctx.errors.add(ctx.id, `must not be empty`)
   }
 
   const { title, inputs, execs, output } = config
 
   // need title
   if (!title) {
-    ctx.errors.add(`${id} must have a title`)
+    ctx.errors.add(ctx.id, `must have a title`)
   }
 
   await ctx.callbacks.startUi(id, config)
 
   ctx.panel = { ...config, id }
-  ctx.parentId = id
 
   await processInputs(ctx, inputs || {})
 
   if (!(execs || [])[0]) {
-    ctx.errors.add(`${id} must have atleast 1 execution step`)
+    ctx.errors.add(ctx.id, `must have atleast 1 execution step`)
   }
 
   await processExecs(ctx, execs)

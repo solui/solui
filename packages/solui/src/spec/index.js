@@ -1,6 +1,8 @@
 import { _, promiseSerial, createErrorWithDetails } from '../utils'
-import { ProcessingErrors, getWeb3Account } from './specUtils'
+import { ProcessingErrors, getWeb3Account, isValidId } from './specUtils'
+
 import { process as processPanel } from './panel'
+import { processList as processInputs } from './inputs'
 
 const DEFAULT_CALLBACKS = {
   startUi: async () => {},
@@ -19,13 +21,25 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
     callbacks: { ...DEFAULT_CALLBACKS, ...callbacks },
   }
 
-  if (!_.get(spec, 'title')) {
-    ctx.errors.add('UI spec must have a title')
+  const id = _.get(spec, 'id')
+
+  if (!isValidId(id)) {
+    ctx.errors.add('spec must have a valid id (letters, numbers and hyphens only)')
   } else {
-    if (!_.isEmpty(spec, 'panels')) {
-      ctx.errors.add('UI spec must have atleast one panel')
+    if (!_.get(spec, 'description')) {
+      ctx.errors.add('spec must have description')
     } else {
-      await promiseSerial(spec.panels, async (id, config) => processPanel(ctx, id, config))
+      ctx.id = id
+
+      await processInputs(ctx, _.get(spec, 'inputs', {}))
+
+      if (_.isEmpty(spec, 'panels')) {
+        ctx.errors.add('spec must have atleast one panel')
+      } else {
+        await promiseSerial(spec.panels, async (panelId, panelConfig) => (
+          processPanel(ctx, panelId, panelConfig)
+        ))
+      }
     }
   }
 

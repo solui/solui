@@ -32,24 +32,24 @@ const INPUTS = {
   },
 }
 
-export const processList = async (ctx, inputs) => (
+export const processList = async (parentCtx, inputs) => (
   promiseSerial(inputs, async (inputId, inputConfig) => {
-    const newCtx = { ...ctx, id: `${ctx.parentId}.inputs.${inputId}` }
+    const ctx = { ...parentCtx, id: `${parentCtx.id}.input[${inputId}]` }
 
     if (_.isEmpty(inputConfig)) {
-      ctx.errors.add(newCtx.id, `must not be empty`)
+      ctx.errors.add(ctx.id, `must not be empty`)
     } else {
       const { title, type } = inputConfig
 
       if (!title) {
-        ctx.errors.add(newCtx.id, `must have a title`)
+        ctx.errors.add(ctx.id, `must have a title`)
       }
 
       if (!INPUTS[type]) {
-        ctx.errors.add(newCtx.id, `must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
+        ctx.errors.add(ctx.id, `must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
       }
 
-      ctx.inputs[inputId] = await INPUTS[type].process(newCtx, inputId, inputConfig)
+      ctx.inputs[inputId] = await INPUTS[type].process(ctx, inputId, inputConfig)
     }
   })
 )
