@@ -4,20 +4,16 @@ import { processList as processInputs } from './inputs'
 import { process as processPanel } from './panel'
 import { extractChildById } from './specUtils'
 
-export const processGroupInputs = async (parentCtx, id, config) => {
-  const ctx = parentCtx.createChildContext(id)
+export const processGroupInputs = async (rootCtx, id, config) => {
+  const ctx = rootCtx.createGroupContext(id)
 
-  const inputs = _.get(config, 'inputs')
-
-  await processInputs(ctx, inputs || {})
+  await processInputs(ctx, _.get(config, 'inputs'))
 }
 
-export const processGroupPanel = async (parentCtx, id, config, panelId) => {
-  const ctx = parentCtx.createChildContext(id)
+export const processGroupPanel = async (rootCtx, id, config, panelId) => {
+  const ctx = rootCtx.createGroupContext(id)
 
-  const inputs = _.get(config, 'inputs')
-
-  await processInputs(ctx, inputs)
+  await processInputs(ctx, _.get(config, 'inputs'))
 
   const panelConfig = extractChildById(_.get(config, 'panels', []), panelId)
 
@@ -29,8 +25,8 @@ export const processGroupPanel = async (parentCtx, id, config, panelId) => {
   await processPanel(ctx, panelId, panelConfig)
 }
 
-export const processGroup = async (parentCtx, id, config) => {
-  const ctx = parentCtx.createChildContext(id)
+export const processGroup = async (rootCtx, id, config) => {
+  const ctx = rootCtx.createGroupContext(id)
 
   if (_.isEmpty(config)) {
     ctx.errors().add(ctx.id, `must not be empty`)
@@ -45,7 +41,7 @@ export const processGroup = async (parentCtx, id, config) => {
 
   await ctx.callbacks().startGroup(id, config)
 
-  await processInputs(ctx, inputs || {})
+  await processInputs(ctx, inputs)
 
   if (_.isEmpty(panels)) {
     ctx.errors().add(ctx.id, `must have alteast 1 panel`)

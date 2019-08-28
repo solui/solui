@@ -1,6 +1,6 @@
 import { _, promiseSerial, createErrorWithDetails } from '../utils'
-import { Context, getWeb3Account, isValidId, extractChildById } from './specUtils'
-
+import { getWeb3Account, isValidId, extractChildById } from './specUtils'
+import { RootContext } from './context'
 import { processGroup, processGroupInputs, processGroupPanel } from './group'
 
 const SPEC_VERSION = [ 1 ]
@@ -11,7 +11,7 @@ const isValidVersion = version => (version === 1)
 export const process = async ({ spec, artifacts }, callbacks = {}) => {
   const { id, version, description, groups } = (spec || {})
 
-  const ctx = new Context(id, { artifacts, callbacks })
+  const ctx = new RootContext(id, { artifacts, callbacks })
 
   let basicDetailsValid = true
 
@@ -61,7 +61,9 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
 
 // assert that spec is valid
 export const assertSpecValid = async ({ spec, artifacts }) => {
-  const { errors } = await process({ spec, artifacts })
+  const ctx = await process({ spec, artifacts })
+
+  const errors = ctx.errors()
 
   if (errors.notEmpty) {
     throw createErrorWithDetails('There were one or more validation errors. See details.', errors.toStringArray())
@@ -77,7 +79,7 @@ export const validateGroupInputs = async ({ artifacts, spec, groupId, inputs, we
       return
     }
 
-    const ctx = new Context(spec.id, {
+    const ctx = new RootContext(spec.id, {
       artifacts,
       web3,
       callbacks: {
@@ -110,7 +112,7 @@ export const validatePanel = async ({ artifacts, spec, groupId, panelId, inputs,
       return
     }
 
-    const ctx = new Context(spec.id, {
+    const ctx = new RootContext(spec.id, {
       artifacts,
       web3,
       callbacks: {
@@ -143,7 +145,7 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
       return
     }
 
-    const ctx = new Context(spec.id, {
+    const ctx = new RootContext(spec.id, {
       artifacts,
       web3,
       callbacks: {

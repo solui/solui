@@ -69,6 +69,10 @@ export const checkAddressIsValid = async (ctx, value, allowedTypes) => {
 }
 
 export const getWeb3Account = async web3 => {
+  if (web3.requestPermission) {
+    await web3.requestPermission()
+  }
+
   const [ account ] = await web3.eth.getAccounts()
 
   if (!account) {
@@ -76,99 +80,4 @@ export const getWeb3Account = async web3 => {
   }
 
   return account
-}
-
-export class ProcessingErrors {
-  constructor () {
-    this.errors = {
-      '': [],
-    }
-  }
-
-  add (id, msg) {
-    if (!msg) {
-      msg = id
-      id = ''
-    }
-    this.errors[id] = this.errors[id] || []
-    this.errors[id].push(msg)
-
-    this.notEmpty = true
-  }
-
-  _format ({ id, msg }) {
-    return id ? `${id}: ${msg}` : msg
-  }
-
-  toObject () {
-    return this.notEmpty ? this.errors : null
-  }
-
-  toStringArray () {
-    let e = [ ...this.errors[''].map(msg => this._format({ msg })) ]
-    Object.keys(this.errors).forEach(id => {
-      if (id) {
-        e = e.concat(...this.errors[id].map(msg => this._format({ id, msg })))
-      }
-    })
-    return e
-  }
-}
-
-
-const DEFAULT_CALLBACKS = {
-  startUi: async () => {},
-  endUi: async () => {},
-  startGroup: async () => {},
-  endGroup: async () => {},
-  startPanel: async () => {},
-  endPanel: async () => {},
-  getInput: async () => {},
-  deployContract: async () => {},
-  callMethod: async () => {},
-  sendTransaction: async () => {},
-}
-
-export class Context {
-  constructor (id, { web3, artifacts, inputs, callbacks }, parentContext) {
-    this._id = id
-
-    if (parentContext) {
-      this._parentContext = parentContext
-    } else {
-      this._web3 = web3
-      this._artifacts = artifacts
-      this._errors = new ProcessingErrors()
-      this._inputs = inputs || {}
-      this._callbacks = { ...DEFAULT_CALLBACKS, ...callbacks }
-      this._output = null
-    }
-
-    [
-      'artifacts',
-      'errors',
-      'inputs',
-      'callbacks',
-      'web3',
-      'output'
-    ].forEach(p => {
-      this[p] = () => (parentContext ? parentContext[p]() : this[`_${p}`])
-    })
-  }
-
-  get id () {
-    return this._parentContext ? `${this._parentContext.id}.${this._id}` : this._id
-  }
-
-  setOutput (value) {
-    if (this._parentContext) {
-      this._parentContext.setOutput(value)
-    } else {
-      this._output = value
-    }
-  }
-
-  createChildContext (id) {
-    return new Context(id, _, this)
-  }
 }

@@ -10,14 +10,15 @@
         {
           "id": "deployInstance",
           "title": "Deploy new instance",
-          "inputs": {
-            "owner": {
+          "inputs": [
+            {
+              "name": "owner",
               "title": "Owner",
               "type": "address",
               "initialValue": "0x0000000000000000000000000000000000000000",
               "addressType": [ "eoa" ]
             }
-          },
+          ],
           "execs": [
             {
               "type": "deploy",
@@ -39,13 +40,14 @@
     {
       "id": "group2",
       "title": "Interaction ops...",
-      "inputs": {
-        "contract1": {
+      "inputs": [
+        {
+          "name": "contractAddress",
           "title": "Contract address",
           "type": "address",
           "addressType": [ "contract" ]
         }
-      },
+      ],
       "panels": [
         {
           "id": "showOwner",
@@ -54,7 +56,7 @@
             {
               "type": "call",
               "contract": "Ownable",
-              "address": "contract1",
+              "address": "contractAddress",
               "method": "owner",
               "saveResultAs": "ownerAddress"
             }
@@ -68,18 +70,19 @@
         {
           "id": "changeOwner",
           "title": "Change owner",
-          "inputs": {
-            "newOwner": {
+          "inputs": [
+            {
+              "name": "newOwner",
               "title": "New owner",
               "type": "address",
               "addressType": [ "eoa" ]
             }
-          },
+          ],
           "execs": [
             {
               "type": "send",
               "contract": "Ownable",
-              "address": "contract1",
+              "address": "contractAddress",
               "method": "transferOwnership",
               "args": {
                 "_newOwner": "newOwner"

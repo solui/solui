@@ -27,6 +27,8 @@ export const getNetwork = async () => {
 
       if (window.ethereum) {
         network.web3 = new Web3(window.ethereum)
+        // See https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
+        network.web3.requestPermission = () => window.ethereum.enable()
       } else if (window.web3 && window.web3.currentProvider) {
         network.web3 = new Web3(window.web3.currentProvider)
       } else {
