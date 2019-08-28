@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 
 import { PanelBuilder } from './Panel'
 import Inputs from './Inputs'
-import { useInputHooks } from '../helpers/inputs'
+import { useInputHooks } from '../hooks/inputs'
 
 const Id = styled.h1`
   font-size: 2rem;
@@ -84,6 +84,7 @@ export const Group = ({
       {panels.map(panel => (
         <PanelContainer key={panel.id}>
           {panel.buildContent({
+            canExecute: allInputsAreValid,
             onExecute,
             onValidate,
           })}
@@ -122,13 +123,13 @@ export class GroupBuilder {
     this.currentPanel = null
   }
 
-  buildContent (callbacks) {
+  buildContent (props) {
     return (
       <Group
         inputs={this.inputs}
         panels={this.panels}
         {...this.attrs}
-        {...callbacks}
+        {...props}
       />
     )
   }

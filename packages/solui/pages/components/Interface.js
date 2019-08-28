@@ -90,12 +90,12 @@ export class InterfaceBuilder {
     await this.currentGroup.endPanel(...args)
   }
 
-  buildContent (callbacks) {
+  buildContent (props) {
     return (
       <Interface
         groups={this.groups}
         {...this.attrs}
-        {...callbacks}
+        {...props}
       />
     )
   }

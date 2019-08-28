@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 
 import Inputs from './Inputs'
-import { useInputHooks } from '../helpers/inputs'
+import { useInputHooks } from '../hooks/inputs'
 import Result from './Result'
 
 const Title = styled.h2`
@@ -11,7 +11,7 @@ const Title = styled.h2`
   margin-bottom: 1em;
 `
 
-export const Panel = ({ onExecute, onValidate, id: panelId, config, inputs }) => {
+export const Panel = ({ onExecute, onValidate, canExecute, id: panelId, config, inputs }) => {
   const [ execResult, setExecResult ] = useState()
   const [ isExecuting, setIsExecuting ] = useState(false)
 
@@ -60,7 +60,7 @@ export const Panel = ({ onExecute, onValidate, id: panelId, config, inputs }) =>
         />
       ) : null}
 
-      <button onClick={onExecutePanel} disabled={isExecuting || !allInputsAreValid}>
+      <button onClick={onExecutePanel} disabled={isExecuting || !canExecute || !allInputsAreValid}>
         Execute
       </button>
 
@@ -88,11 +88,11 @@ export class PanelBuilder {
     this.attrs.inputs.push({ id, name, config })
   }
 
-  buildContent (callbacks) {
+  buildContent (props) {
     return (
       <Panel
         {...this.attrs}
-        {...callbacks}
+        {...props}
       />
     )
   }

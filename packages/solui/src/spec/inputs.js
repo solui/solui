@@ -10,6 +10,8 @@ const INPUTS = {
 
       if (result) {
         await checkAddressIsValid(ctx, result, config.addressType)
+      } else {
+        ctx.errors().add(ctx.id, 'must not be empty')
       }
 
       return result
