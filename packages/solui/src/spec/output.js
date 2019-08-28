@@ -12,16 +12,16 @@ export const process = (ctx, config) => {
   const { type, param, title } = config
 
   if (!type || !param || !title) {
-    ctx.errors.add(`output type, param and title must be specified`)
+    ctx.errors().add(ctx.id, `output type, param and title must be specified`)
   } else {
     if (!OUTPUT_TYPES[type]) {
-      ctx.errors.add(`output type is not valid: ${type}`)
+      ctx.errors().add(ctx.id, `output type is not valid: ${type}`)
     }
 
     if (!inputIsPresent(ctx, param)) {
-      ctx.errors.add(`output param is not a valid input or result: ${param}`)
+      ctx.errors().add(ctx.id, `output param is not a valid input or result: ${param}`)
     }
 
-    ctx.output = ctx.inputs[param]
+    ctx.setOutput(ctx.inputs()[param])
   }
 }

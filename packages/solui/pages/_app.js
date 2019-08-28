@@ -41,7 +41,7 @@ export default class MyApp extends App {
           this.setState({ network: n })
         }
       } catch (err) {
-        console.warn(err)
+        console.error(err)
         this.setState({ network: null })
       }
     })()

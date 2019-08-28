@@ -5,32 +5,29 @@ import { processList as processExecs } from './execs'
 import { process as processOutput } from './output'
 
 export const process = async (parentCtx, id, config) => {
-  const ctx = { ...parentCtx, id: `${parentCtx.id}.panel[${id}]` }
+  const ctx = parentCtx.createChildContext(`panel[${id}]`)
 
   if (_.isEmpty(config)) {
-    ctx.errors.add(ctx.id, `must not be empty`)
+    ctx.errors().add(ctx.id, `must not be empty`)
   }
 
   const { title, inputs, execs, output } = config
 
-  // need title
   if (!title) {
-    ctx.errors.add(ctx.id, `must have a title`)
+    ctx.errors().add(ctx.id, `must have a title`)
   }
 
-  await ctx.callbacks.startPanel(ctx.id, id, config)
+  await ctx.callbacks().startPanel(id, config)
 
-  ctx.panel = { ...config, id }
-
-  await processInputs(ctx, inputs || {})
+  await processInputs(ctx, inputs)
 
   if (!(execs || [])[0]) {
-    ctx.errors.add(ctx.id, `must have atleast 1 execution step`)
+    ctx.errors().add(ctx.id, `must have atleast 1 execution step`)
   }
 
   await processExecs(ctx, execs)
 
   await processOutput(ctx, output)
 
-  await ctx.callbacks.endPanel(ctx.id, id, config)
+  await ctx.callbacks().endPanel(id, config)
 }

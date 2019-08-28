@@ -1,77 +1,93 @@
 {
+  "version": 1,
   "id": "solui-repo-ownable",
   "description": "The ownable!",
-  "inputs": {
-    "contract1": {
-      "title": "Contract address",
-      "type": "address",
-      "addressType": [ "contract" ]
-    }
-  },
-  "panels": {
-    "deployInstance": {
-      "title": "Deploy new instance",
-      "inputs": {
-        "owner": {
-          "title": "Owner",
-          "type": "address",
-          "initialValue": "0x0000000000000000000000000000000000000000",
-          "addressType": [ "eoa" ]
-        }
-      },
-      "execs": [
+  "groups": [
+    {
+      "id": "group1",
+      "title": "Deployment ops...",
+      "panels": [
         {
-          "type": "deploy",
-          "contract": "Ownable",
-          "args": {
-            "_owner": "owner"
+          "id": "deployInstance",
+          "title": "Deploy new instance",
+          "inputs": {
+            "owner": {
+              "title": "Owner",
+              "type": "address",
+              "initialValue": "0x0000000000000000000000000000000000000000",
+              "addressType": [ "eoa" ]
+            }
           },
-          "saveResultAs": "contractAddress"
-        }
-      ],
-      "output": {
-        "title": "New contract address",
-        "type": "address",
-        "param": "contractAddress"
-      }
-    },
-    "showOwner": {
-      "title": "Show owner",
-      "execs": [
-        {
-          "type": "call",
-          "contract": "Ownable",
-          "address": "contract1",
-          "method": "owner",
-          "saveResultAs": "ownerAddress"
-        }
-      ],
-      "output": {
-        "title": "Current owner",
-        "type": "address",
-        "param": "ownerAddress"
-      }
-    },
-    "changeOwner": {
-      "title": "Change owner",
-      "inputs": {
-        "newOwner": {
-          "title": "New owner",
-          "type": "address",
-          "addressType": [ "eoa" ]
-        }
-      },
-      "execs": [
-        {
-          "type": "send",
-          "contract": "Ownable",
-          "address": "contract1",
-          "method": "transferOwnership",
-          "args": {
-            "_newOwner": "newOwner"
+          "execs": [
+            {
+              "type": "deploy",
+              "contract": "Ownable",
+              "args": {
+                "_owner": "owner"
+              },
+              "saveResultAs": "contractAddress"
+            }
+          ],
+          "output": {
+            "title": "New contract address",
+            "type": "address",
+            "param": "contractAddress"
           }
         }
       ]
+    },
+    {
+      "id": "group2",
+      "title": "Interaction ops...",
+      "inputs": {
+        "contract1": {
+          "title": "Contract address",
+          "type": "address",
+          "addressType": [ "contract" ]
+        }
+      },
+      "panels": [
+        {
+          "id": "showOwner",
+          "title": "Show owner",
+          "execs": [
+            {
+              "type": "call",
+              "contract": "Ownable",
+              "address": "contract1",
+              "method": "owner",
+              "saveResultAs": "ownerAddress"
+            }
+          ],
+          "output": {
+            "title": "Current owner",
+            "type": "address",
+            "param": "ownerAddress"
+          }
+        },
+        {
+          "id": "changeOwner",
+          "title": "Change owner",
+          "inputs": {
+            "newOwner": {
+              "title": "New owner",
+              "type": "address",
+              "addressType": [ "eoa" ]
+            }
+          },
+          "execs": [
+            {
+              "type": "send",
+              "contract": "Ownable",
+              "address": "contract1",
+              "method": "transferOwnership",
+              "args": {
+                "_newOwner": "newOwner"
+              }
+            }
+          ]
+        }
+      ]
     }
-  }
+  ]
 }

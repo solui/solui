@@ -13,6 +13,7 @@ const Title = styled.h2`
 
 export const Panel = ({ onExecute, onValidate, id: panelId, config, inputs }) => {
   const [ execResult, setExecResult ] = useState()
+  const [ isExecuting, setIsExecuting ] = useState(false)
 
   const {
     inputValue,
@@ -34,12 +35,15 @@ export const Panel = ({ onExecute, onValidate, id: panelId, config, inputs }) =>
     }
 
     setExecResult(null)
+    setIsExecuting(true)
 
     try {
       const value = await onExecute(panelId, inputValue)
       setExecResult({ value })
     } catch (error) {
       setExecResult({ error })
+    } finally {
+      setIsExecuting(false)
     }
   }, [ allInputsAreValid, onExecute, panelId, inputValue ])
 
@@ -56,7 +60,7 @@ export const Panel = ({ onExecute, onValidate, id: panelId, config, inputs }) =>
         />
       ) : null}
 
-      <button onClick={onExecutePanel} disabled={!allInputsAreValid}>
+      <button onClick={onExecutePanel} disabled={isExecuting || !allInputsAreValid}>
         Execute
       </button>
 

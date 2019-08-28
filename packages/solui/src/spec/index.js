@@ -1,60 +1,59 @@
 import { _, promiseSerial, createErrorWithDetails } from '../utils'
-import { ProcessingErrors, getWeb3Account, isValidId } from './specUtils'
+import { Context, getWeb3Account, isValidId, extractChildById } from './specUtils'
 
-import { process as processPanel } from './panel'
-import { processList as processInputs } from './inputs'
+import { processGroup, processGroupInputs, processGroupPanel } from './group'
 
-const DEFAULT_CALLBACKS = {
-  startUi: async () => {},
-  endUi: async () => {},
-  startPanel: async () => {},
-  endPanel: async () => {},
-  getInput: async () => {},
-  deployContract: async () => {},
-  callMethod: async () => {},
-  sendTransaction: async () => {},
-}
+const SPEC_VERSION = [ 1 ]
+
+const isValidVersion = version => (version === 1)
 
 // process the spec
 export const process = async ({ spec, artifacts }, callbacks = {}) => {
-  const ctx = {
-    artifacts,
-    errors: new ProcessingErrors(),
-    inputs: {},
-    callbacks: { ...DEFAULT_CALLBACKS, ...callbacks },
-  }
+  const { id, version, description, groups } = (spec || {})
 
-  const { id, description, inputs, panels } = (spec || {})
+  const ctx = new Context(id, { artifacts, callbacks })
 
   let basicDetailsValid = true
 
   if (!isValidId(id)) {
-    ctx.errors.add('spec must have a valid id (letters, numbers and hyphens only)')
+    ctx.errors().add('spec must have a valid id (letters, numbers and hyphens only)')
     basicDetailsValid = false
   }
 
-  ctx.id = id
+  if (!isValidVersion(version)) {
+    ctx.errors().add(`spec version is invalid, valid versions are: ${SPEC_VERSION.join(', ')}`)
+    basicDetailsValid = false
+  }
 
   if (!description) {
-    ctx.errors.add('spec must have description')
+    ctx.errors().add(ctx.id, 'must have a description')
     basicDetailsValid = false
   }
 
-  if (_.isEmpty(panels)) {
-    ctx.errors.add('spec must have atleast one panel')
+  if (_.isEmpty(groups)) {
+    ctx.errors().add(ctx.id, 'must have atleast one group')
     basicDetailsValid = false
   }
 
   if (basicDetailsValid) {
-    await ctx.callbacks.startUi(id, description)
+    await ctx.callbacks().startUi(id, description)
 
-    await processInputs(ctx, inputs)
+    const existingGroups = {}
 
-    await promiseSerial(spec.panels, async (panelId, panelConfig) => (
-      processPanel(ctx, panelId, panelConfig)
-    ))
+    await promiseSerial(spec.groups, async groupConfig => {
+      const groupId = _.get(groupConfig, 'id')
 
-    await ctx.callbacks.endUi(id, description)
+      if (!groupId) {
+        ctx.errors().add(ctx.id, `group missing id`)
+      } else if (existingGroups[groupId]) {
+        ctx.errors().add(ctx.id, `duplicate group id: ${groupId}`)
+      } else {
+        existingGroups[groupId] = true
+        await processGroup(ctx, groupId, groupConfig)
+      }
+    })
+
+    await ctx.callbacks().endUi(id, description)
   }
 
   return ctx
@@ -69,30 +68,32 @@ export const assertSpecValid = async ({ spec, artifacts }) => {
   }
 }
 
-// validate top-level inputs
-export const validateTopLevelInputs = async ({ artifacts, spec, inputs, web3 }) => (
+// validate group inputs
+export const validateGroupInputs = async ({ artifacts, spec, groupId, inputs, web3 }) => (
   new Promise(async (resolve, reject) => {
-    const ctx = {
-      id: spec.id,
+    const groupConfig = extractChildById(_.get(spec, `groups`), groupId)
+    if (!groupConfig) {
+      reject(new Error(`group not found: ${groupId}`))
+      return
+    }
+
+    const ctx = new Context(spec.id, {
       artifacts,
-      errors: new ProcessingErrors(),
-      inputs: {},
       web3,
       callbacks: {
-        ...DEFAULT_CALLBACKS,
         getInput: id => inputs[id],
-      },
-    }
+      }
+    })
 
     try {
-      await processInputs(ctx, _.get(spec, 'inputs', {}))
+      await processGroupInputs(ctx, groupId, groupConfig)
     } catch (err) {
-      ctx.errors.add(`Error validating top-level inputs: ${err}`)
+      ctx.errors().add(ctx.id, `error validating group inputs: ${err}`)
     }
 
-    if (ctx.errors.notEmpty) {
+    if (ctx.errors().notEmpty) {
       reject(
-        createErrorWithDetails('There were one or more validation errors. See details.', ctx.errors.toObject())
+        createErrorWithDetails('There were one or more validation errors. See details.', ctx.errors().toObject())
       )
     } else {
       resolve()
@@ -100,36 +101,32 @@ export const validateTopLevelInputs = async ({ artifacts, spec, inputs, web3 }) 
   })
 )
 
-
 // validate a panel
-export const validatePanel = async ({ artifacts, spec, panelId, inputs, web3 }) => (
+export const validatePanel = async ({ artifacts, spec, groupId, panelId, inputs, web3 }) => (
   new Promise(async (resolve, reject) => {
-    const panelConfig = _.get(spec, `panels.${panelId}`)
-    if (!panelConfig) {
-      reject(new Error('Panel not found'))
+    const groupConfig = extractChildById(_.get(spec, `groups`), groupId)
+    if (!groupConfig) {
+      reject(new Error(`group not found: ${groupId}`))
+      return
     }
 
-    const ctx = {
-      id: spec.id,
+    const ctx = new Context(spec.id, {
       artifacts,
-      errors: new ProcessingErrors(),
-      inputs: {},
       web3,
       callbacks: {
-        ...DEFAULT_CALLBACKS,
         getInput: id => inputs[id],
-      },
-    }
+      }
+    })
 
     try {
-      await processPanel(ctx, panelId, panelConfig)
+      await processGroupPanel(ctx, groupId, groupConfig, panelId)
     } catch (err) {
-      ctx.errors.add(`Error validating panel: ${err}`)
+      ctx.errors().add(ctx.id, `error validating panel: ${err}`)
     }
 
-    if (ctx.errors.notEmpty) {
+    if (ctx.errors().notEmpty) {
       reject(
-        createErrorWithDetails('There were one or more validation errors. See details.', ctx.errors.toObject())
+        createErrorWithDetails('There were one or more validation errors. See details.', ctx.errors().toObject())
       )
     } else {
       resolve()
@@ -138,21 +135,18 @@ export const validatePanel = async ({ artifacts, spec, panelId, inputs, web3 }) 
 )
 
 // Execute a panel
-export const executePanel = async ({ artifacts, spec, panelId, inputs, web3 }) => (
+export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, web3 }) => (
   new Promise(async (resolve, reject) => {
-    const panelConfig = _.get(spec, `panels.${panelId}`)
-    if (!panelConfig) {
-      reject(new Error('Panel not found'))
+    const groupConfig = extractChildById(_.get(spec, `groups`), groupId)
+    if (!groupConfig) {
+      reject(new Error(`group not found: ${groupId}`))
+      return
     }
 
-    const ctx = {
-      id: spec.id,
+    const ctx = new Context(spec.id, {
       artifacts,
-      errors: new ProcessingErrors(),
-      inputs: {},
       web3,
       callbacks: {
-        ...DEFAULT_CALLBACKS,
         getInput: id => inputs[id],
         sendTransaction: async (id, { abi, method, address, args }) => {
           try {
@@ -162,7 +156,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, web3 }) =
 
             return contract.methods[method](...args).send({ from })
           } catch (err) {
-            ctx.errors.add(id, `Error executing: ${err}`)
+            ctx.errors().add(id, `Error executing: ${err}`)
             return null
           }
         },
@@ -174,7 +168,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, web3 }) =
 
             return contract.methods[method](...args).call({ from })
           } catch (err) {
-            ctx.errors.add(id, `Error executing: ${err}`)
+            ctx.errors().add(id, `Error executing: ${err}`)
             return null
           }
         },
@@ -191,25 +185,25 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, web3 }) =
 
             return inst.options.address
           } catch (err) {
-            ctx.errors.add(id, `Error executing: ${err}`)
+            ctx.errors().add(id, `Error executing: ${err}`)
             return null
           }
         }
-      },
-    }
+      }
+    })
 
     try {
-      await processPanel(ctx, panelId, panelConfig)
+      await processGroupPanel(ctx, groupId, groupConfig, panelId)
     } catch (err) {
-      ctx.errors.add(`Error executing panel: ${err}`)
+      ctx.errors().add(ctx.id, `error executing panel: ${err}`)
     }
 
-    if (ctx.errors.notEmpty) {
+    if (ctx.errors().notEmpty) {
       reject(
-        createErrorWithDetails('There were one or more execution errors. See details.', ctx.errors.toStringArray())
+        createErrorWithDetails('There were one or more execution errors. See details.', ctx.errors().toStringArray())
       )
     } else {
-      resolve(ctx.output)
+      resolve(ctx.output())
     }
   })
 )

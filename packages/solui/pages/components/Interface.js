@@ -1,9 +1,7 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
 
-import { PanelBuilder } from './Panel'
-import Inputs from './Inputs'
-import { useInputHooks } from '../helpers/inputs'
+import { GroupBuilder } from './Group'
 
 const Id = styled.h1`
   font-size: 2rem;
@@ -15,7 +13,7 @@ const Description = styled.p`
   margin: 0 2rem;
 `
 
-const PanelContainer = styled.li`
+const GroupContainer = styled.li`
   display: block;
   border: 1px solid ${({ theme }) => theme.panelBorderColor};
   padding: 1rem;
@@ -23,85 +21,34 @@ const PanelContainer = styled.li`
 `
 
 export const Interface = ({
+  onValidateGroupInputs,
   onExecutePanel,
-  onValidateTopLevelInputs,
   onValidatePanel,
   id,
   description,
-  inputs,
-  panels
+  groups
 }) => {
-  const {
-    inputValue,
-    inputValidation,
-    allInputsAreValid,
-    onInputChange,
-  } = useInputHooks({
-    inputs,
-    validate: useCallback(rootInputs => {
-      return onValidateTopLevelInputs({ inputs: rootInputs })
-    }, [
-      onValidateTopLevelInputs
-    ])
-  })
-
-  // execute panel
-  const onExecute = useCallback(async (panelId, panelInputs) => {
-    if (!allInputsAreValid) {
-      console.error('Please fix inputs')
-      return
-    }
-
-    const combinedInputs = {
-      ...inputValue,
-      ...panelInputs,
-    }
-
-    await onExecutePanel({ panelId, inputs: combinedInputs })
-  }, [ inputValue, allInputsAreValid, onExecutePanel ])
-
-  // validate panel
-  const onValidate = useCallback(async (panelId, panelInputs) => {
-    const combinedInputs = {
-      ...inputValue,
-      ...panelInputs,
-    }
-
-    await onValidatePanel({ panelId, inputs: combinedInputs })
-  }, [ inputValue, onValidatePanel ])
-
   return (
     <div>
       <Id>{id}</Id>
       <Description>{description}</Description>
-
-      {inputs.length ? (
-        <Inputs
-          inputs={inputs}
-          inputValue={inputValue}
-          inputValidation={inputValidation}
-          onInputChange={onInputChange}
-        />
-      ) : null}
-
-      {panels.map(panel => (
-        <PanelContainer key={panel.id}>
-          {panel.buildContent({
-            onExecute,
-            onValidate,
+      {groups.map(group => (
+        <GroupContainer key={group.id}>
+          {group.buildContent({
+            onValidateGroupInputs,
+            onValidatePanel,
+            onExecutePanel,
           })}
-        </PanelContainer>
+        </GroupContainer>
       ))}
     </div>
   )
 }
 
 export class InterfaceBuilder {
-  constructor (callbacks) {
-    this.inputs = []
-    this.callbacks = callbacks
-    this.panels = []
-    this.currentPanel = null
+  constructor () {
+    this.groups = []
+    this.currentGroup = null
   }
 
   startUi = (id, description) => {
@@ -110,30 +57,45 @@ export class InterfaceBuilder {
 
   endUi = () => {}
 
-  getInput = (id, name, config) => {
-    if (this.currentPanel) {
-      this.currentPanel.addInput(id, name, config)
-    } else {
-      this.inputs.push({ id, name, config })
+  startGroup = async (id, config) => {
+    this.currentGroup = new GroupBuilder({ id, config })
+  }
+
+  endGroup = async () => {
+    this.groups.push(this.currentGroup)
+    this.currentGroup = null
+  }
+
+  getInput = async (...args) => {
+    if (!this.currentGroup) {
+      throw new Error('Not in a group')
     }
+
+    return this.currentGroup.getInput(...args)
   }
 
-  startPanel = (id, name, config) => {
-    this.currentPanel = new PanelBuilder({ id, config })
+  startPanel = async (...args) => {
+    if (!this.currentGroup) {
+      throw new Error('Not in a group')
+    }
+
+    await this.currentGroup.startPanel(...args)
   }
 
-  endPanel = () => {
-    this.panels.push(this.currentPanel)
-    this.currentPanel = null
+  endPanel = async (...args) => {
+    if (!this.currentGroup) {
+      throw new Error('Not in a group')
+    }
+
+    await this.currentGroup.endPanel(...args)
   }
 
-  buildContent () {
+  buildContent (callbacks) {
     return (
       <Interface
-        inputs={this.inputs}
-        panels={this.panels}
+        groups={this.groups}
         {...this.attrs}
-        {...this.callbacks}
+        {...callbacks}
       />
     )
   }

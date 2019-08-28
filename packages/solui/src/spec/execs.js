@@ -5,49 +5,65 @@ const validateContract = (ctx, config) => {
   // check contract
   const { contract } = config
 
+  let foundError = false
+
   if (!contract) {
-    ctx.errors.add(ctx.id, `must have a contract`)
-  } else if (ctx.artifacts && !ctx.artifacts[contract]) {
-    ctx.errors.add(ctx.id, `must have a contract present in the artifacts list`)
+    ctx.errors().add(ctx.id, `must have a contract`)
+    foundError = true
+  } else if (ctx.artifacts() && !ctx.artifacts()[contract]) {
+    ctx.errors().add(ctx.id, `must have a contract present in the artifacts list`)
+    foundError = true
   }
+
+  return !foundError
 }
 
 const validateContractMethod = (ctx, config) => {
   const { method, contract, args, address, type } = config
 
+  let foundError = false
+
   if (!method) {
-    ctx.errors.add(ctx.id, `must have a method`)
+    foundError = true
+    ctx.errors().add(ctx.id, `must have a method`)
   } else {
-    if (ctx.artifacts) {
+    if (ctx.artifacts()) {
       const methodAbi = getMethod(ctx, contract, method)
 
       if (!methodAbi) {
-        ctx.errors.add(ctx.id, `must specify a valid contract method`)
+        foundError = true
+        ctx.errors().add(ctx.id, `must specify a valid contract method`)
       }
 
       // check arg mappings
       _.each(args, (inputId, argId) => {
         if (!methodArgExists(methodAbi, argId)) {
-          ctx.errors.add(ctx.id, `method ${method} does not have arg: ${argId}`)
+          foundError = true
+          ctx.errors().add(ctx.id, `method ${method} does not have arg: ${argId}`)
         }
 
         if (!inputIsPresent(ctx, inputId)) {
-          ctx.errors.add(ctx.id, `method argument ${argId} maps from an invalid input: ${inputId}`)
+          foundError = true
+          ctx.errors().add(ctx.id, `method argument ${argId} maps from an invalid input: ${inputId}`)
         }
       })
 
       // check contract address mapping
       if ('deploy' !== type) {
         if (!address) {
-          ctx.errors.add(ctx.id, `must specify contract address mapping`)
+          foundError = true
+          ctx.errors().add(ctx.id, `must specify contract address mapping`)
         } else {
           if (!inputIsPresent(ctx, address)) {
-            ctx.errors.add(ctx.id, `contract address maps from an invalid input: ${address}`)
+            foundError = true
+            ctx.errors().add(ctx.id, `contract address maps from an invalid input: ${address}`)
           }
         }
       }
     }
   }
+
+  return !foundError
 }
 
 
@@ -59,7 +75,7 @@ const prepareContractCall = (ctx, config) => {
   const { contract, method, args } = config
   const abi = getAbi(ctx, contract)
   const methodAbi = getMethod(ctx, contract, method)
-  const methodArgs = buildMethodArgs(methodAbi, args, ctx.inputs)
+  const methodArgs = buildMethodArgs(methodAbi, args, ctx.inputs())
 
   return { abi, args: methodArgs }
 }
@@ -67,56 +83,66 @@ const prepareContractCall = (ctx, config) => {
 const EXECS = {
   deploy: {
     process: async (ctx, config) => {
-      validateContract(ctx, config)
-      validateContractMethod(ctx, { ...config, method: 'constructor' })
+      const isValid = validateContract(ctx, config)
+        && validateContractMethod(ctx, { ...config, method: 'constructor' })
+
+      if (!isValid) {
+        return
+      }
 
       const { contract, saveResultAs } = config
 
       const bytecode = getBytecode(ctx, contract)
 
       if (!bytecode) {
-        ctx.errors.add(ctx.id, `is a deployment but matching artifact is missing bytecode`)
+        ctx.errors().add(ctx.id, `is a deployment but matching artifact is missing bytecode`)
       } else {
         // prep
         const { abi, args } = prepareContractCall(ctx, { ...config, method: 'constructor' })
         // do it!
-        const result = await ctx.callbacks.deployContract(ctx.id, { abi, bytecode, args })
+        const result = await ctx.callbacks().deployContract(ctx.id, { abi, bytecode, args })
         // further execs may need this output as input!
         if (saveResultAs) {
-          ctx.inputs[saveResultAs] = result
+          ctx.inputs()[saveResultAs] = result
         }
       }
     }
   },
   call: {
     process: async (ctx, config) => {
-      validateContract(ctx, config)
-      validateContractMethod(ctx, config)
+      const isValid = validateContract(ctx, config) && validateContractMethod(ctx, config)
+
+      if (!isValid) {
+        return
+      }
 
       const { saveResultAs, method, address } = config
 
       if (!saveResultAs) {
-        ctx.errors.add(ctx.id, `must save its result into a param`)
+        ctx.errors().add(ctx.id, `must save its result into a param`)
       }
 
       // prep
       const { abi, args } = prepareContractCall(ctx, config)
 
       // do it!
-      ctx.inputs[saveResultAs] = await ctx.callbacks.callMethod(
+      ctx.inputs()[saveResultAs] = await ctx.callbacks().callMethod(
         ctx.id, {
           abi,
           method,
           args,
-          address: ctx.inputs[address],
+          address: ctx.inputs()[address],
         }
       )
     }
   },
   send: {
     process: async (ctx, config) => {
-      validateContract(ctx, config)
-      validateContractMethod(ctx, config)
+      const isValid = validateContract(ctx, config) && validateContractMethod(ctx, config)
+
+      if (!isValid) {
+        return
+      }
 
       const { method, address } = config
 
@@ -124,12 +150,12 @@ const EXECS = {
       const { abi, args } = prepareContractCall(ctx, config)
 
       // do it!
-      ctx.inputs[config.saveResultAs] = await ctx.callbacks.sendTransaction(
+      ctx.inputs()[config.saveResultAs] = await ctx.callbacks().sendTransaction(
         ctx.id, {
           abi,
           method,
           args,
-          address: ctx.inputs[address],
+          address: ctx.inputs()[address],
         }
       )
     }
@@ -137,17 +163,17 @@ const EXECS = {
 }
 
 export const processList = async (parentCtx, execs) => (
-  promiseSerial(execs, async (execId, execConfig) => {
-    const ctx = { ...parentCtx, id: `${parentCtx.id}.exec[${execId}]` }
+  promiseSerial(execs || [], async (execConfig, execIndex) => {
+    const ctx = parentCtx.createChildContext(`exec[${execIndex}]`)
 
     if (_.isEmpty(execConfig)) {
-      ctx.errors.add(ctx.id, `must not be empty`)
+      ctx.errors().add(ctx.id, `must not be empty`)
     } else {
       // check execution step type
       const { type } = execConfig
 
       if (!EXECS[type]) {
-        ctx.errors.add(ctx.id, `must have a valid type: ${Object.keys(EXECS).join(', ')}`)
+        ctx.errors().add(ctx.id, `must have a valid type: ${Object.keys(EXECS).join(', ')}`)
       } else {
         // eslint-disable-next-line no-await-in-loop
         await EXECS[type].process(ctx, execConfig)

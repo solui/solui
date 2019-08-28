@@ -65,8 +65,6 @@ export const useInputHooks = ({ inputs, validate }) => {
         errorDetails = err.details || {}
       }
 
-      console.warn(errorDetails)
-
       // update validation results for all inputs
       Object.keys(inputValue).forEach(inputId => {
         if (errorDetails[inputId]) {
