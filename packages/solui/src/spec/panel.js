@@ -18,7 +18,7 @@ export const process = async (parentCtx, id, config) => {
     ctx.errors.add(ctx.id, `must have a title`)
   }
 
-  await ctx.callbacks.startUi(id, config)
+  await ctx.callbacks.startPanel(ctx.id, id, config)
 
   ctx.panel = { ...config, id }
 
@@ -32,5 +32,5 @@ export const process = async (parentCtx, id, config) => {
 
   await processOutput(ctx, output)
 
-  await ctx.callbacks.endUi(id, config)
+  await ctx.callbacks.endPanel(ctx.id, id, config)
 }

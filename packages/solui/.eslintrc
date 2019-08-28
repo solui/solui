@@ -29,6 +29,7 @@
     "generator-star-spacing": ["error", {"before": false, "after": true}],
     "no-multiple-empty-lines": 0,
     "yoda": 0,
+    "arrow-body-style": 0,
     "no-param-reassign": 0,
     "brace-style": 0,
     "no-unused-vars": ["error", { "args": "after-used" }],

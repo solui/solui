@@ -33,7 +33,7 @@ const INPUTS = {
 }
 
 export const processList = async (parentCtx, inputs) => (
-  promiseSerial(inputs, async (inputId, inputConfig) => {
+  promiseSerial(inputs || {}, async (inputId, inputConfig) => {
     const ctx = { ...parentCtx, id: `${parentCtx.id}.input[${inputId}]` }
 
     if (_.isEmpty(inputConfig)) {

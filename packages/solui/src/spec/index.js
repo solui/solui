@@ -7,12 +7,15 @@ import { processList as processInputs } from './inputs'
 const DEFAULT_CALLBACKS = {
   startUi: async () => {},
   endUi: async () => {},
+  startPanel: async () => {},
+  endPanel: async () => {},
   getInput: async () => {},
   deployContract: async () => {},
   callMethod: async () => {},
   sendTransaction: async () => {},
 }
 
+// process the spec
 export const process = async ({ spec, artifacts }, callbacks = {}) => {
   const ctx = {
     artifacts,
@@ -21,31 +24,43 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
     callbacks: { ...DEFAULT_CALLBACKS, ...callbacks },
   }
 
-  const id = _.get(spec, 'id')
+  const { id, description, inputs, panels } = (spec || {})
+
+  let basicDetailsValid = true
 
   if (!isValidId(id)) {
     ctx.errors.add('spec must have a valid id (letters, numbers and hyphens only)')
-  } else {
-    if (!_.get(spec, 'description')) {
-      ctx.errors.add('spec must have description')
-    } else {
-      ctx.id = id
+    basicDetailsValid = false
+  }
 
-      await processInputs(ctx, _.get(spec, 'inputs', {}))
+  ctx.id = id
 
-      if (_.isEmpty(spec, 'panels')) {
-        ctx.errors.add('spec must have atleast one panel')
-      } else {
-        await promiseSerial(spec.panels, async (panelId, panelConfig) => (
-          processPanel(ctx, panelId, panelConfig)
-        ))
-      }
-    }
+  if (!description) {
+    ctx.errors.add('spec must have description')
+    basicDetailsValid = false
+  }
+
+  if (_.isEmpty(panels)) {
+    ctx.errors.add('spec must have atleast one panel')
+    basicDetailsValid = false
+  }
+
+  if (basicDetailsValid) {
+    await ctx.callbacks.startUi(id, description)
+
+    await processInputs(ctx, inputs)
+
+    await promiseSerial(spec.panels, async (panelId, panelConfig) => (
+      processPanel(ctx, panelId, panelConfig)
+    ))
+
+    await ctx.callbacks.endUi(id, description)
   }
 
   return ctx
 }
 
+// assert that spec is valid
 export const assertSpecValid = async ({ spec, artifacts }) => {
   const { errors } = await process({ spec, artifacts })
 
@@ -54,10 +69,11 @@ export const assertSpecValid = async ({ spec, artifacts }) => {
   }
 }
 
-// validate a panel
-export const validateUi = async ({ artifacts, ui, inputs, web3 }) => (
+// validate top-level inputs
+export const validateTopLevelInputs = async ({ artifacts, spec, inputs, web3 }) => (
   new Promise(async (resolve, reject) => {
     const ctx = {
+      id: spec.id,
       artifacts,
       errors: new ProcessingErrors(),
       inputs: {},
@@ -69,9 +85,46 @@ export const validateUi = async ({ artifacts, ui, inputs, web3 }) => (
     }
 
     try {
-      await processPanel(ctx, ui.id, ui.config)
+      await processInputs(ctx, _.get(spec, 'inputs', {}))
     } catch (err) {
-      ctx.errors.add(`Error validating UI: ${err}`)
+      ctx.errors.add(`Error validating top-level inputs: ${err}`)
+    }
+
+    if (ctx.errors.notEmpty) {
+      reject(
+        createErrorWithDetails('There were one or more validation errors. See details.', ctx.errors.toObject())
+      )
+    } else {
+      resolve()
+    }
+  })
+)
+
+
+// validate a panel
+export const validatePanel = async ({ artifacts, spec, panelId, inputs, web3 }) => (
+  new Promise(async (resolve, reject) => {
+    const panelConfig = _.get(spec, `panels.${panelId}`)
+    if (!panelConfig) {
+      reject(new Error('Panel not found'))
+    }
+
+    const ctx = {
+      id: spec.id,
+      artifacts,
+      errors: new ProcessingErrors(),
+      inputs: {},
+      web3,
+      callbacks: {
+        ...DEFAULT_CALLBACKS,
+        getInput: id => inputs[id],
+      },
+    }
+
+    try {
+      await processPanel(ctx, panelId, panelConfig)
+    } catch (err) {
+      ctx.errors.add(`Error validating panel: ${err}`)
     }
 
     if (ctx.errors.notEmpty) {
@@ -85,9 +138,15 @@ export const validateUi = async ({ artifacts, ui, inputs, web3 }) => (
 )
 
 // Execute a panel
-export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
+export const executePanel = async ({ artifacts, spec, panelId, inputs, web3 }) => (
   new Promise(async (resolve, reject) => {
+    const panelConfig = _.get(spec, `panels.${panelId}`)
+    if (!panelConfig) {
+      reject(new Error('Panel not found'))
+    }
+
     const ctx = {
+      id: spec.id,
       artifacts,
       errors: new ProcessingErrors(),
       inputs: {},
@@ -140,9 +199,9 @@ export const executeUi = async ({ artifacts, ui, inputs, web3 }) => (
     }
 
     try {
-      await processPanel(ctx, ui.id, ui.config)
+      await processPanel(ctx, panelId, panelConfig)
     } catch (err) {
-      ctx.errors.add(`Error executing UI: ${err}`)
+      ctx.errors.add(`Error executing panel: ${err}`)
     }
 
     if (ctx.errors.notEmpty) {

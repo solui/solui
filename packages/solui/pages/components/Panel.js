@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 
-import Input from './Input'
+import Inputs from './Inputs'
+import { useInputHooks } from '../helpers/inputs'
 import Result from './Result'
-import { GlobalContext } from '../_global'
-import { _ } from '../../src/utils'
 
 const Title = styled.h2`
   font-weight: bold;
@@ -12,130 +11,52 @@ const Title = styled.h2`
   margin-bottom: 1em;
 `
 
-const inputValueReducer = (state, { id, value }) => {
-  if (state[id] !== value) {
-    return { ...state, [id]: value }
-  } else {
-    return state
-  }
-}
-
-const inputValidationReducer = (state, { id, valid, error }) => {
-  if (JSON.stringify(state[id]) !== JSON.stringify({ valid, error })) {
-    return { ...state, [id]: { valid, error } }
-  } else {
-    return state
-  }
-}
-
-
-// initial reducer states
-const createInitialInputValueState = inputs => (
-  inputs.reduce((m, { id, config: { initialValue } }) => {
-    m[id] = initialValue || ''
-    return m
-  }, {})
-)
-
-const createInitialInputValidationState = inputs => (
-  inputs.reduce((m, { id }) => {
-    m[id] = { valid: false }
-    return m
-  }, {})
-)
-
-export const Panel = ({ onRun, onValidate, id: panelId, config, inputs }) => {
+export const Panel = ({ onExecute, onValidate, id: panelId, config, inputs }) => {
   const [ execResult, setExecResult ] = useState()
 
-  // reducers
-  const [ inputValue, updateInputValue ] = useReducer(
-    inputValueReducer, inputs, createInitialInputValueState
-  )
-  const [ inputValidation, updateInputValidation ] = useReducer(
-    inputValidationReducer, inputs, createInitialInputValidationState
-  )
+  const {
+    inputValue,
+    inputValidation,
+    allInputsAreValid,
+    onInputChange,
+  } = useInputHooks({
+    inputs,
+    validate: useCallback(panelInputs => onValidate(panelId, panelInputs), [
+      panelId, onValidate
+    ])
+  })
 
-  // input change handlers
-  const onChange = useMemo(() => (
-    inputs.reduce((m, { id }) => {
-      m[id] = value => {
-        setExecResult(null)
-        updateInputValue({ id, value })
-      }
-      return m
-    }, {})
-  ), [ updateInputValue, inputs ])
-
-  // check input validity
-  const allInputsValid = useMemo(() => (
-    Object.values(inputValidation).reduce((m, { valid }) => m && valid, true)
-  ), [ inputValidation ])
-
-  // execute it!
-  const onExecute = useCallback(() => {
-    if (!allInputsValid) {
+  // execute
+  const onExecutePanel = useCallback(async () => {
+    if (!allInputsAreValid) {
       console.error('Please fix inputs')
       return
     }
 
     setExecResult(null)
 
-    onRun({
-      panelId,
-      inputs: inputValue,
-    })
-      .then(value => setExecResult({ value }))
-      .catch(error => setExecResult({ error }))
-  }, [ onRun, allInputsValid, panelId, inputValue ])
-
-  // validation takes place asynchronously
-  useEffect(() => {
-    (async () => {
-      let errorDetails = {}
-
-      try {
-        await onValidate({
-          panelId,
-          inputs: inputValue,
-        })
-      } catch (err) {
-        errorDetails = _.get(err, 'details', {})
-      }
-
-      // update validation results for all inputs
-      Object.keys(inputValue).forEach(inputId => {
-        if (errorDetails[inputId]) {
-          updateInputValidation({ id: inputId, valid: false, error: errorDetails[inputId] })
-        } else {
-          updateInputValidation({ id: inputId, valid: true })
-        }
-      })
-    })()
-  }, /*
-    important to only run this when input values change, not when validation
-    state changes, otherwise we may end up in infinite loop
-   */
-  [ panelId, onValidate, inputValue, updateInputValidation ])
-
+    try {
+      const value = await onExecute(panelId, inputValue)
+      setExecResult({ value })
+    } catch (error) {
+      setExecResult({ error })
+    }
+  }, [ allInputsAreValid, onExecute, panelId, inputValue ])
 
   return (
     <div>
       <Title>{config.title}</Title>
-      <GlobalContext.Consumer>
-        {({ network }) => inputs.map(({ id, name, config: inputConfig }) => (
-          <Input
-            key={id}
-            name={name}
-            onChange={onChange[id]}
-            config={inputConfig}
-            network={network}
-            value={inputValue[id]}
-            {...inputValidation[id]}
-          />
-        ))}
-      </GlobalContext.Consumer>
 
-      <button onClick={onExecute} disabled={!allInputsValid}>
+      {inputs.length ? (
+        <Inputs
+          inputs={inputs}
+          inputValue={inputValue}
+          inputValidation={inputValidation}
+          onInputChange={onInputChange}
+        />
+      ) : null}
+
+      <button onClick={onExecutePanel} disabled={!allInputsAreValid}>
         Execute
       </button>
 
@@ -147,12 +68,10 @@ export const Panel = ({ onRun, onValidate, id: panelId, config, inputs }) => {
 }
 
 export class PanelBuilder {
-  constructor ({ id, config, onRun, onValidate }) {
+  constructor ({ id, config }) {
     this.attrs = {
       id,
       config,
-      onRun,
-      onValidate,
       inputs: [],
     }
   }
@@ -165,9 +84,12 @@ export class PanelBuilder {
     this.attrs.inputs.push({ id, name, config })
   }
 
-  buildContent () {
+  buildContent (callbacks) {
     return (
-      <Panel {...this.attrs} key={this.id} />
+      <Panel
+        {...this.attrs}
+        {...callbacks}
+      />
     )
   }
 }
