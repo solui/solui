@@ -29,6 +29,12 @@ export const getNetwork = async () => {
         network.web3 = new Web3(window.ethereum)
         // See https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
         network.web3.requestPermission = () => window.ethereum.enable()
+        // From https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.on(eventname%2C-callback
+        // we will manually reload page on a network change
+        window.ethereum.autoRefreshOnNetworkChange = false
+        if (window.ethereum.on) {
+          window.ethereum.on('networkChanged', () => window.location.reload())
+        }
       } else if (window.web3 && window.web3.currentProvider) {
         network.web3 = new Web3(window.web3.currentProvider)
       } else {

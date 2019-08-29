@@ -33,14 +33,20 @@ export const createConfig = ({ virtualModules }) => ({
               ],
               '@babel/preset-react'
             ],
-            plugins: [ '@babel/plugin-proposal-class-properties' ]
+            plugins: [
+              '@babel/plugin-proposal-class-properties',
+              'react-hot-loader/babel',
+            ]
           }
         }
       }
     ]
   },
   resolve: {
-    extensions: [ '*', '.js', '.jsx' ]
+    extensions: [ '*', '.js', '.jsx' ],
+    alias: {
+      'react-dom': '@hot-loader/react-dom',
+    },
   },
   devtool: 'inline-source-map',
   plugins: [

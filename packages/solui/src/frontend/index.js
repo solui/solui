@@ -1,13 +1,17 @@
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import { ThemeProvider } from 'emotion-theming'
-import { Global } from '@emotion/core'
+// NOTE: react-hot-loader import has to come before react and react-dom
+import { hot } from 'react-hot-loader/root'
 
 /* eslint-disable import/no-unresolved */
+// wepback will alias this @hot-loader/react-dom
+import ReactDOM from 'react-dom'
 // these modules will be dynamically generated using webpack
 import spec from 'spec.json'
 import artifacts from 'artifacts.json'
 /* eslint-enable import/no-unresolved */
+
+import React, { Component } from 'react'
+import { ThemeProvider } from 'emotion-theming'
+import { Global } from '@emotion/core'
 
 import { _ } from '../utils'
 import InterfaceRenderer from './renderer'
@@ -62,4 +66,6 @@ class App extends Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('main'))
+const HotReloadingApp = hot(App)
+
+ReactDOM.render(<HotReloadingApp />, document.getElementById('main'))
