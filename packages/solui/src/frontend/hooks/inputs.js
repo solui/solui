@@ -1,5 +1,7 @@
 import { useReducer, useMemo, useEffect } from 'react'
 
+const inputIsEmpty = val => (val === null || val === undefined || val === '' || (Array.isArray(val) && !val.length))
+
 export const inputValueReducer = (state, { id, value }) => {
   if (state[id] !== value) {
     return { ...state, [id]: value }
@@ -67,7 +69,9 @@ export const useInputHooks = ({ inputs, validate }) => {
 
       // update validation results for all inputs
       Object.keys(inputValue).forEach(inputId => {
-        if (errorDetails[inputId]) {
+        if (inputIsEmpty(inputValue[inputId])) {
+          updateInputValidation({ id: inputId, valid: false, error: null })
+        } else if (errorDetails[inputId]) {
           updateInputValidation({ id: inputId, valid: false, error: errorDetails[inputId] })
         } else {
           updateInputValidation({ id: inputId, valid: true })
