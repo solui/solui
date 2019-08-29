@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import styled from '@emotion/styled'
 
-import { _ } from '../src/utils'
+import { _ } from '../utils'
 import Layout from './components/Layout'
 import { InterfaceBuilder } from './components/Interface'
 import Error from './components/Error'
 import NetworkInfo from './components/NetworkInfo'
-import { process as processSpec, validateGroupInputs, validatePanel, executePanel } from '../src/spec'
+import { process as processSpec, validateGroupInputs, validatePanel, executePanel } from '../spec'
 
 const Container = styled.div``
 

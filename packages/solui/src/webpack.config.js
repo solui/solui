@@ -1,0 +1,59 @@
+import path from 'path'
+import webpack from 'webpack'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import { CleanWebpackPlugin } from 'clean-webpack-plugin'
+
+export const FRONTEND_FOLDER = path.join(__dirname, 'frontend')
+export const DIST_FOLDER = path.join(__dirname, '..', 'dist')
+
+export const createConfig = ({ virtualModules }) => ({
+  mode: 'none',
+  entry: [
+    path.join(FRONTEND_FOLDER, 'index.js'),
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  useBuiltIns: 'entry',
+                  corejs: 3,
+                  targets: {
+                    chrome: '58',
+                    node: 'current'
+                  }
+                }
+              ],
+              '@babel/preset-react'
+            ],
+            plugins: [ '@babel/plugin-proposal-class-properties' ]
+          }
+        }
+      }
+    ]
+  },
+  resolve: {
+    extensions: [ '*', '.js', '.jsx' ]
+  },
+  devtool: 'inline-source-map',
+  plugins: [
+    virtualModules,
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: path.join(FRONTEND_FOLDER, 'index.html')
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+  ],
+  output: {
+    filename: 'bundle.js',
+    publicPath: '/',
+    path: DIST_FOLDER
+  }
+})

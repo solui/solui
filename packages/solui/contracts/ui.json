@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "solui-repo-ownable",
-  "description": "The ownable!",
+  "description": "The ownable",
   "groups": [
     {
       "id": "group1",
