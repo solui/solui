@@ -32,3 +32,11 @@ export const childAnchors = ({ textColor, hoverTextColor }) => `
     }
   }
 `
+
+export const smoothAnimation = () => `
+  transition: all 0.3s linear
+`
+
+export const boxShadow = ({ color }) => `
+  box-shadow: 0px 0px 5px 1px ${color}
+`

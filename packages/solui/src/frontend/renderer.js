@@ -77,6 +77,7 @@ export default ({ network, appState: { spec, artifacts } }) => {
 
         setBuildResult({ interface: int })
       } catch (err) {
+        console.error(err)
         setBuildResult({ error: err })
       }
     })()

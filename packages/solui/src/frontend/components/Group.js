@@ -5,15 +5,20 @@ import { PanelBuilder } from './Panel'
 import Inputs from './Inputs'
 import Image from './Image'
 import { useInputHooks } from '../hooks/inputs'
-import { flex } from '../styles/fragments'
+import { flex, boxShadow, smoothAnimation } from '../styles/fragments'
 
 const Container = styled.div`
-  padding: 1rem;
+  ${smoothAnimation()};
   background-color: ${({ theme }) => theme.groupBgColor};
+  border: 1px solid ${({ theme }) => theme.groupBorderColor};
+  border-radius: 5px;
   cursor: pointer;
+  padding: 1rem;
 
   &:hover {
     background-color: ${({ theme }) => theme.groupActiveBgColor};
+    border: 1px solid ${({ theme }) => theme.groupActiveBorderColor};
+    ${({ theme }) => boxShadow({ color: theme.groupActiveShadowColor })};
   }
 `
 
@@ -43,7 +48,7 @@ const GroupImage = styled(Image)`
 `
 
 const Content = styled.section`
-  transition: all 0.3s linear;
+  ${smoothAnimation()};
   max-height: ${({ visible }) => (visible ? 'auto' : '0')};
   margin-top: ${({ visible }) => (visible ? '2rem' : '0')};
   overflow: hidden;

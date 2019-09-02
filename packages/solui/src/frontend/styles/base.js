@@ -8,11 +8,8 @@ export default css`
   }
 
   html {
-    font-size: 14px;
-  }
-
-  body {
     ${openSans()};
+    font-size: 14px;
   }
 
   a {

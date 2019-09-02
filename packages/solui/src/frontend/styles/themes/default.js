@@ -17,12 +17,14 @@ const lightGreen = '#afa'
 export default {
   bodyBgColor: white,
   bodyTextColor: black,
-  groupBorderColor: red,
   panelBorderColor: lightGrey,
   resultBgColor: lightGreen,
-  imgBorderColor: lightestGrey,
+  // group component
+  groupBorderColor: lightGrey,
   groupBgColor: white,
-  groupActiveBgColor: lightestGrey,
+  groupActiveBgColor: white,
+  groupActiveBorderColor: 'transparent',
+  groupActiveShadowColor: Color(black).alpha(0.4).toString(),
   // error component
   errorBgColor: Color(mars4).rgb().alpha(0.3).toString(),
   errorIconColor: mars4,

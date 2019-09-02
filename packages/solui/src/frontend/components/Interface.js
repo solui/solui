@@ -8,13 +8,13 @@ import { media } from '../styles/breakpoints'
 
 const Container = styled.div`
   ${flex()}
-  position: 'relative';
+  margin: 2rem 0;
 `
 
 const Info = styled.div`
   ${flex()}
   text-align: center;
-  margin: 0 auto;
+  margin: 0 auto 1rem;
   padding: 0 2rem;
 
   ${media.when({ minW: 'mobile' })} {
@@ -22,22 +22,22 @@ const Info = styled.div`
   }
 `
 
+const MainImage = styled(Image)`
+  width: 250px;
+  height: auto;
+  max-height: 250px;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+`
+
 const Title = styled.h1`
   font-size: 2rem;
-  margin: 1.5rem 0;
+  margin: 0 0 1.5rem;
 `
 
 const Description = styled.p`
   font-size: 1.2rem;
   margin: 0;
-`
-
-const MainImage = styled(Image)`
-  width: 250px;
-  height: auto;
-  max-height: 250px;
-  border: 1px dashed ${({ theme }) => theme.imgBorderColor};
-  border-radius: 5px;
 `
 
 const Groups = styled.div`
@@ -48,10 +48,7 @@ const Groups = styled.div`
 
 const GroupContainer = styled.li`
   display: block;
-  border: 1px solid ${({ theme }) => theme.panelBorderColor};
-  border-radius: 5px;
   margin: 3rem 0 1rem;
-  padding: 0 2rem;
 `
 
 export const Interface = ({
