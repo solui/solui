@@ -2,7 +2,7 @@ import { _, promiseSerial } from '../utils'
 
 import { processList as processInputs } from './inputs'
 import { process as processPanel } from './panel'
-import { extractChildById } from './specUtils'
+import { extractChildById, checkImageIsValid } from './specUtils'
 
 export const processGroupInputs = async (rootCtx, id, config) => {
   const ctx = rootCtx.createGroupContext(id)
@@ -32,14 +32,18 @@ export const processGroup = async (rootCtx, id, config) => {
     ctx.errors().add(ctx.id, `must not be empty`)
   }
 
-  const { title, inputs, panels } = config
+  const { title, description, image, inputs, panels } = config
 
   // need title
   if (!title) {
     ctx.errors().add(ctx.id, `must have a title`)
   }
 
-  await ctx.callbacks().startGroup(id, config)
+  if (image) {
+    await checkImageIsValid(ctx, image)
+  }
+
+  await ctx.callbacks().startGroup(id, { title, description, image })
 
   await processInputs(ctx, inputs)
 
@@ -62,5 +66,5 @@ export const processGroup = async (rootCtx, id, config) => {
     })
   }
 
-  await ctx.callbacks().endGroup(id, config)
+  await ctx.callbacks().endGroup(id)
 }

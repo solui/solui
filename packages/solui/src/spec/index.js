@@ -1,5 +1,5 @@
 import { _, promiseSerial, createErrorWithDetails } from '../utils'
-import { getWeb3Account, isValidId, extractChildById } from './specUtils'
+import { getWeb3Account, isValidId, extractChildById, checkImageIsValid } from './specUtils'
 import { RootContext } from './context'
 import { processGroup, processGroupInputs, processGroupPanel } from './group'
 
@@ -9,7 +9,7 @@ const isValidVersion = version => (version === 1)
 
 // process the spec
 export const process = async ({ spec, artifacts }, callbacks = {}) => {
-  const { id, version, description, groups } = (spec || {})
+  const { id, version, title, description, image, groups } = (spec || {})
 
   const ctx = new RootContext(id, { artifacts, callbacks })
 
@@ -25,9 +25,13 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
     basicDetailsValid = false
   }
 
-  if (!description) {
-    ctx.errors().add(ctx.id, 'must have a description')
+  if (!title) {
+    ctx.errors().add(ctx.id, 'must have a title')
     basicDetailsValid = false
+  }
+
+  if (image) {
+    await checkImageIsValid(ctx, image)
   }
 
   if (_.isEmpty(groups)) {
@@ -36,7 +40,7 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
   }
 
   if (basicDetailsValid) {
-    await ctx.callbacks().startUi(id, description)
+    await ctx.callbacks().startUi(id, { title, description, image })
 
     const existingGroups = {}
 
@@ -53,7 +57,7 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
       }
     })
 
-    await ctx.callbacks().endUi(id, description)
+    await ctx.callbacks().endUi(id)
   }
 
   return ctx

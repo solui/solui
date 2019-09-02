@@ -1,13 +1,18 @@
 import { css } from '@emotion/core'
 
+import { openSans, roboto } from './fonts'
+
 export default css`
   * {
     box-sizing: border-box;
   }
 
   html {
-    font-family: Verdana, Arial, sans-serif;
     font-size: 14px;
+  }
+
+  body {
+    ${openSans()};
   }
 
   a {
@@ -18,6 +23,7 @@ export default css`
   }
 
   h1, h2, h3 {
+    ${roboto()};
     margin: 1em 0;
     font-weight: bolder;
     line-height: 1em;

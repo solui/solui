@@ -10,16 +10,22 @@ import artifacts from 'artifacts.json'
 /* eslint-enable import/no-unresolved */
 
 import React, { Component } from 'react'
+import styled from '@emotion/styled'
 import { ThemeProvider } from 'emotion-theming'
 import { Global } from '@emotion/core'
 
 import { _ } from '../utils'
+import ErrorBox from './components/ErrorBox'
 import InterfaceRenderer from './renderer'
 import { GlobalContext } from './_global'
 import resetStyles from './styles/reset'
 import baseStyles from './styles/base'
 import { getTheme } from './styles/themes'
 import { getNetwork } from './utils/network'
+
+const RenderingError = styled(ErrorBox)`
+  margin: 1rem;
+`
 
 class App extends Component {
   state = {}
@@ -50,15 +56,17 @@ class App extends Component {
   render () {
     const { renderingError, network } = this.state
 
-    return renderingError ? (
-      <div>There was a rendering error (see Developer Console). Please reload the UI.</div>
-    ) : (
+    return (
       <>
         <Global styles={resetStyles}/>
         <Global styles={baseStyles}/>
         <GlobalContext.Provider value={{ network }}>
           <ThemeProvider theme={getTheme()}>
-            <InterfaceRenderer appState={{ artifacts, spec }} network={network} />
+            {renderingError ? (
+              <RenderingError error='There was a rendering error (see Developer Console). Please reload the UI.' />
+            ) : (
+              <InterfaceRenderer appState={{ artifacts, spec }} network={network} />
+            )}
           </ThemeProvider>
         </GlobalContext.Provider>
       </>

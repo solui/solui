@@ -29,5 +29,5 @@ export const process = async (parentCtx, id, config) => {
 
   await processOutput(ctx, output)
 
-  await ctx.callbacks().endPanel(id, config)
+  await ctx.callbacks().endPanel(id)
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 
-import Error from './Error'
+import ErrorBox from './ErrorBox'
 
 const Container = styled.div`
   padding: 1rem;
@@ -18,7 +18,7 @@ const Value = styled.p``
 
 export default ({ result: { value, error }, config }) => {
   if (error) {
-    return <Error error={error} />
+    return <ErrorBox error={error} />
   } else {
     if (config) {
       return (

@@ -1,16 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import styled from '@emotion/styled'
 
-import { _ } from '../utils'
+import { _, createErrorWithDetails } from '../utils'
 import Layout from './components/Layout'
 import { InterfaceBuilder } from './components/Interface'
-import Error from './components/Error'
+import ErrorBox from './components/ErrorBox'
+import Progress from './components/Progress'
 import NetworkInfo from './components/NetworkInfo'
 import { process as processSpec, validateGroupInputs, validatePanel, executePanel } from '../spec'
 
 const Container = styled.div``
 
 const Interface = styled.div``
+
+const StyledProgress = styled(Progress)`
+  margin: 1rem;
+`
+
+const StyledError = styled(ErrorBox)`
+  margin: 1rem;
+`
 
 export default ({ network, appState: { spec, artifacts } }) => {
   const [ buildResult, setBuildResult ] = useState()
@@ -59,23 +68,28 @@ export default ({ network, appState: { spec, artifacts } }) => {
     (async () => {
       const int = new InterfaceBuilder()
 
-      const processingErrors = await processSpec({ spec, artifacts }, int)
+      try {
+        const { errors } = await processSpec({ spec, artifacts }, int)
 
-      setBuildResult({
-        interface: int,
-        errors: processingErrors
-      })
+        if (errors.notEmpty) {
+          throw createErrorWithDetails('There were processing errors', errors.toStringArray())
+        }
+
+        setBuildResult({ interface: int })
+      } catch (err) {
+        setBuildResult({ error: err })
+      }
     })()
   }, [ onValidatePanel, onValidateGroupInputs, onExecutePanel, spec, artifacts ])
 
   return (
     <Layout>
-      {(!network) ? <div>Waiting for Ethereum network connection</div> : (
+      {(!network) ? <StyledProgress>Waiting for Ethereum network connection</StyledProgress> : (
         <Container>
           <NetworkInfo network={network} />
-          {(!buildResult) ? <div>Loading...</div> : (
+          {(!buildResult) ? <StyledProgress>Rendering...</StyledProgress> : (
             <Interface>
-              {buildResult.errors.length ? <Error error={buildResult.errors} /> : (
+              {buildResult.error ? <StyledError error={buildResult.error} /> : (
                 buildResult.interface.buildContent({
                   onValidateGroupInputs,
                   onValidatePanel,

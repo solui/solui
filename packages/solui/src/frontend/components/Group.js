@@ -1,24 +1,57 @@
-import React, { useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 
 import { PanelBuilder } from './Panel'
 import Inputs from './Inputs'
+import Image from './Image'
 import { useInputHooks } from '../hooks/inputs'
+import { flex } from '../styles/fragments'
 
-const Id = styled.h1`
-  font-size: 2rem;
-  margin-bottom: 0.5em;
+const Container = styled.div`
+  padding: 1rem;
+  background-color: ${({ theme }) => theme.groupBgColor};
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.groupActiveBgColor};
+  }
 `
 
-const Title = styled.p`
+const Info = styled.div`
+  ${flex({ direction: 'row', justify: 'flex-start' })}
+`
+
+const InfoText = styled.div`
+  ${flex({ align: 'flex-start' })}
+`
+
+const Title = styled.h2`
+  font-size: 1.5rem;
+  margin: 0;
+`
+
+const Description = styled.p`
   font-size: 1.2rem;
-  margin: 0 2rem;
+  margin: 0.6rem 0 0;
+`
+
+const GroupImage = styled(Image)`
+  width: 100px;
+  height: auto;
+  max-height: 100px;
+  margin-right: 1rem;
+`
+
+const Content = styled.section`
+  transition: all 0.3s linear;
+  max-height: ${({ visible }) => (visible ? 'auto' : '0')};
+  margin-top: ${({ visible }) => (visible ? '2rem' : '0')};
+  overflow: hidden;
 `
 
 const PanelContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.panelBorderColor};
   padding: 1rem;
-  margin-bottom: 1rem;
 `
 
 export const Group = ({
@@ -27,9 +60,17 @@ export const Group = ({
   onValidatePanel,
   id,
   title,
+  description,
+  image,
   inputs,
   panels
 }) => {
+  const [ contentVisible, setContentVisible ] = useState(false)
+
+  const toggleContentVisibility = useCallback(() => {
+    setContentVisible(!contentVisible)
+  }, [ contentVisible ])
+
   const {
     inputValue,
     inputValidation,
@@ -68,35 +109,41 @@ export const Group = ({
   }, [ id, inputValue, onValidatePanel ])
 
   return (
-    <div>
-      <Id>{id}</Id>
-      <Title>{title}</Title>
+    <Container onClick={toggleContentVisibility} visible={contentVisible}>
+      <Info>
+        {image ? <GroupImage {...image} /> : null}
+        <InfoText>
+          <Title>{title}</Title>
+          {description ? <Description>{description}</Description> : null}
+        </InfoText>
+      </Info>
+      <Content visible={contentVisible}>
+        {inputs.length ? (
+          <Inputs
+            inputs={inputs}
+            inputValue={inputValue}
+            inputValidation={inputValidation}
+            onInputChange={onInputChange}
+          />
+        ) : null}
 
-      {inputs.length ? (
-        <Inputs
-          inputs={inputs}
-          inputValue={inputValue}
-          inputValidation={inputValidation}
-          onInputChange={onInputChange}
-        />
-      ) : null}
-
-      {panels.map(panel => (
-        <PanelContainer key={panel.id}>
-          {panel.buildContent({
-            canExecute: allInputsAreValid,
-            onExecute,
-            onValidate,
-          })}
-        </PanelContainer>
-      ))}
-    </div>
+        {panels.map(panel => (
+          <PanelContainer key={panel.id}>
+            {panel.buildContent({
+              canExecute: allInputsAreValid,
+              onExecute,
+              onValidate,
+            })}
+          </PanelContainer>
+        ))}
+      </Content>
+    </Container>
   )
 }
 
 export class GroupBuilder {
-  constructor ({ id, config: { title } }) {
-    this.attrs = { id, title }
+  constructor ({ id, attrs: { title, description, image } }) {
+    this.attrs = { id, title, description, image }
     this.inputs = []
     this.panels = []
     this.currentPanel = null

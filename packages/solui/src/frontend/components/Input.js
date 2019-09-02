@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import styled from '@emotion/styled'
 
-import Error from './Error'
+import ErrorBox from './ErrorBox'
 
 const Container = styled.div`
   margin: 1rem 0;
@@ -25,7 +25,7 @@ export default ({ name, onChange, value, error, config: { title, type } }) => {
         placeholder={placeholder}
         size={64}
       />
-      {error ? <Error error={error} /> : null}
+      {error ? <ErrorBox error={error} /> : null}
     </Container>
   )
 }

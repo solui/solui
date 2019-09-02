@@ -33,6 +33,12 @@ export const getMethod = (ctx, contractId, methodName) => {
   ))
 }
 
+export const checkImageIsValid = (ctx, img) => {
+  if (!_.get(img, 'url') || typeof img.url !== 'string') {
+    ctx.errors().add(ctx.id, 'image must be valid')
+  }
+}
+
 export const checkAddressIsValid = async (ctx, value, allowedTypes) => {
   if (!isAddress(value)) {
     ctx.errors().add(ctx.id, `must be a valid address`)
