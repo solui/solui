@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from '@emotion/styled'
 
 import { GroupBuilder } from './Group'
@@ -60,6 +60,8 @@ export const Interface = ({
   image,
   groups
 }) => {
+  const [ selectedGroup, setSelectedGroup ] = useState()
+
   return (
     <Container>
       <Info>
@@ -74,6 +76,8 @@ export const Interface = ({
               onValidateGroupInputs,
               onValidatePanel,
               onExecutePanel,
+              onClick: setSelectedGroup,
+              expanded: selectedGroup === group.id
             })}
           </GroupContainer>
         ))}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import styled from '@emotion/styled'
 
 import { PanelBuilder } from './Panel'
@@ -7,18 +7,23 @@ import Image from './Image'
 import { useInputHooks } from '../hooks/inputs'
 import { flex, boxShadow, smoothAnimation } from '../styles/fragments'
 
+const containerActiveCss = theme => `
+  background-color: ${theme.groupActiveBgColor};
+  border: 1px solid ${theme.groupActiveBorderColor};
+  ${boxShadow({ color: theme.groupActiveShadowColor })};
+`
+
 const Container = styled.div`
   ${smoothAnimation()};
   background-color: ${({ theme }) => theme.groupBgColor};
   border: 1px solid ${({ theme }) => theme.groupBorderColor};
+  ${({ expanded, theme }) => (expanded ? containerActiveCss(theme) : '')};
   border-radius: 5px;
   cursor: pointer;
   padding: 1rem;
 
   &:hover {
-    background-color: ${({ theme }) => theme.groupActiveBgColor};
-    border: 1px solid ${({ theme }) => theme.groupActiveBorderColor};
-    ${({ theme }) => boxShadow({ color: theme.groupActiveShadowColor })};
+    ${({ theme }) => containerActiveCss(theme)};
   }
 `
 
@@ -49,8 +54,8 @@ const GroupImage = styled(Image)`
 
 const Content = styled.section`
   ${smoothAnimation()};
-  max-height: ${({ visible }) => (visible ? 'auto' : '0')};
-  margin-top: ${({ visible }) => (visible ? '2rem' : '0')};
+  max-height: ${({ expanded }) => (expanded ? 'auto' : '0')};
+  margin-top: ${({ expanded }) => (expanded ? '2rem' : '0')};
   overflow: hidden;
 `
 
@@ -60,6 +65,8 @@ const PanelContainer = styled.div`
 `
 
 export const Group = ({
+  expanded,
+  onClick,
   onValidateGroupInputs,
   onExecutePanel,
   onValidatePanel,
@@ -70,11 +77,7 @@ export const Group = ({
   inputs,
   panels
 }) => {
-  const [ contentVisible, setContentVisible ] = useState(false)
-
-  const toggleContentVisibility = useCallback(() => {
-    setContentVisible(!contentVisible)
-  }, [ contentVisible ])
+  const onClickContainer = useCallback(() => onClick(id), [ onClick, id ])
 
   const {
     inputValue,
@@ -114,7 +117,7 @@ export const Group = ({
   }, [ id, inputValue, onValidatePanel ])
 
   return (
-    <Container onClick={toggleContentVisibility} visible={contentVisible}>
+    <Container onClick={onClickContainer} expanded={expanded}>
       <Info>
         {image ? <GroupImage {...image} /> : null}
         <InfoText>
@@ -122,7 +125,7 @@ export const Group = ({
           {description ? <Description>{description}</Description> : null}
         </InfoText>
       </Info>
-      <Content visible={contentVisible}>
+      <Content expanded={expanded}>
         {inputs.length ? (
           <Inputs
             inputs={inputs}
