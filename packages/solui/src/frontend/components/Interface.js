@@ -38,6 +38,7 @@ const Title = styled.h1`
 const Description = styled.p`
   font-size: 1.2rem;
   margin: 0;
+  line-height: 1.2em;
 `
 
 const Groups = styled.div`

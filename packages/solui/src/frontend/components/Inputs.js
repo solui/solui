@@ -5,7 +5,7 @@ import { GlobalContext } from '../_global'
 import Input from './Input'
 
 const StyledInput = styled(Input)`
-  margin: 1rem 0;
+  margin: 1.5rem 0;
 `
 
 export default ({ inputs, onInputChange, inputValue, inputValidation }) => {

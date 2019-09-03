@@ -43,10 +43,12 @@ const Title = styled.h2`
 const Description = styled.p`
   font-size: 1.2rem;
   margin: 0.6rem 0 0;
+  line-height: 1.2em;
 `
 
 const GroupImage = styled(Image)`
   width: 100px;
+  min-width: 100px;
   height: auto;
   max-height: 100px;
   margin-right: 1rem;

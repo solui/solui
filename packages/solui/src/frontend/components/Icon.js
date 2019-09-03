@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faLaughSquint,
   faExclamation,
+  faCopy,
 } from '@fortawesome/free-solid-svg-icons'
 
 config.autoAddCss = false
@@ -16,12 +17,14 @@ config.autoAddCss = false
 library.add(
   faLaughSquint,
   faExclamation,
+  faCopy,
 )
 
 const MAP = {
   fas: [
     'laugh-squint',
     'exclamation',
+    'copy',
   ],
 }
 

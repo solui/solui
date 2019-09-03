@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 
-import Inputs from './Inputs'
 import { useInputHooks } from '../hooks/inputs'
+import Inputs from './Inputs'
 import Result from './Result'
+import Icon from './Icon'
 import Button from './Button'
 import { roboto } from '../styles/fonts'
 
@@ -15,6 +16,14 @@ const Title = styled.h3`
   ${roboto('bold')}
   font-size: 1.1rem;
   margin: 0 0 2rem;
+`
+
+const StyledButton = styled(Button)`
+  margin-top: 1rem;
+`
+
+const StyledResult = styled(Result)`
+  margin-top: 1rem;
 `
 
 export const Panel = ({
@@ -74,12 +83,15 @@ export const Panel = ({
         />
       ) : null}
 
-      <Button onClick={onExecutePanel} disabled={isExecuting || !canExecute || !allInputsAreValid}>
-        Execute
-      </Button>
+      <StyledButton
+        onClick={onExecutePanel}
+        disabled={isExecuting || !canExecute || !allInputsAreValid}
+      >
+        {isExecuting ? <Icon name='laugh-squint' spin /> : 'Execute'}
+      </StyledButton>
 
       {execResult ? (
-        <Result result={execResult} config={config.output} />
+        <StyledResult result={execResult} config={config.output} />
       ) : null}
     </Container>
   )

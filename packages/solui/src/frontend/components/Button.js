@@ -7,14 +7,15 @@ const Button = styled.button`
   ${smoothTransitions()};
   ${roboto('bold')};
   cursor: pointer;
-  border: 1px solid ${({ theme }) => theme.buttonBorderColor};
+  border: 1px solid ${({ theme, disabled }) => (disabled ? theme.buttonDisabledBorderColor : theme.buttonBorderColor)};
   background-color: ${({ theme, disabled }) => (disabled ? theme.buttonDisabledBgColor : theme.buttonBgColor)};
+  color: ${({ theme, disabled }) => (disabled ? theme.buttonDisabledTextColor : theme.buttonTextColor)};
   padding: 1em 2em;
   font-size: 1rem;
-  color: ${({ theme, disabled }) => (disabled ? theme.buttonDisabledTextColor : theme.buttonTextColor)};
   outline: none;
   ${({ disabled, theme }) => (disabled ? '' : `
     &:hover {
+      border-color: ${theme.buttonHoverBorderColor};
       background-color: ${theme.buttonHoverBgColor};
       color: ${theme.buttonHoverTextColor};
       ${boxShadow({ color: theme.buttonShadowColor })};

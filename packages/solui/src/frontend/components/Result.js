@@ -2,6 +2,7 @@ import React from 'react'
 import styled from '@emotion/styled'
 
 import ErrorBox from './ErrorBox'
+import Value from './Value'
 
 const Container = styled.div`
   padding: 1rem;
@@ -14,21 +15,19 @@ const Title = styled.h3`
   font-weight: cold;
 `
 
-const Value = styled.p``
-
-export default ({ result: { value, error }, config }) => {
+export default ({ className, result: { value, error }, config: { title, type } }) => {
   if (error) {
-    return <ErrorBox error={error} />
+    return <ErrorBox className={className} error={error} />
   } else {
-    if (config) {
+    if (title && type) {
       return (
-        <Container>
-          <Title>{config.title}</Title>
-          <Value>{value}</Value>
+        <Container className={className}>
+          <Title>{title}</Title>
+          <Value type={type} value={value} />
         </Container>
       )
     } else {
-      return <Container>Success!</Container>
+      return <Container className={className}>Success!</Container>
     }
   }
 }
