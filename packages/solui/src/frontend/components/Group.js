@@ -19,7 +19,7 @@ const Container = styled.div`
   border: 1px solid ${({ theme }) => theme.groupBorderColor};
   ${({ expanded, theme }) => (expanded ? containerActiveCss(theme) : '')};
   border-radius: 5px;
-  cursor: pointer;
+  cursor: ${({ expanded }) => (expanded ? 'default' : 'pointer')};
   padding: 1rem;
 
   &:hover {

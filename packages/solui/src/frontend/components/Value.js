@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 import ReactTooltip from 'react-tooltip'
 import * as clipboard from 'clipboard-polyfill'
@@ -12,14 +12,20 @@ const StyledIconButton = styled(IconButton)`
   margin-left: 0.5rem;
 `
 
+const COPY_TO_CLIPBOARD = 'Copy to clipboard'
+
 export default ({ value, type }) => {
+  const [ copyButtonTooltip, setCopyButtonTooltip ] = useState(COPY_TO_CLIPBOARD)
+
   const copyToClipboard = useCallback(() => {
     clipboard.writeText(value)
+    setCopyButtonTooltip('Copied!')
+    setTimeout(() => setCopyButtonTooltip(COPY_TO_CLIPBOARD), 5000)
   }, [ value ])
 
   const meta = (
     <StyledIconButton
-      title='Copy to clipboard'
+      title={copyButtonTooltip}
       icon={{ name: 'copy' }}
       onClick={copyToClipboard}
     />

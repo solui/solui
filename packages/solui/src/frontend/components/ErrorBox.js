@@ -17,8 +17,16 @@ const ErrorDiv = styled.div`
   border-radius: 5px;
 `
 
-const ErrorDetails = styled.div`
+const StyledIcon = styled(Icon)`
+  color: ${({ theme }) => theme.errorIconColor};
+  margin-right: 0.6em;
+  font-size: 150%;
+`
+
+const Details = styled.div`
   ${openSans()}
+  width: 90%;
+  word-break: break-all;
   line-height: 1.2em;
 `
 
@@ -31,12 +39,6 @@ const SubMsg = styled.p`
   margin: 0.5em 0 0 1em;
 `
 
-const StyledIcon = styled(Icon)`
-  color: ${({ theme }) => theme.errorIconColor};
-  margin-right: 0.4em;
-  font-size: 150%;
-`
-
 export default ({ className, error }) => {
   if (!Array.isArray(error)) {
     error = [ error ]
@@ -47,12 +49,12 @@ export default ({ className, error }) => {
       {error.map(e => (
         <ErrorDiv key={`${e}`}>
           <StyledIcon name='exclamation' />
-          <ErrorDetails>
+          <Details>
             <Msg>{`${e}`}</Msg>
             {e.details ? e.details.map(d => (
               <SubMsg key={`${d}`}>- {`${d}`}</SubMsg>
             )) : null}
-          </ErrorDetails>
+          </Details>
         </ErrorDiv>
       ))}
     </Container>

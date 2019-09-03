@@ -15,7 +15,7 @@ const Title = styled.h3`
   font-weight: cold;
 `
 
-export default ({ className, result: { value, error }, config: { title, type } }) => {
+export default ({ className, result: { value, error }, config: { title, type } = {} }) => {
   if (error) {
     return <ErrorBox className={className} error={error} />
   } else {
