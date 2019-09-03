@@ -1,13 +1,18 @@
 import React from 'react'
+import styled from '@emotion/styled'
 
 import { GlobalContext } from '../_global'
 import Input from './Input'
+
+const StyledInput = styled(Input)`
+  margin: 1rem 0;
+`
 
 export default ({ inputs, onInputChange, inputValue, inputValidation }) => {
   return (
     <GlobalContext.Consumer>
       {({ network }) => inputs.map(({ id, name, config }) => (
-        <Input
+        <StyledInput
           key={id}
           name={name}
           onChange={onInputChange[id]}

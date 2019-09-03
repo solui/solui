@@ -33,7 +33,7 @@ export const childAnchors = ({ textColor, hoverTextColor }) => `
   }
 `
 
-export const smoothAnimation = () => `
+export const smoothTransitions = () => `
   transition: all 0.3s linear
 `
 

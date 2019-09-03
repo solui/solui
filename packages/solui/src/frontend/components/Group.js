@@ -5,7 +5,7 @@ import { PanelBuilder } from './Panel'
 import Inputs from './Inputs'
 import Image from './Image'
 import { useInputHooks } from '../hooks/inputs'
-import { flex, boxShadow, smoothAnimation } from '../styles/fragments'
+import { flex, boxShadow, smoothTransitions } from '../styles/fragments'
 
 const containerActiveCss = theme => `
   background-color: ${theme.groupActiveBgColor};
@@ -14,7 +14,7 @@ const containerActiveCss = theme => `
 `
 
 const Container = styled.div`
-  ${smoothAnimation()};
+  ${smoothTransitions()};
   background-color: ${({ theme }) => theme.groupBgColor};
   border: 1px solid ${({ theme }) => theme.groupBorderColor};
   ${({ expanded, theme }) => (expanded ? containerActiveCss(theme) : '')};
@@ -53,15 +53,21 @@ const GroupImage = styled(Image)`
 `
 
 const Content = styled.section`
-  ${smoothAnimation()};
+  ${smoothTransitions()};
   max-height: ${({ expanded }) => (expanded ? 'auto' : '0')};
   margin-top: ${({ expanded }) => (expanded ? '2rem' : '0')};
   overflow: hidden;
 `
 
 const PanelContainer = styled.div`
-  border: 1px solid ${({ theme }) => theme.panelBorderColor};
-  padding: 1rem;
+  border: 1px dashed ${({ theme }) => theme.panelBorderColor};
+  background-color: ${({ theme }) => theme.panelBgColor};
+  border-radius: 5px;
+  margin-top: 3rem;
+
+  &:hover {
+    border-color:
+  }
 `
 
 export const Group = ({

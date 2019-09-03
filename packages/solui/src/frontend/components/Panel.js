@@ -4,14 +4,28 @@ import styled from '@emotion/styled'
 import Inputs from './Inputs'
 import { useInputHooks } from '../hooks/inputs'
 import Result from './Result'
+import Button from './Button'
+import { roboto } from '../styles/fonts'
 
-const Title = styled.h2`
-  font-weight: bold;
-  font-size: 1.5rem;
-  margin-bottom: 1em;
+const Container = styled.div`
+  padding: 1rem;
 `
 
-export const Panel = ({ onExecute, onValidate, canExecute, id: panelId, config, inputs }) => {
+const Title = styled.h3`
+  ${roboto('bold')}
+  font-size: 1.1rem;
+  margin: 0 0 2rem;
+`
+
+export const Panel = ({
+  className,
+  onExecute,
+  onValidate,
+  canExecute,
+  id: panelId,
+  config,
+  inputs
+}) => {
   const [ execResult, setExecResult ] = useState()
   const [ isExecuting, setIsExecuting ] = useState(false)
 
@@ -48,7 +62,7 @@ export const Panel = ({ onExecute, onValidate, canExecute, id: panelId, config, 
   }, [ allInputsAreValid, onExecute, panelId, inputValue ])
 
   return (
-    <div>
+    <Container className={className}>
       <Title>{config.title}</Title>
 
       {inputs.length ? (
@@ -60,14 +74,14 @@ export const Panel = ({ onExecute, onValidate, canExecute, id: panelId, config, 
         />
       ) : null}
 
-      <button onClick={onExecutePanel} disabled={isExecuting || !canExecute || !allInputsAreValid}>
+      <Button onClick={onExecutePanel} disabled={isExecuting || !canExecute || !allInputsAreValid}>
         Execute
-      </button>
+      </Button>
 
       {execResult ? (
         <Result result={execResult} config={config.output} />
       ) : null}
-    </div>
+    </Container>
   )
 }
 
