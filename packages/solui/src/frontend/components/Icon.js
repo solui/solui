@@ -10,6 +10,7 @@ import {
   faLaughSquint,
   faExclamation,
   faCopy,
+  faLink,
 } from '@fortawesome/free-solid-svg-icons'
 
 config.autoAddCss = false
@@ -18,6 +19,7 @@ library.add(
   faLaughSquint,
   faExclamation,
   faCopy,
+  faLink,
 )
 
 const MAP = {
@@ -25,6 +27,7 @@ const MAP = {
     'laugh-squint',
     'exclamation',
     'copy',
+    'link',
   ],
 }
 

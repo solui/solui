@@ -3,6 +3,14 @@ import axios from 'axios'
 
 let network
 
+const etherscanPrefix = {
+  '1': 'https://etherscan.io/address/',
+  '3': 'https://ropsten.etherscan.io/address/',
+  '4': 'https://rinkeby.etherscan.io/address/',
+  '5': 'https://goerli.etherscan.io/address/',
+  '42': 'https://kovan.etherscan.io/address/',
+}
+
 const getNetworkName = id => {
   switch (id) {
     case '1':
@@ -61,6 +69,14 @@ export const getNetwork = async () => {
 
       network.id = `${await network.web3.eth.net.getId()}`
       network.name = getNetworkName(network.networkId)
+
+      network.getEtherscanLink = addr => {
+        if (etherscanPrefix[network.id]) {
+          return `${etherscanPrefix[network.id]}${addr}`
+        } else {
+          return null
+        }
+      }
     } catch (err) {
       network = null
       throw err
