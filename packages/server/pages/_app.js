@@ -1,13 +1,13 @@
 import _ from 'lodash'
-import App, { Container } from 'next/app'
+import App from 'next/app'
 import { DefaultSeo } from 'next-seo'
 import React from 'react'
 import { ApolloProvider } from 'react-apollo'
 import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'
 
 import { APP_STATE_KEYS } from '../common/appState'
-import { client } from './graphql'
-import { GlobalProvider, getClientSideAppState } from './globalState'
+import { client } from '../frontend/graphql'
+import { GlobalProvider, getClientSideAppState } from '../frontend/globalState'
 
 export default class MyApp extends App {
   static async getInitialProps ({ Component, ctx }) {
@@ -30,19 +30,20 @@ export default class MyApp extends App {
     const { Component, pageProps, appState } = this.props
 
     return (
-      <Container>
-        <DefaultSeo
-          title="solUI"
-          description="Declarative UIs for smart contracts"
-        />
-        <GlobalProvider value={appState}>
-          <ApolloProvider client={client}>
-            <ApolloHooksProvider client={client}>
-              <Component appState={appState} {...pageProps} />
-            </ApolloHooksProvider>
-          </ApolloProvider>
-        </GlobalProvider>
-      </Container>
+      <GlobalProvider value={appState}>
+        <ApolloProvider client={client}>
+          <ApolloHooksProvider client={client}>
+
+            <DefaultSeo
+              title="solUI"
+              description="Declarative UIs for smart contracts"
+            />
+
+            <Component appState={appState} {...pageProps} />
+
+          </ApolloHooksProvider>
+        </ApolloProvider>
+      </GlobalProvider>
     )
   }
 }

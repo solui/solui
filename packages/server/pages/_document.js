@@ -1,8 +1,8 @@
 import Document, { Main, Head, NextScript } from 'next/document'
 import { Global } from '@emotion/core'
 
-import resetStyles from './styles/reset'
-import baseStyles from './styles/base'
+import resetStyles from '../frontend/styles/reset'
+import baseStyles from '../frontend/styles/base'
 import { APP_STATE_KEYS } from '../common/appState'
 
 export default class MyDocument extends Document {

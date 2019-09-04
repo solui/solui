@@ -9,9 +9,13 @@
     "lint": "eslint .",
     "start": "nodemon index.js",
     "db:migrate": "npm run knex -- migrate:latest",
+    "db:migrate:live": "npm run knex -- --env live migrate:latest",
     "db:rollback": "npm run knex -- migrate:rollback",
     "db:seed": "npm run knex -- seed:run",
-    "knex": "babel-node --presets @babel/env node_modules/.bin/knex"
+    "knex": "babel-node --presets @babel/env node_modules/.bin/knex",
+    "now": "now --token $NOW_TOKEN --scope solui",
+    "deploy": "npm run now -- --prod -f --public",
+    "clean-old-deploys": "npm run now -- rm solui-live --safe --yes"
   },
   "dependencies": {
     "@babel/core": "^7.3.4",
@@ -51,7 +55,7 @@
     "lodash": "^4.17.11",
     "mailgun-js": "^0.22.0",
     "marked": "^0.6.0",
-    "next": "^8.0.3",
+    "next": "^9.0.5",
     "next-images": "^1.0.4",
     "next-seo": "^2.0.0",
     "pg": "^7.8.0",
@@ -79,7 +83,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "jest": "^23.6.0",
     "nodemon": "^1.18.10",
-    "now": "^11.4.6",
+    "now": "^16.1.3",
     "react-hot-loader": "^4.8.0",
     "webpack": "^4.28.4"
   },

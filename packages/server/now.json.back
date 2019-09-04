@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "name": "solui-live",
+  "alias": "solui.dev",
+  "regions": [ "all" ],
+  "builds": [
+    { "src": "package.json", "use": "@now/next.js" }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
