@@ -5,108 +5,42 @@ module.exports = gql`
   scalar DateTime
   scalar JSON
 
-  enum LocationType {
-    ONSITE
-    REMOTE_LIMITED
-    REMOTE_ANYWHERE
+  type User {
+    id: ID!
   }
 
-  enum ApplyMethod {
-    URL
-    EMAIL
+  type ContractSpec {
+    name: String!
+    bytecode: String!
   }
 
-  type Apply {
-    method: ApplyMethod!
-    link: String!
-    instructions: String
+  type Spec {
+    ui: JSON!
+    contracts: [ContractSpec]!
   }
 
-  input ApplyInput {
-    method: ApplyMethod!
-    link: String!
-    instructions: String
+  type Version {
+    id: ID!
+    title: String!
+    description: String!
+    spec: Spec!
+    created: DateTime!
   }
 
-  type Company {
+  type Package {
     id: ID!
     name: String!
-    description: String!
-    url: String!
-    logoImg: String
+    author: User!
+    versions: [Version]
   }
 
-  input CompanyInput {
-    id: ID
-    name: String!
-    description: String!
-    url: String!
-    logoImg: String
-  }
-
-  type Location {
-    type: LocationType!
-    name: String
-  }
-
-  input LocationInput {
-    type: LocationType!
-    name: String
-  }
-
-  input TagInput {
-    id: ID!
-    text: String!
-  }
-
-  type Job {
-    id: ID!
-    title: String!
-    slug: String!
-    absoluteUrl: String!
-    description: String!
-    posted: DateTime
-    expiry: DateTime
-    location: Location!
-    apply: Apply!
-    company: Company!
-    blockchain: String!
-    tags: [String]
-    scraped: Boolean
-  }
-
-  input CreateJobInput {
-    title: String!
-    description: String!
-    company: CompanyInput!
-    location: LocationInput!
-    blockchain: [TagInput!]!
-    tags: [TagInput]!
-    apply: ApplyInput!
-    adminEmail: String!
-  }
-
-  input UpdatedJobInput {
-    title: String!
-    description: String!
-    company: CompanyInput!
-    location: LocationInput!
-    blockchain: [TagInput!]!
-    tags: [TagInput]!
-    apply: ApplyInput!
+  input SearchCritieraInput {
+    title: String
+    bytecodeHash: String
   }
 
   type Query {
-    myOwnJobs: [Job]!
-    jobs(onlyActive: Boolean!): [Job]!
-    job(id: ID, slug: String): Job
-    companies: [Company]!
-  }
-
-  type Mutation {
-    createJob(job: CreateJobInput!): Job!
-    publishJob(id: ID!, token: JSON!, weeks: Int!, updatedDetails: UpdatedJobInput!): Job!
-    publishJobAsAdmin(id: ID!, weeks: Int!, updatedDetails: UpdatedJobInput!): Job!
-    login(email: String!): Boolean
+    search(criteria: SearchCritieraInput!): [Package]!
+    get(idOrName: String!): Package!
   }
 `

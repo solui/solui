@@ -21,8 +21,7 @@ export default ({ config, db }) => {
 
   return {
     Query: {
-    },
-    Mutation: {
+
     },
     DateTime: GraphQLDateTime,
     JSON: GraphQLJSON,

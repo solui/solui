@@ -29,12 +29,12 @@ exports.up = async function (knex) {
     table.uuid('pkg_id').notNullable()
     table.text('title').notNullable()
     table.text('description').notNullable()
-    table.json('spec').notNullable()
+    table.json('data').notNullable()
     addTimestampColumns(knex, table)
     table.foreign('pkg_id').references('package.id').onUpdate('RESTRICT').onDelete('CASCADE')
   })
 
-  await schema(knex).createTable('bytecode_index', table => {
+  await schema(knex).createTable('bytecode_hash', table => {
     table.uuid('id').notNullable().primary().defaultTo(knex.raw('uuid_generate_v4()'))
     table.string('hash').notNullable()
     table.uuid('version_id').notNullable()
@@ -45,7 +45,7 @@ exports.up = async function (knex) {
 }
 
 exports.down = async function (knex) {
-  await dropTable(knex, 'bytecode_index')
+  await dropTable(knex, 'bytecode_hash')
   await dropTable(knex, 'version')
   await dropTable(knex, 'package')
   await dropTable(knex, 'user')
