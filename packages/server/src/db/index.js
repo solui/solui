@@ -57,7 +57,7 @@ class Db {
     return this._knex
   }
 
-  async _dbTrans (cb) {
+  async _dbTransSerialized (cb) {
     return new Promise((resolve, reject) => {
       const __tryTransaction = async () => {
         try {
@@ -94,6 +94,22 @@ class Db {
 
       // kick things off
       __tryTransaction()
+    })
+  }
+
+  async _dbTrans (cb) {
+    this._log.debug('BEGIN TRANSACTION ...')
+
+    return this._db().transaction(async trx => {
+      try {
+        const result = await cb(trx)
+        this._log.debug('... COMMIT :)')
+        await trx.commit(result)
+      } catch (err) {
+        this._log.warn(err)
+        this._log.debug('... ROLLBACK :/')
+        await trx.rollback(err)
+      }
     })
   }
 

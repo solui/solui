@@ -9,21 +9,11 @@ module.exports = gql`
     id: ID!
   }
 
-  type ContractSpec {
-    name: String!
-    bytecode: String!
-  }
-
-  type Spec {
-    ui: JSON!
-    contracts: [ContractSpec]!
-  }
-
   type Version {
     id: ID!
     title: String!
     description: String!
-    spec: Spec!
+    data: JSON!
     created: DateTime!
   }
 
@@ -35,8 +25,9 @@ module.exports = gql`
   }
 
   input SearchCritieraInput {
-    title: String
+    keywords: String
     bytecodeHash: String
+    page: Integer
   }
 
   type Query {

@@ -1,59 +1,31 @@
-import _ from 'lodash'
+export const _buildUserJoin = (qry, userIdColumn, options = {}) => {
+  qry = qry.column({
+    uId: 'user.id',
+    uEmail: 'user.email',
+  })
 
-import { obfuscate } from '../utils/string'
-
-export async function _createUserOrFetchExisting (email, trx) {
-  email = email.toLowerCase()
-
-  let ret = await this._db().table('user')
-    .select()
-    .where({ email })
-    .limit(1)
-    .transacting(trx)
-
-  let id
-  ;({ id } = _.get(ret, '0', {}))
-
-  if (!id) {
-    this._log.debug(`Create user: ${email}`)
-
-    ret = await this._db().table('user')
-      .insert({ email })
-      .returning('id')
-      .transacting(trx)
-
-    id = _.get(this._extractReturnedDbIds(ret), '0')
+  if (options.leftJoin) {
+    qry = qry.leftJoin('user', userIdColumn, 'user.id')
+  } else {
+    qry = qry.innerJoin('user', userIdColumn, 'user.id')
   }
 
-  return id
+  return qry
 }
 
-export async function getUserByEmail (email) {
-  this._log.debug(`Get user for with email ${obfuscate(email)} ...`)
+export const _extractUniqueUsers = rows => {
+  return Object.values(
+    rows.reduce((m, row) => {
+      if (row.uId) {
+        const id = row.uId
 
-  const rows = await this._db().table('user')
-    .where({ email })
-    .limit(1)
+        // not yet seen
+        if (!m[id]) {
+          m[id] = row
+        }
+      }
 
-  return rows[0]
-}
-
-export async function getUserById (id) {
-  this._log.debug(`Get user with id ${id} ...`)
-
-  const rows = await this._db().table('user')
-    .where({ id })
-    .limit(1)
-
-  return rows[0]
-}
-
-export async function isUserAdmin (id) {
-  this._log.debug(`Check if user ${id} is admin ...`)
-
-  const rows = await this._db().table('user')
-    .where({ id, isAdmin: true })
-    .limit(1)
-
-  return !!rows[0]
+      return m
+    }, {})
+  )
 }

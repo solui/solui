@@ -13,7 +13,7 @@ const deleteTableData = (knex, tables) => (
 
 const buildSpec = id => {
   const s = { ...spec }
-  s.id = `fixtures-${id}`
+  s.id = `fixture-${id}`
   s.title = `Fixture ${id}`
   s.description = `${id} - ${s.description}`
   return s
@@ -48,17 +48,17 @@ exports.seed = async knex => {
     {
       id: pkg1Id,
       owner_id: user1Id,
-      name: 'pkg-1',
+      name: 'fixture-1',
     },
     {
       id: pkg2Id,
       owner_id: user2Id,
-      name: 'pkg-2',
+      name: 'fixture-2',
     },
     {
       id: pkg3Id,
       owner_id: user2Id,
-      name: 'pkg-3',
+      name: 'fixture-3',
     },
   ])
 

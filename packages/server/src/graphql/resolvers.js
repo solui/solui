@@ -21,7 +21,13 @@ export default ({ config, db }) => {
 
   return {
     Query: {
-
+      search: async (_, { keywords, bytecodeHash, page }) => {
+        if (keywords) {
+          return db.searchByKeywords(keywords, page)
+        } else {
+          return db.searchByBytecodeHash(bytecodeHash, page)
+        }
+      },
     },
     DateTime: GraphQLDateTime,
     JSON: GraphQLJSON,
