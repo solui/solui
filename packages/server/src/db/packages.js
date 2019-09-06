@@ -61,6 +61,7 @@ export async function searchByKeywords (keywords, page = 1) {
   qry = this._buildPackageJoin(qry, 'version.pkg_id')
 
   qry = qry
+    .orderBy('version.created_at', 'desc')
     .limit(10)
     .offset((page - 1) * 10)
 

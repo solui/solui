@@ -1,6 +1,8 @@
 const _ = require('lodash')
+const { subDays, addDays } = require('date-fns')
 const uuid = require('uuid/v4')
 const { sha3 } = require('web3-utils')
+const faker = require('faker')
 
 const Ownable = require('./Ownable.json')
 const spec = require('./spec.json')
@@ -13,9 +15,9 @@ const deleteTableData = (knex, tables) => (
 
 const buildSpec = id => {
   const s = { ...spec }
-  s.id = `fixture-${id}`
-  s.title = `Fixture ${id}`
-  s.description = `${id} - ${s.description}`
+  s.id = `fixture-${id}-${faker.random.word()}`
+  s.title = `Fixture ${faker.random.words(2)}`
+  s.description = faker.random.words(25)
   return s
 }
 
@@ -25,6 +27,18 @@ const buildData = id => ({
     Ownable: _.pick(Ownable, [ 'abi', 'bytecode' ])
   }
 })
+
+const tsStr = ({ add = 0, sub = 0 } = {}) => {
+  let d = new Date()
+
+  if (0 < sub) {
+    d = subDays(d, sub)
+  } else if (0 < add) {
+    d = addDays(d, add)
+  }
+
+  return d.toISOString()
+}
 
 exports.seed = async knex => {
   await deleteTableData(knex, [
@@ -38,8 +52,8 @@ exports.seed = async knex => {
   const [ user1Id, user2Id ] = [ uuid(), uuid() ]
 
   await knex('user').insert([
-    { id: user1Id, username: 'tuser1', email: 'tuser1@hiddentao.com', email_confirmed: true },
-    { id: user2Id, username: 'tuser2', email: 'tuser2@hiddentao.com', email_confirmed: true },
+    { id: user1Id, username: faker.internet.userName(), email: 'tuser1@hiddentao.com', email_confirmed: true },
+    { id: user2Id, username: faker.internet.userName(), email: 'tuser2@hiddentao.com', email_confirmed: true },
   ])
 
   const [ pkg1Id, pkg2Id, pkg3Id ] = [ uuid(), uuid(), uuid() ]
@@ -71,26 +85,31 @@ exports.seed = async knex => {
       id: version1Id,
       pkg_id: pkg1Id,
       data: buildData(1),
+      created_at: tsStr({ add: 1 }),
     },
     {
       id: version2Id,
       pkg_id: pkg1Id,
       data: buildData(2),
+      created_at: tsStr({ add: 2 }),
     },
     {
       id: version3Id,
       pkg_id: pkg2Id,
       data: buildData(3),
+      created_at: tsStr({ add: 3 }),
     },
     {
       id: version4Id,
       pkg_id: pkg2Id,
       data: buildData(4),
+      created_at: tsStr({ add: 4 }),
     },
     {
       id: version5Id,
       pkg_id: pkg3Id,
       data: buildData(5),
+      created_at: tsStr({ add: 5 }),
     },
   ]
 
