@@ -1,4 +1,6 @@
-export const _buildPackageJoin = (qry, joinColumn, options = {}) => {
+import _ from 'lodash'
+
+export function _buildPackageJoin (qry, joinColumn, options = {}) {
   qry = qry.column({
     pId: 'package.id',
     pName: 'package.name',
@@ -12,10 +14,12 @@ export const _buildPackageJoin = (qry, joinColumn, options = {}) => {
     qry = qry.innerJoin('package', joinColumn, 'package.id')
   }
 
+  qry = this._buildUserJoin(qry, 'package.owner_id')
+
   return qry
 }
 
-export const _groupJoinRowsByPackage = rows => {
+export function _groupJoinRowsByPackage (rows) {
   const pkgs = {}
 
   // group rows by pkg id
@@ -34,18 +38,25 @@ export const _groupJoinRowsByPackage = rows => {
       id,
       name: pkgs[id][0].pName,
       created: pkgs[id][0].pCreated,
-      versions: pkgs[id],
+      author: {
+        id: pkgs[id][0].pOwnerId,
+      },
+      versions: pkgs[id].map(v => ({
+        ..._.pick(v, 'id', 'title', 'description', 'data'),
+        created: v.createdAt,
+      }))
     }
   })
 
   return ret
 }
 
-export const searchByKeywords = async (keywords, page = 1) => {
-  this._log.debug(`Search by keywords: ${keywords} ...`)
+export async function searchByKeywords (keywords, page = 1) {
+  this._log.debug(`Search by keywords: "${keywords}" ...`)
 
   let qry = this._db().table('version')
-    .where('title LIKE "%?%" OR description LIKE "%?%"', [ keywords, keywords ])
+    .select('version.*')
+    .whereRaw(`search LIKE ?`, [ `%${keywords}%` ])
 
   qry = this._buildPackageJoin(qry, 'version.pkg_id')
 

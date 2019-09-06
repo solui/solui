@@ -7,13 +7,20 @@ exports.up = async function (knex) {
   await schema(knex).createTable('user', table => {
     table.uuid('id').notNullable().primary().defaultTo(knex.raw('uuid_generate_v4()'))
     table.string('email').notNullable().unique()
+    table.boolean('email_confirmed').notNullable().defaultTo(false)
+    table.string('username').notNullable().unique()
     table.boolean('is_admin').notNullable().defaultTo(false)
     addTimestampColumns(knex, table)
   })
 
   // create admin users
   await knex.table('user').insert([
-    { email: 'ram@hiddentao.com', is_admin: true },
+    {
+      email: 'ram@hiddentao.com',
+      username: 'hiddentao',
+      email_confirmed: true,
+      is_admin: true,
+    },
   ])
 
   await schema(knex).createTable('package', table => {
@@ -29,6 +36,7 @@ exports.up = async function (knex) {
     table.uuid('pkg_id').notNullable()
     table.text('title').notNullable()
     table.text('description').notNullable()
+    table.text('search').notNullable()
     table.json('data').notNullable()
     addTimestampColumns(knex, table)
     table.foreign('pkg_id').references('package.id').onUpdate('RESTRICT').onDelete('CASCADE')

@@ -8,14 +8,14 @@
     "build": "next build",
     "lint": "eslint .",
     "start": "nodemon index.js",
-    "db:migrate": "npm run knex -- migrate:latest",
-    "db:migrate:live": "npm run knex -- --env live migrate:latest",
-    "db:rollback": "npm run knex -- migrate:rollback",
-    "db:seed": "npm run knex -- seed:run",
+    "db:migrate": "yarn knex migrate:latest",
+    "db:migrate:live": "yarn knex --env live migrate:latest",
+    "db:rollback": "yarn knex migrate:rollback",
+    "db:seed": "yarn knex seed:run",
     "knex": "babel-node --presets @babel/env node_modules/.bin/knex",
     "now": "now --token $NOW_TOKEN --scope solui",
-    "deploy": "npm run now -- --prod -f --public",
-    "clean-old-deploys": "npm run now -- rm solui-live --safe --yes"
+    "deploy": "yarn now --prod -f --public",
+    "clean-old-deploys": "yarn now rm solui-live --safe --yes"
   },
   "dependencies": {
     "@babel/core": "^7.3.4",

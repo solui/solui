@@ -21,7 +21,7 @@ const buildSpec = id => {
 
 const buildData = id => ({
   spec: buildSpec(id),
-  aritfacts: {
+  artifacts: {
     Ownable: _.pick(Ownable, [ 'abi', 'bytecode' ])
   }
 })
@@ -38,8 +38,8 @@ exports.seed = async knex => {
   const [ user1Id, user2Id ] = [ uuid(), uuid() ]
 
   await knex('user').insert([
-    { id: user1Id, email: 'bwuser1@hiddentao.com' },
-    { id: user2Id, email: 'bwuser2@hiddentao.com' },
+    { id: user1Id, username: 'tuser1', email: 'tuser1@hiddentao.com', email_confirmed: true },
+    { id: user2Id, username: 'tuser2', email: 'tuser2@hiddentao.com', email_confirmed: true },
   ])
 
   const [ pkg1Id, pkg2Id, pkg3Id ] = [ uuid(), uuid(), uuid() ]
@@ -97,6 +97,7 @@ exports.seed = async knex => {
   versionsToInsert.forEach(v => {
     v.title = v.data.spec.title
     v.description = v.data.spec.description
+    v.search = `${v.title} ${v.description}`.toLowerCase()
   })
 
   await knex('version').insert(versionsToInsert)

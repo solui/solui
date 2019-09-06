@@ -21,13 +21,14 @@ module.exports = gql`
     id: ID!
     name: String!
     author: User!
+    created: DateTime!
     versions: [Version]
   }
 
   input SearchCritieraInput {
     keywords: String
     bytecodeHash: String
-    page: Integer
+    page: Int
   }
 
   type Query {

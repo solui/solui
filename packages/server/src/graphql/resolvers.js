@@ -21,7 +21,7 @@ export default ({ config, db }) => {
 
   return {
     Query: {
-      search: async (_, { keywords, bytecodeHash, page }) => {
+      search: async (_, { criteria: { keywords, bytecodeHash, page } }) => {
         if (keywords) {
           return db.searchByKeywords(keywords, page)
         } else {

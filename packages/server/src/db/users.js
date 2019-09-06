@@ -1,4 +1,4 @@
-export const _buildUserJoin = (qry, userIdColumn, options = {}) => {
+export function _buildUserJoin (qry, userIdColumn, options = {}) {
   qry = qry.column({
     uId: 'user.id',
     uEmail: 'user.email',
@@ -13,7 +13,7 @@ export const _buildUserJoin = (qry, userIdColumn, options = {}) => {
   return qry
 }
 
-export const _extractUniqueUsers = rows => {
+export function _extractUniqueUsers (rows) {
   return Object.values(
     rows.reduce((m, row) => {
       if (row.uId) {
