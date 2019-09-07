@@ -6,8 +6,7 @@
     "access": "public"
   },
   "scripts": {
-    "clean": "rm -rf ./dist",
-    "build": "yarn clean; babel ./src/*.js -d ./dist; babel ./src/**/*.js -d ./dist"
+    "build": "rm -rf ./dist; mkdir ./dist; babel ./src/*.js --out-dir ./dist; babel ./src/themes/*.js --out-dir ./dist/themes"
   },
   "keywords": [
     "styling",
@@ -15,7 +14,7 @@
   ],
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "dist/themes.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/solui/monorepo.git"
