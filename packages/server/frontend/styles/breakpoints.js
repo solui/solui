@@ -24,7 +24,7 @@ const getSize = (bp, type) => {
 export const media = {
   maxWidth: breakpoints.width.desktop,
   when: m => {
-    const vals = Object.entries(m).map(([k, v]) => {
+    const vals = Object.entries(m).map(([ k, v ]) => {
       let type
 
       if (k.endsWith('W')) {

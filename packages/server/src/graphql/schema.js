@@ -25,6 +25,12 @@ module.exports = gql`
     versions: [Version]
   }
 
+  type PackageResults {
+    packages: [Package]!
+    page: Int!
+    numPages: Int!
+  }
+
   input SearchCritieraInput {
     keywords: String
     bytecodeHash: String
@@ -32,7 +38,7 @@ module.exports = gql`
   }
 
   type Query {
-    search(criteria: SearchCritieraInput!): [Package]!
+    search(criteria: SearchCritieraInput!): PackageResults!
     get(idOrName: String!): Package!
   }
 `

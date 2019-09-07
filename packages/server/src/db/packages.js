@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import knex from 'knex'
 
 export function _buildPackageJoin (qry, joinColumn, options = {}) {
   qry = qry.column({
@@ -51,21 +52,60 @@ export function _groupJoinRowsByPackage (rows) {
   return ret
 }
 
-export async function searchByKeywords (keywords, page = 1) {
+const RESULTS_PER_PAGE = 10
+
+export async function _searchPackages (countQry, fetchQry, page = 1) {
+  // get total count
+  const [ { pkgcount } ] = await countQry
+
+  // get results
+  const rows = await this._buildPackageJoin(fetchQry, 'version.pkg_id')
+    .orderBy('version.created_at', 'desc')
+    .limit(RESULTS_PER_PAGE)
+    .offset((page - 1) * RESULTS_PER_PAGE)
+
+  const packages = Object.values(this._groupJoinRowsByPackage(rows))
+
+  return {
+    packages,
+    page,
+    numPages: parseInt(Math.ceil(pkgcount / RESULTS_PER_PAGE), 10),
+  }
+}
+
+export async function searchByKeywords (keywords, page) {
   this._log.debug(`Search by keywords: "${keywords}" ...`)
 
-  let qry = this._db().table('version')
+  const filterCondition = [ `search LIKE ?`, [ `%${keywords}%` ] ]
+
+  // get total count
+  const countQry = this._db().raw(
+    `select count(distinct pkg_id) as pkgcount from version where ${filterCondition[0]}`, filterCondition[1]
+  )
+
+  // get results
+  const fetchQry = this._db().table('version')
     .select('version.*')
     .whereRaw(`search LIKE ?`, [ `%${keywords}%` ])
 
-  qry = this._buildPackageJoin(qry, 'version.pkg_id')
+  return this._searchPackages(countQry, fetchQry, page)
+}
 
-  qry = qry
-    .orderBy('version.created_at', 'desc')
-    .limit(10)
-    .offset((page - 1) * 10)
+export async function searchByBytecodeHash (hash, page) {
+  this._log.debug(`Search by bytecode hash: "${hash}" ...`)
 
-  const rows = await qry
+  // get total count
+  const countQry = this._db().raw(
+    `select count(distinct pkg_id) as pkgcount from version
+    inner join bytecode_hash on version.id = bytecode_hash.version_id
+    where bytecode_hash.hash = ?`, hash
+  )
 
-  return Object.values(this._groupJoinRowsByPackage(rows))
+  // get results
+  const fetchQry = this._db().table('version')
+    .select('version.*')
+    .innerJoin('bytecode_hash', 'version.id', 'bytecode_hash.version_id')
+    .where(`bytecode_hash.hash`, hash)
+
+  return this._searchPackages(countQry, fetchQry, page)
 }
