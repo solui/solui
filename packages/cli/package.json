@@ -1,5 +1,5 @@
 {
-  "name": "solui",
+  "name": "@solui/cli",
   "descrption": "Declarative UI generation for smart contracts",
   "version": "0.1.0",
   "license": "MIT",
@@ -56,5 +56,17 @@
   "devDependencies": {
     "solhint": "^2.2.0",
     "truffle": "^5.0.33"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solui/monorepo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/solui/monorepo/issues"
+  },
+  "author": "Ramesh Nair <ram@hiddentao.com>",
+  "homepage": "https://solui.dev"
 }

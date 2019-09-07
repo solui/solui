@@ -2,7 +2,8 @@
   "presets": [
     ["@babel/preset-env", {
       "targets": {
-        "node": "current"
+        "node": "current",
+        "chrome": "58"
       }
     }]
   ]

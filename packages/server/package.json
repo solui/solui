@@ -1,5 +1,5 @@
 {
-  "name": "solui-server",
+  "name": "@solui/server",
   "private": true,
   "version": "1.0.0",
   "description": "SolUI API server and website",
@@ -76,15 +76,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hiddentao/solui-server.git"
+    "url": "git+https://github.com/solui/monorepo.git"
   },
-  "keywords": [
-    "solui"
-  ],
+  "bugs": {
+    "url": "https://github.com/solui/monorepo/issues"
+  },
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/hiddentao/solui-server/issues"
-  },
-  "homepage": "https://github.com/hiddentao/solui-server#readme"
+  "homepage": "https://solui.dev"
 }
