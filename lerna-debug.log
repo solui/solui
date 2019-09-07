@@ -1,0 +1,20 @@
+0 silly argv { _: [ 'import' ],
+0 silly argv   lernaVersion: '3.16.4',
+0 silly argv   '$0': 'node_modules/.bin/lerna',
+0 silly argv   dir: '../server' }
+1 notice cli v3.16.4
+2 verbose rootPath /Users/ram/dev/cryptocurrency/solui/monorepo
+3 error Error: Command failed: git rev-parse HEAD
+3 error fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree.
+3 error Use '--' to separate paths from revisions, like this:
+3 error 'git <command> [<revision>...] -- [<file>...]'
+3 error
+3 error HEAD
+3 error
+3 error     at makeError (/Users/ram/dev/cryptocurrency/solui/monorepo/node_modules/execa/index.js:174:9)
+3 error     at Function.module.exports.sync (/Users/ram/dev/cryptocurrency/solui/monorepo/node_modules/execa/index.js:338:15)
+3 error     at Object.execSync (/Users/ram/dev/cryptocurrency/solui/monorepo/node_modules/@lerna/child-process/index.js:26:16)
+3 error     at ImportCommand.execSync (/Users/ram/dev/cryptocurrency/solui/monorepo/node_modules/@lerna/import/index.js:143:34)
+3 error     at ImportCommand.getCurrentSHA (/Users/ram/dev/cryptocurrency/solui/monorepo/node_modules/@lerna/import/index.js:135:17)
+3 error     at ImportCommand.initialize (/Users/ram/dev/cryptocurrency/solui/monorepo/node_modules/@lerna/import/index.js:104:31)
+3 error     at Promise.resolve.then (/Users/ram/dev/cryptocurrency/solui/monorepo/node_modules/@lerna/command/index.js:271:24)
