@@ -54,15 +54,6 @@
     "tc:deploy": "yarn truffle compile && yarn truffle migrate"
   },
   "devDependencies": {
-    "@babel/node": "^7.5.5",
-    "babel-eslint": "9.0.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-react": "^7.12.4",
-    "eslint-plugin-react-hooks": "^1.6.0",
-    "eslint-plugin-standard": "^4.0.0",
     "solhint": "^2.2.0",
     "truffle": "^5.0.33"
   }
