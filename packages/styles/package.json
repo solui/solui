@@ -12,6 +12,9 @@
     "styling",
     "solui"
   ],
+  "files": [
+    "dist"
+  ],
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "license": "MIT",
   "main": "dist/themes.js",
