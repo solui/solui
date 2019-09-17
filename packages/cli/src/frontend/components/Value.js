@@ -2,8 +2,8 @@ import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 import ReactTooltip from 'react-tooltip'
 import * as clipboard from 'clipboard-polyfill'
+import { openUrlInBrowser } from '@solui/utils'
 
-import { openUrl } from '../utils/platform'
 import IconButton from './IconButton'
 import { GlobalContext } from '../_global'
 
@@ -44,7 +44,7 @@ export default ({ value, type }) => {
               <StyledIconButton
                 title='View on Etherscan'
                 icon={{ name: 'link' }}
-                onClick={() => openUrl(etherscanLink)}
+                onClick={() => openUrlInBrowser(etherscanLink)}
               />
             ) : null
 

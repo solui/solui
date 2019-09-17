@@ -1,4 +1,4 @@
-import { _ } from '../utils'
+import { _ } from '@solui/utils'
 
 import { processList as processInputs } from './inputs'
 import { processList as processExecs } from './execs'

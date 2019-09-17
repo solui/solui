@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react'
 import styled from '@emotion/styled'
+import { flex, boxShadow, smoothTransitions } from '@solui/styles'
 
 import { PanelBuilder } from './Panel'
 import Inputs from './Inputs'
 import Image from './Image'
 import { useInputHooks } from '../hooks/inputs'
-import { flex, boxShadow, smoothTransitions } from '../styles/fragments'
 
 const containerActiveCss = theme => `
   background-color: ${theme.groupActiveBgColor};

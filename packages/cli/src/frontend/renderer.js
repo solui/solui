@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import styled from '@emotion/styled'
+import { _, createErrorWithDetails } from '@solui/utils'
 
-import { _, createErrorWithDetails } from '../utils'
 import Layout from './components/Layout'
 import { InterfaceBuilder } from './components/Interface'
 import ErrorBox from './components/ErrorBox'

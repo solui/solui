@@ -1,15 +1,14 @@
 import React, { useRef, useCallback } from 'react'
 import styled from '@emotion/styled'
+import { smoothTransitions, boxShadow, robotoFont } from '@solui/styles'
 
-import { smoothTransitions, boxShadow } from '../styles/fragments'
-import { roboto } from '../styles/fonts'
 import Icon from './Icon'
 import Tooltip from './Tooltip'
 
 
 const IconButton = styled.button`
   ${smoothTransitions()};
-  ${roboto('bold')};
+  ${robotoFont('bold')};
   cursor: pointer;
   border: 1px solid ${({ theme, disabled }) => (disabled ? theme.iconButtonDisabledBorderColor : theme.iconButtonBorderColor)};
   background-color: ${({ theme, disabled }) => (disabled ? theme.iconButtonDisabledBgColor : theme.iconButtonBgColor)};

@@ -1,6 +1,7 @@
 // NOTE: react-hot-loader import has to come before react and react-dom
 import { hot } from 'react-hot-loader/root'
 
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-unresolved */
 // wepback will alias this @hot-loader/react-dom
 import ReactDOM from 'react-dom'
@@ -8,20 +9,18 @@ import ReactDOM from 'react-dom'
 import spec from 'spec.json'
 import artifacts from 'artifacts.json'
 /* eslint-enable import/no-unresolved */
+/* eslint-enable import/no-extraneous-dependencies */
 
 import React, { Component } from 'react'
 import styled from '@emotion/styled'
 import { ThemeProvider } from 'emotion-theming'
 import { Global } from '@emotion/core'
+import { _, getNetwork } from '@solui/utils'
+import { resetStyles, baseStyles, getTheme } from '@solui/styles'
 
-import { _ } from '../utils'
 import ErrorBox from './components/ErrorBox'
 import InterfaceRenderer from './renderer'
 import { GlobalContext } from './_global'
-import resetStyles from './styles/reset'
-import baseStyles from './styles/base'
-import { getTheme } from './styles/themes'
-import { getNetwork } from './utils/network'
 
 const RenderingError = styled(ErrorBox)`
   margin: 1rem;

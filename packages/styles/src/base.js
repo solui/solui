@@ -2,7 +2,7 @@ import { css } from '@emotion/core'
 
 import { openSans, roboto } from './fonts'
 
-export default css`
+export const baseStyles = css`
   * {
     box-sizing: border-box;
   }

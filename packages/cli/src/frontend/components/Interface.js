@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
+import { flex, media } from '@solui/styles'
 
 import { GroupBuilder } from './Group'
 import Image from './Image'
-import { flex } from '../styles/fragments'
-import { media } from '../styles/breakpoints'
 
 const Container = styled.div`
   ${flex()}

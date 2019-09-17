@@ -1,6 +1,6 @@
 import { css } from '@emotion/core'
 
-export default css`
+export const resetStyles = css`
   /* http://meyerweb.com/eric/tools/css/reset/
      v2.0 | 20110126
      License: none (public domain)

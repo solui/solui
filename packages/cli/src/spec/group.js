@@ -1,4 +1,4 @@
-import { _, promiseSerial } from '../utils'
+import { _, promiseSerial } from '@solui/utils'
 
 import { processList as processInputs } from './inputs'
 import { process as processPanel } from './panel'

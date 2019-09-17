@@ -1,16 +1,15 @@
 import React, { useCallback, useMemo } from 'react'
 import styled from '@emotion/styled'
+import { flex, robotoFont, openSansFont } from '@solui/styles'
 
 import ErrorBox from './ErrorBox'
-import { flex } from '../styles/fragments'
-import { roboto, openSans } from '../styles/fonts'
 
 const Container = styled.div`
   ${flex({ justify: 'flex-start', align: 'flex-start' })}
 `
 
 const Label = styled.label`
-  ${roboto('thin')}
+  ${robotoFont('thin')}
   display: block;
   color: ${({ theme }) => theme.inputLabelTextColor};
   font-size: 1.1rem;
@@ -18,7 +17,7 @@ const Label = styled.label`
 `
 
 const Input = styled.input`
-  ${openSans()}
+  ${openSansFont()}
   display: block;
   width: 100%;
   border: 1px solid ${({ theme, hasError }) => (hasError ? theme.inputErrorBorderColor : theme.inputBorderColor)};

@@ -1,11 +1,9 @@
 import styled from '@emotion/styled'
-
-import { smoothTransitions, boxShadow } from '../styles/fragments'
-import { roboto } from '../styles/fonts'
+import { smoothTransitions, boxShadow, robotoFont } from '@solui/styles'
 
 const Button = styled.button`
   ${smoothTransitions()};
-  ${roboto('bold')};
+  ${robotoFont('bold')};
   cursor: pointer;
   border: 1px solid ${({ theme, disabled }) => (disabled ? theme.buttonDisabledBorderColor : theme.buttonBorderColor)};
   background-color: ${({ theme, disabled }) => (disabled ? theme.buttonDisabledBgColor : theme.buttonBgColor)};

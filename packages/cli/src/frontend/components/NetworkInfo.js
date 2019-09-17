@@ -1,17 +1,17 @@
 import React from 'react'
 import styled from '@emotion/styled'
+import { robotoFont } from '@solui/styles'
 
-import { roboto } from '../styles/fonts'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.networkInfoBgColor};
   color: ${({ theme }) => theme.networkInfoTextColor};
   padding: 1em;
-  ${roboto('thin')}
+  ${robotoFont('thin')}
   text-transform: uppercase;
 
   span {
-    ${roboto('bold')}
+    ${robotoFont('bold')}
     text-transform: initial;
   }
 `

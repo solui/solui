@@ -1,5 +1,7 @@
+import defaultTheme from './themes/default'
+
 const themes = {
-  default: require('./themes/default').default
+  default: defaultTheme,
 }
 
 export const getTheme = (s = 'default') => ({

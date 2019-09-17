@@ -1,9 +1,8 @@
 import React from 'react'
 import styled from '@emotion/styled'
+import { flex, openSansFont } from '@solui/styles'
 
 import Icon from './Icon'
-import { flex } from '../styles/fragments'
-import { openSans } from '../styles/fonts'
 
 const Container = styled.div`
   font-size: 1rem;
@@ -24,7 +23,7 @@ const StyledIcon = styled(Icon)`
 `
 
 const Details = styled.div`
-  ${openSans()}
+  ${openSansFont()}
   width: 90%;
   word-break: break-all;
   line-height: 1.2em;

@@ -1,6 +1,5 @@
-import { isAddress } from 'web3-utils'
+import { _, assertEthAddressIsValid } from '@solui/utils'
 
-import { _ } from '../utils'
 
 export const isValidId = id => (!(/[^A-Za-z0-9-]/gm.exec(id)))
 
@@ -40,50 +39,16 @@ export const checkImageIsValid = (ctx, img) => {
 }
 
 export const checkAddressIsValid = async (ctx, value, allowedTypes) => {
-  if (!isAddress(value)) {
-    ctx.errors().add(ctx.id, `must be a valid address`)
-  } else {
-    // do the on-chain check...
-
-    const web3 = ctx.web3()
-
-    if (!allowedTypes || !web3) {
-      return
+  try {
+    if (allowedTypes && !Array.isArray(allowedTypes)) {
+      throw new Error(`allowedTypes must be an array`)
     }
 
-    if (!Array.isArray(allowedTypes)) {
-      ctx.errors().add(ctx.id, `allowedTypes must be an array`)
-    } else {
-      let isContract = false
-      try {
-        // check if there is code at the address
-        const code = await web3.eth.getCode(value)
-        isContract = ('0x' !== code)
-
-        if (isContract && !allowedTypes.includes('contract')) {
-          ctx.errors().add(ctx.id, 'must not be a contract address')
-        }
-
-        if (!isContract && !allowedTypes.includes('eoa')) {
-          ctx.errors().add(ctx.id, 'must be a contract address')
-        }
-      } catch (err) {
-        ctx.errors().add(ctx.id, 'got an internal error while checking for code at address')
-      }
-    }
+    assertEthAddressIsValid(value, ctx.web3, {
+      allowContract: allowedTypes.incudes('contract'),
+      allowEoa: allowedTypes.includes('eoa')
+    })
+  } catch (err) {
+    ctx.errors().add(ctx.id, err.message)
   }
-}
-
-export const getWeb3Account = async web3 => {
-  if (web3.requestPermission) {
-    await web3.requestPermission()
-  }
-
-  const [ account ] = await web3.eth.getAccounts()
-
-  if (!account) {
-    throw new Error('Unable to get Ethereum address. Ensure your dapp browser / Metamask is properly connected.')
-  }
-
-  return account
 }

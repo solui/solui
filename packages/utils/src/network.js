@@ -1,5 +1,6 @@
 import Web3 from 'web3'
 import axios from 'axios'
+import { isAddress } from 'web3-utils'
 
 import { get } from './lodash'
 import { GLOBAL_SCOPE } from './platform'
@@ -106,4 +107,52 @@ export const getNetworkInfo = async web3 => {
   await _finalizeNetwork(network)
 
   return network
+}
+
+export const getWeb3Account = async web3 => {
+  if (web3.requestPermission) {
+    await web3.requestPermission()
+  }
+
+  const [ account ] = await web3.eth.getAccounts()
+
+  if (!account) {
+    throw new Error('Unable to get Ethereum address. Ensure your dapp browser / Metamask is properly connected.')
+  }
+
+  return account
+}
+
+export const assertEthAddressIsValid = async (
+  value,
+  web3 = null,
+  { allowContract = true, allowEoa = true } = {}
+) => {
+  if (!isAddress(value)) {
+    throw new Error(`not a valid address`)
+  } else {
+    // do the on-chain check...
+    if (!web3) {
+      return
+    }
+
+    let isContract
+
+    try {
+      // check if there is code at the address
+      const code = await web3.eth.getCode(value)
+      isContract = ('0x' !== code)
+    } catch (err) {
+      throw new Error(`unable to check for code at address: ${err.message}`)
+    }
+
+
+    if (isContract && !allowContract) {
+      throw new Error('must not be a contract address')
+    }
+
+    if (!isContract && !allowEoa) {
+      throw new Error('must be a contract address')
+    }
+  }
 }

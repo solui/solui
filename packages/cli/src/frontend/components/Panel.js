@@ -1,19 +1,19 @@
 import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
+import { robotoFont } from '@solui/styles'
 
 import { useInputHooks } from '../hooks/inputs'
 import Inputs from './Inputs'
 import Result from './Result'
 import Icon from './Icon'
 import Button from './Button'
-import { roboto } from '../styles/fonts'
 
 const Container = styled.div`
   padding: 1rem;
 `
 
 const Title = styled.h3`
-  ${roboto('bold')}
+  ${robotoFont('bold')}
   font-size: 1.1rem;
   margin: 0 0 2rem;
 `
