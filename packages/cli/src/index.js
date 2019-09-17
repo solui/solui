@@ -1,9 +1,9 @@
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
 import VirtualModulesPlugin from 'webpack-virtual-modules'
+import { assertSpecValid } from '@solui/parser'
 
 import { DIST_FOLDER, createConfig } from './webpack.config'
-import { assertSpecValid } from './spec'
 
 
 export class Generator {

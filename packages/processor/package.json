@@ -1,15 +1,15 @@
 {
-  "name": "@solui/styles",
+  "name": "@solui/processor",
   "version": "0.0.0",
-  "description": "Styling helpers for solUI frontend rendering",
+  "description": "Parser and processor for UI specifications",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "rm -rf ./dist; mkdir ./dist; babel ./src/*.js --out-dir ./dist; babel ./src/themes/*.js --out-dir ./dist/themes"
+    "build": "rm -rf ./dist; mkdir ./dist; babel ./src/*.js --out-dir ./dist"
   },
   "keywords": [
-    "styling",
+    "parser",
     "solui",
     "ethereum",
     "solidity",
@@ -30,9 +30,7 @@
   },
   "homepage": "https://solui.dev",
   "dependencies": {
-    "@emotion/core": "^10.0.17",
-    "color": "^3.1.2",
-    "fontfaceobserver": "^2.1.0"
+    "@solui/utils": "^0.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.6.0",

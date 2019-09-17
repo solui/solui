@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import styled from '@emotion/styled'
 import { _, createErrorWithDetails } from '@solui/utils'
+import { process as processSpec, validateGroupInputs, validatePanel, executePanel } from '@solui/processor'
 
 import Layout from './components/Layout'
 import { InterfaceBuilder } from './components/Interface'
 import ErrorBox from './components/ErrorBox'
 import Progress from './components/Progress'
 import NetworkInfo from './components/NetworkInfo'
-import { process as processSpec, validateGroupInputs, validatePanel, executePanel } from '../spec'
 
 const Container = styled.div``
 
