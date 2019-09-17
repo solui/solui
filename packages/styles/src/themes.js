@@ -1,3 +1,5 @@
+import { font } from './fonts'
+
 import defaultTheme from './themes/default'
 
 const themes = {
@@ -6,4 +8,5 @@ const themes = {
 
 export const getTheme = (s = 'default') => ({
   ...themes[s],
+  font,
 })

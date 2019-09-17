@@ -1,4 +1,4 @@
-export * from './base'
+export * from './breakpoints'
 export * from './fonts'
 export * from './fragments'
 export * from './reset'

@@ -28,7 +28,8 @@
   "homepage": "https://solui.dev",
   "dependencies": {
     "@emotion/core": "^10.0.17",
-    "color": "^3.1.2"
+    "color": "^3.1.2",
+    "fontfaceobserver": "^2.1.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.6.0",

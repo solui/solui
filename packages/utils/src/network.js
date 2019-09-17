@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import axios from 'axios'
 import { isAddress } from 'web3-utils'
 
-import { get } from './lodash'
+import { _ } from './lodash'
 import { GLOBAL_SCOPE } from './platform'
 
 const etherscanPrefix = {
@@ -54,7 +54,7 @@ export const getNetworkInfoFromGlobalScope = async () => {
     if (GLOBAL_SCOPE.ethereum) {
       network.web3 = new Web3(GLOBAL_SCOPE.ethereum)
       // See https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
-      if (typeof get(GLOBAL_SCOPE.ethereum, 'enable') === 'function') {
+      if (typeof _.get(GLOBAL_SCOPE.ethereum, 'enable') === 'function') {
         network.askWalletOwnerForPermissionToViewAccounts = () => GLOBAL_SCOPE.ethereum.enable()
       }
       // From https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.on(eventname%2C-callback
@@ -62,7 +62,7 @@ export const getNetworkInfoFromGlobalScope = async () => {
       GLOBAL_SCOPE.ethereum.autoRefreshOnNetworkChange = false
       if (GLOBAL_SCOPE.ethereum.on) {
         GLOBAL_SCOPE.ethereum.on('networkChanged', () => {
-          if (typeof get(GLOBAL_SCOPE.location, 'reload') === 'function') {
+          if (typeof _.get(GLOBAL_SCOPE.location, 'reload') === 'function') {
             GLOBAL_SCOPE.location.reload()
           }
         })
@@ -125,11 +125,11 @@ export const getWeb3Account = async web3 => {
 
 export const assertEthAddressIsValid = async (
   value,
-  web3 = null,
+  web3,
   { allowContract = true, allowEoa = true } = {}
 ) => {
   if (!isAddress(value)) {
-    throw new Error(`not a valid address`)
+    throw new Error(`must be a valid address`)
   } else {
     // do the on-chain check...
     if (!web3) {

@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
-import { robotoFont } from '@solui/styles'
 
 import { useInputHooks } from '../hooks/inputs'
 import Inputs from './Inputs'
@@ -13,7 +12,7 @@ const Container = styled.div`
 `
 
 const Title = styled.h3`
-  ${robotoFont('bold')}
+  ${({ theme }) => theme.font('body', 'bold')};
   font-size: 1.1rem;
   margin: 0 0 2rem;
 `

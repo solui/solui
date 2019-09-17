@@ -14,11 +14,11 @@ import artifacts from 'artifacts.json'
 import React, { Component } from 'react'
 import styled from '@emotion/styled'
 import { ThemeProvider } from 'emotion-theming'
-import { Global } from '@emotion/core'
-import { _, getNetwork } from '@solui/utils'
-import { resetStyles, baseStyles, getTheme } from '@solui/styles'
+import { _, getNetworkInfoFromGlobalScope } from '@solui/utils'
+import { loadFonts, getTheme } from '@solui/styles'
 
 import ErrorBox from './components/ErrorBox'
+import GlobalStyles from './components/GlobalStyles'
 import InterfaceRenderer from './renderer'
 import { GlobalContext } from './_global'
 
@@ -32,7 +32,7 @@ class App extends Component {
   componentDidUpdate () {
     (async () => {
       try {
-        const n = await getNetwork()
+        const n = await getNetworkInfoFromGlobalScope()
         if (n && _.get(n, 'id') !== _.get(this.state.network, 'id')) {
           this.setState({ network: n })
         }
@@ -45,6 +45,30 @@ class App extends Component {
 
   componentDidMount () {
     this.componentDidUpdate()
+
+    // if client-side then load custom fonts
+    if (typeof window !== 'undefined' && !!window.document) {
+      loadFonts({
+        body: {
+          name: 'Roboto',
+          weights: {
+            thin: 100,
+            regular: 400,
+            bold: 700,
+          }
+        },
+        header: {
+          name: 'Open Sans',
+          weights: {
+            regular: 400,
+            bold: 700,
+          }
+        }
+      }, window.document).then(
+        () => this.forceUpdate(),
+        err => console.error(err)
+      )
+    }
   }
 
   componentDidCatch (error, info) {
@@ -56,19 +80,16 @@ class App extends Component {
     const { renderingError, network } = this.state
 
     return (
-      <>
-        <Global styles={resetStyles}/>
-        <Global styles={baseStyles}/>
-        <GlobalContext.Provider value={{ network }}>
-          <ThemeProvider theme={getTheme()}>
-            {renderingError ? (
-              <RenderingError error='There was a rendering error (see Developer Console). Please reload the UI.' />
-            ) : (
-              <InterfaceRenderer appState={{ artifacts, spec }} network={network} />
-            )}
-          </ThemeProvider>
-        </GlobalContext.Provider>
-      </>
+      <GlobalContext.Provider value={{ network }}>
+        <ThemeProvider theme={getTheme()}>
+          <GlobalStyles />
+          {renderingError ? (
+            <RenderingError error='There was a rendering error (see Developer Console). Please reload the UI.' />
+          ) : (
+            <InterfaceRenderer appState={{ artifacts, spec }} network={network} />
+          )}
+        </ThemeProvider>
+      </GlobalContext.Provider>
     )
   }
 }

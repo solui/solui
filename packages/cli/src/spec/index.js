@@ -1,6 +1,6 @@
 import { _, promiseSerial, createErrorWithDetails, getWeb3Account } from '@solui/utils'
 
-import { isValidId, extractChildById, checkImageIsValid } from './specUtils'
+import { isValidId, extractChildById, checkImageIsValid } from './utils'
 import { RootContext } from './context'
 import { processGroup, processGroupInputs, processGroupPanel } from './group'
 

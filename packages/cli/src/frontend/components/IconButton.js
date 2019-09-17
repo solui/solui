@@ -1,6 +1,6 @@
 import React, { useRef, useCallback } from 'react'
 import styled from '@emotion/styled'
-import { smoothTransitions, boxShadow, robotoFont } from '@solui/styles'
+import { smoothTransitions, boxShadow } from '@solui/styles'
 
 import Icon from './Icon'
 import Tooltip from './Tooltip'
@@ -8,7 +8,7 @@ import Tooltip from './Tooltip'
 
 const IconButton = styled.button`
   ${smoothTransitions()};
-  ${robotoFont('bold')};
+  ${({ theme }) => theme.font('body', 'bold')};
   cursor: pointer;
   border: 1px solid ${({ theme, disabled }) => (disabled ? theme.iconButtonDisabledBorderColor : theme.iconButtonBorderColor)};
   background-color: ${({ theme, disabled }) => (disabled ? theme.iconButtonDisabledBgColor : theme.iconButtonBgColor)};

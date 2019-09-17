@@ -1,4 +1,4 @@
-import { inputIsPresent } from './specUtils'
+import { inputIsPresent } from './utils'
 
 const OUTPUT_TYPES = {
   address: true,

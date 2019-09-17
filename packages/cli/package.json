@@ -26,7 +26,7 @@
     "color": "^3.1.2",
     "core-js": "^3.2.1",
     "css-loader": "^3.2.0",
-    "emotion-theming": "^10.0.14",
+    "emotion-theming": "^10.0.18",
     "glob": "^7.1.4",
     "html-webpack-plugin": "^3.2.0",
     "lodash.foreach": "^4.5.0",
@@ -50,10 +50,10 @@
     "build": "next build",
     "start": "bin/solui --artifacts ./build/contracts --spec ./contracts/ui.json",
     "truffle": "babel-node node_modules/.bin/truffle",
-    "tc:devnet": "ganache-cli -a 10",
-    "tc:devnet-ci": "ganache-cli -a 10 >ganache.log 2>&1 &",
-    "tc:clean": "yarn truffle networks --clean",
-    "tc:deploy": "yarn truffle compile && yarn truffle migrate"
+    "devnet": "ganache-cli -a 10",
+    "devnet-ci": "ganache-cli -a 10 >ganache.log 2>&1 &",
+    "clean": "yarn truffle networks --clean",
+    "deploy": "yarn truffle compile && yarn truffle migrate"
   },
   "devDependencies": {
     "solhint": "^2.2.0",

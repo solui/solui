@@ -1,6 +1,6 @@
 import { _, promiseSerial } from '@solui/utils'
 
-import { inputIsPresent, methodArgExists, getBytecode, getAbi, getMethod } from './specUtils'
+import { inputIsPresent, methodArgExists, getBytecode, getAbi, getMethod } from './utils'
 
 const validateContract = (ctx, config) => {
   // check contract

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { flex, openSansFont } from '@solui/styles'
+import { flex } from '@solui/styles'
 
 import Icon from './Icon'
 
@@ -9,7 +9,7 @@ const Container = styled.div`
 `
 
 const ErrorDiv = styled.div`
-  ${flex({ direction: 'row', justify: 'flex-start' })}
+  ${flex({ direction: 'row', justify: 'flex-start' })};
   background-color: ${({ theme }) => theme.errorBgColor};
   color: ${({ theme }) => theme.errorTextColor};
   padding: 0.6em;
@@ -23,7 +23,7 @@ const StyledIcon = styled(Icon)`
 `
 
 const Details = styled.div`
-  ${openSansFont()}
+  ${({ theme }) => theme.font('header')};
   width: 90%;
   word-break: break-all;
   line-height: 1.2em;

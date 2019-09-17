@@ -1,6 +1,6 @@
 import { _, promiseSerial } from '@solui/utils'
 
-import { checkAddressIsValid } from './specUtils'
+import { checkAddressIsValid } from './utils'
 
 const _process = async (ctx, name, config) => ctx.callbacks().getInput(ctx.id, name, config)
 

@@ -44,8 +44,8 @@ export const checkAddressIsValid = async (ctx, value, allowedTypes) => {
       throw new Error(`allowedTypes must be an array`)
     }
 
-    assertEthAddressIsValid(value, ctx.web3, {
-      allowContract: allowedTypes.incudes('contract'),
+    await assertEthAddressIsValid(value, ctx.web3(), {
+      allowContract: allowedTypes.includes('contract'),
       allowEoa: allowedTypes.includes('eoa')
     })
   } catch (err) {

@@ -2,7 +2,7 @@ import { _, promiseSerial } from '@solui/utils'
 
 import { processList as processInputs } from './inputs'
 import { process as processPanel } from './panel'
-import { extractChildById, checkImageIsValid } from './specUtils'
+import { extractChildById, checkImageIsValid } from './utils'
 
 export const processGroupInputs = async (rootCtx, id, config) => {
   const ctx = rootCtx.createGroupContext(id)
