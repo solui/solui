@@ -6,7 +6,9 @@
     "access": "public"
   },
   "scripts": {
-    "build": "rm -rf ./dist; mkdir ./dist; babel ./src/*.js --out-dir ./dist"
+    "clean": "rm -rf ./dist; mkdir ./dist",
+    "watch": "yarn clean; babel ./src --watch --out-dir ./dist",
+    "build": "yarn clean; babel ./src --out-dir ./dist"
   },
   "keywords": [
     "parser",

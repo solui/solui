@@ -1,8 +1,5 @@
 import Document, { Main, Head, NextScript } from 'next/document'
-import { Global } from '@emotion/core'
 
-import resetStyles from '../frontend/styles/reset'
-import baseStyles from '../frontend/styles/base'
 import { APP_STATE_KEYS } from '../common/appState'
 
 export default class MyDocument extends Document {
@@ -23,7 +20,6 @@ export default class MyDocument extends Document {
     return (
       <html>
         <Head>
-          <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Roboto:100,400,700&display=swap" rel="stylesheet" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
           <meta
             name="viewport"
@@ -31,8 +27,6 @@ export default class MyDocument extends Document {
           />
         </Head>
         <body>
-          <Global styles={resetStyles}/>
-          <Global styles={baseStyles}/>
           <Main />
           <script type="text/javascript" dangerouslySetInnerHTML={{
             __html: `

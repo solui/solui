@@ -1,7 +1,7 @@
 import { _, assertEthAddressIsValid } from '@solui/utils'
 
 
-export const isValidId = id => (!(/[^A-Za-z0-9-]/gm.exec(id)))
+export const isValidId = id => (id.length >= 3) && (!(/[^A-Za-z0-9-]/gm.exec(id)))
 
 export const extractChildById = (array, needle) => (array || []).find(({ id }) => id === needle)
 

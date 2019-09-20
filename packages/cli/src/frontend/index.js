@@ -16,11 +16,9 @@ import styled from '@emotion/styled'
 import { ThemeProvider } from 'emotion-theming'
 import { _, getNetworkInfoFromGlobalScope } from '@solui/utils'
 import { loadFonts, getTheme } from '@solui/styles'
+import { NetworkContext, ErrorBox, GlobalStyles } from '@solui/react-components'
 
-import ErrorBox from './components/ErrorBox'
-import GlobalStyles from './components/GlobalStyles'
 import InterfaceRenderer from './renderer'
-import { GlobalContext } from './_global'
 
 const RenderingError = styled(ErrorBox)`
   margin: 1rem;
@@ -80,7 +78,7 @@ class App extends Component {
     const { renderingError, network } = this.state
 
     return (
-      <GlobalContext.Provider value={{ network }}>
+      <NetworkContext.Provider value={{ network }}>
         <ThemeProvider theme={getTheme()}>
           <GlobalStyles />
           {renderingError ? (
@@ -89,7 +87,7 @@ class App extends Component {
             <InterfaceRenderer appState={{ artifacts, spec }} network={network} />
           )}
         </ThemeProvider>
-      </GlobalContext.Provider>
+      </NetworkContext.Provider>
     )
   }
 }

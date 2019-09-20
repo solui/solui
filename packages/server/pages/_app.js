@@ -1,9 +1,11 @@
-import _ from 'lodash'
 import App from 'next/app'
 import { DefaultSeo } from 'next-seo'
 import React from 'react'
 import { ApolloProvider } from 'react-apollo'
 import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'
+import { _ } from '@solui/utils'
+import { getTheme, loadFonts } from '@solui/styles'
+import { ThemeProvider } from 'emotion-theming'
 
 import { APP_STATE_KEYS } from '../common/appState'
 import { client } from '../frontend/graphql'
@@ -26,6 +28,32 @@ export default class MyApp extends App {
     return ret
   }
 
+  componentDidMount () {
+    // if client-side then load custom fonts
+    if (typeof window !== 'undefined' && !!window.document) {
+      loadFonts({
+        body: {
+          name: 'Roboto',
+          weights: {
+            thin: 100,
+            regular: 400,
+            bold: 700,
+          }
+        },
+        header: {
+          name: 'Open Sans',
+          weights: {
+            regular: 400,
+            bold: 700,
+          }
+        }
+      }, window.document).then(
+        () => this.forceUpdate(),
+        err => console.error(err)
+      )
+    }
+  }
+
   render () {
     const { Component, pageProps, appState } = this.props
 
@@ -33,14 +61,13 @@ export default class MyApp extends App {
       <GlobalProvider value={appState}>
         <ApolloProvider client={client}>
           <ApolloHooksProvider client={client}>
-
-            <DefaultSeo
-              title="solUI"
-              description="Declarative UIs for smart contracts"
-            />
-
-            <Component appState={appState} {...pageProps} />
-
+            <ThemeProvider theme={getTheme()}>
+              <DefaultSeo
+                title="solUI"
+                description="Declarative UIs for smart contracts"
+              />
+              <Component appState={appState} {...pageProps} />
+            </ThemeProvider>
           </ApolloHooksProvider>
         </ApolloProvider>
       </GlobalProvider>

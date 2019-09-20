@@ -7,13 +7,21 @@ module.exports = gql`
 
   type User {
     id: ID!
+    username: String!
   }
 
   type Version {
     id: ID!
     title: String!
     description: String!
+    created: DateTime!
     data: JSON!
+  }
+
+  type VersionCompact {
+    id: ID!
+    title: String!
+    description: String!
     created: DateTime!
   }
 
@@ -22,23 +30,46 @@ module.exports = gql`
     name: String!
     author: User!
     created: DateTime!
-    versions: [Version]
+    versions: [VersionCompact!]!
+  }
+
+  type PackageResult {
+    id: ID!
+    name: String!
+    author: User!
+    created: DateTime!
+    latestVersion: VersionCompact!
   }
 
   type PackageResults {
-    packages: [Package]!
+    packages: [PackageResult]!
     page: Int!
     numPages: Int!
   }
 
+  type PublishResult {
+    id: ID
+    error: String
+  }
+
   input SearchCritieraInput {
-    keywords: String
+    keyword: String
     bytecodeHash: String
     page: Int
   }
 
+  input PublishInput {
+    spec: JSON!
+    artifacts: JSON!
+  }
+
   type Query {
     search(criteria: SearchCritieraInput!): PackageResults!
-    get(idOrName: String!): Package!
+    getPackage(name: String!, numVersions: Int!): Package
+    getVersion(id: String!): Version
+  }
+
+  type Mutation {
+    publish(bundle: PublishInput!): PublishResult!
   }
 `

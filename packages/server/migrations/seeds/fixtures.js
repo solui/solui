@@ -1,11 +1,16 @@
-const _ = require('lodash')
 const { subDays, addDays } = require('date-fns')
 const uuid = require('uuid/v4')
 const { sha3 } = require('web3-utils')
 const faker = require('faker')
+const { _ } = require('@solui/utils')
 
 const Ownable = require('./Ownable.json')
 const spec = require('./spec.json')
+
+const NUM_AUTHORS = 2
+const NUM_PACKAGES = 10
+const NUM_VERSIONS_PER_PACKAGE = 10
+const TOTAL_NUM_VERSIONS = NUM_VERSIONS_PER_PACKAGE * NUM_PACKAGES
 
 const deleteTableData = (knex, tables) => (
   Promise.all(tables.map(table => (
@@ -13,16 +18,16 @@ const deleteTableData = (knex, tables) => (
   )))
 )
 
-const buildSpec = id => {
+const buildSpec = pkgName => {
   const s = { ...spec }
-  s.id = `fixture-${id}-${faker.random.word()}`
-  s.title = `Fixture ${faker.random.words(2)}`
+  s.id = pkgName
+  s.title = faker.random.words(2)
   s.description = faker.random.words(25)
   return s
 }
 
-const buildData = id => ({
-  spec: buildSpec(id),
+const buildData = pkgName => ({
+  spec: buildSpec(pkgName),
   artifacts: {
     Ownable: _.pick(Ownable, [ 'abi', 'bytecode' ])
   }
@@ -49,105 +54,68 @@ exports.seed = async knex => {
   // in user table delete everything except core admin user
   await knex('user').whereNot('is_admin', true).del()
 
-  const [ user1Id, user2Id ] = [ uuid(), uuid() ]
+  const users = []
 
-  await knex('user').insert([
-    { id: user1Id, username: faker.internet.userName(), email: 'tuser1@hiddentao.com', email_confirmed: true },
-    { id: user2Id, username: faker.internet.userName(), email: 'tuser2@hiddentao.com', email_confirmed: true },
-  ])
+  for (let i = 0; NUM_AUTHORS > i; i += 1) {
+    users.push({
+      id: uuid(),
+      username: faker.internet.userName(),
+      email: `tuser${i}@hiddentao.com`,
+      email_confirmed: true
+    })
+  }
 
-  const [ pkg1Id, pkg2Id, pkg3Id ] = [ uuid(), uuid(), uuid() ]
+  await knex('user').insert(users)
 
-  await knex('package').insert([
-    {
-      id: pkg1Id,
-      owner_id: user1Id,
-      name: 'fixture-1',
-    },
-    {
-      id: pkg2Id,
-      owner_id: user2Id,
-      name: 'fixture-2',
-    },
-    {
-      id: pkg3Id,
-      owner_id: user2Id,
-      name: 'fixture-3',
-    },
-  ])
+  const packages = []
+  let userIndex = 0
 
-  const [ version1Id, version2Id, version3Id, version4Id, version5Id ] = [
-    uuid(), uuid(), uuid(), uuid(), uuid()
-  ]
+  for (let i = 0; NUM_PACKAGES > i; i += 1) {
+    packages.push({
+      id: uuid(),
+      owner_id: users[userIndex].id,
+      name: `fixture-${i}`
+    })
 
-  const versionsToInsert = [
-    {
-      id: version1Id,
-      pkg_id: pkg1Id,
-      data: buildData(1),
-      created_at: tsStr({ add: 1 }),
-    },
-    {
-      id: version2Id,
-      pkg_id: pkg1Id,
-      data: buildData(2),
-      created_at: tsStr({ add: 2 }),
-    },
-    {
-      id: version3Id,
-      pkg_id: pkg2Id,
-      data: buildData(3),
-      created_at: tsStr({ add: 3 }),
-    },
-    {
-      id: version4Id,
-      pkg_id: pkg2Id,
-      data: buildData(4),
-      created_at: tsStr({ add: 4 }),
-    },
-    {
-      id: version5Id,
-      pkg_id: pkg3Id,
-      data: buildData(5),
-      created_at: tsStr({ add: 5 }),
-    },
-  ]
+    userIndex = (users.length > (userIndex + 1) ? userIndex + 1 : 0)
+  }
 
-  versionsToInsert.forEach(v => {
-    v.title = v.data.spec.title
-    v.description = v.data.spec.description
-    v.search = `${v.title} ${v.description}`.toLowerCase()
-  })
+  await knex('package').insert(packages)
 
-  await knex('version').insert(versionsToInsert)
+  const versions = []
+  let packageIndex = 0
 
-  const [ bhId1, bhId2, bhId3, bhId4, bhId5 ] = [ uuid(), uuid(), uuid(), uuid(), uuid() ]
+  for (let i = 0; TOTAL_NUM_VERSIONS > i; i += 1) {
+    const data = buildData(packages[packageIndex].name)
+    const { title, description } = data.spec
 
-  await knex('bytecode_hash').insert([
-    {
-      id: bhId1,
+    versions.push({
+      id: uuid(),
+      pkg_id: packages[packageIndex].id,
+      created_at: tsStr({ add: i }),
+      data,
+      title,
+      description,
+      search: `${title} ${description}`.toLowerCase()
+    })
+
+    packageIndex = (packages.length > (packageIndex + 1) ? packageIndex + 1 : 0)
+  }
+
+  await knex('version').insert(versions)
+
+  const bytecodeHashes = []
+  let versionIndex = 0
+
+  for (let i = 0; TOTAL_NUM_VERSIONS > i; i += 1) {
+    bytecodeHashes.push({
+      id: uuid(),
       hash: sha3(Ownable.bytecode),
-      version_id: version1Id,
-    },
-    {
-      id: bhId2,
-      hash: sha3(Ownable.bytecode),
-      version_id: version2Id,
-    },
-    {
-      id: bhId3,
-      hash: sha3(Ownable.bytecode),
-      version_id: version3Id,
-    },
-    {
-      id: bhId4,
-      hash: sha3(Ownable.bytecode),
-      version_id: version4Id,
-    },
-    {
-      id: bhId5,
-      hash: sha3(Ownable.bytecode),
-      version_id: version5Id,
-    },
-  ])
+      version_id: versions[versionIndex].id,
+    })
+
+    versionIndex = (versions.length > (versionIndex + 1) ? versionIndex + 1 : 0)
+  }
+
+  await knex('bytecode_hash').insert(bytecodeHashes)
 }

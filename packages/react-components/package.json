@@ -1,7 +1,7 @@
 {
-  "name": "@solui/styles",
+  "name": "@solui/react-components",
   "version": "0.0.0",
-  "description": "Styling helpers for solUI frontend rendering",
+  "description": "React UI components for solUI",
   "publishConfig": {
     "access": "public"
   },
@@ -11,7 +11,7 @@
     "build": "yarn clean; babel ./src --out-dir ./dist"
   },
   "keywords": [
-    "styling",
+    "parser",
     "solui",
     "ethereum",
     "solidity",
@@ -31,13 +31,27 @@
     "url": "https://github.com/solui/monorepo/issues"
   },
   "homepage": "https://solui.dev",
-  "dependencies": {
-    "@emotion/core": "^10.0.17",
-    "color": "^3.1.2",
-    "fontfaceobserver": "^2.1.0"
-  },
   "devDependencies": {
     "@babel/preset-env": "^7.6.0",
+    "@babel/preset-react": "^7.0.0",
     "core-js": "^3.2.1"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.17",
+    "@emotion/styled": "^10.0.17",
+    "@fortawesome/fontawesome-svg-core": "^1.2.22",
+    "@fortawesome/free-solid-svg-icons": "^5.10.2",
+    "@fortawesome/react-fontawesome": "^0.1.4",
+    "@solui/styles": "^0.0.0",
+    "@solui/utils": "^0.0.0",
+    "clipboard-polyfill": "^2.8.6",
+    "emotion-theming": "^10.0.19",
+    "react-svg": "^10.0.20",
+    "react-tooltip": "^3.11.1",
+    "uuid": "^3.3.3"
+  },
+  "peerDependencies": {
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   }
 }

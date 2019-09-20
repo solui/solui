@@ -1,7 +1,7 @@
 import glob from 'glob'
 import path from 'path'
 import { addDays } from 'date-fns'
-import _ from 'lodash'
+import { _ } from '@solui/utils'
 import knex from 'knex'
 
 // load in db methods

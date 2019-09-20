@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { _ } from '@solui/utils'
 import React from 'react'
 
 const GlobalContext = React.createContext({})

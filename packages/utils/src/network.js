@@ -117,7 +117,7 @@ export const getWeb3Account = async web3 => {
   const [ account ] = await web3.eth.getAccounts()
 
   if (!account) {
-    throw new Error('Unable to get Ethereum address. Ensure your dapp browser / Metamask is properly connected.')
+    throw new Error('Unable to get Ethereum address. Ensure your Ethereum wallet is properly initialized.')
   }
 
   return account
