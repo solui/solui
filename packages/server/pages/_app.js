@@ -5,11 +5,13 @@ import { ApolloProvider } from 'react-apollo'
 import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'
 import { _ } from '@solui/utils'
 import { getTheme, loadFonts } from '@solui/styles'
+import { createApolloClient } from '@solui/graphql'
 import { ThemeProvider } from 'emotion-theming'
 
 import { APP_STATE_KEYS } from '../common/appState'
-import { client } from '../frontend/graphql'
 import { GlobalProvider, getClientSideAppState } from '../frontend/globalState'
+
+const apolloClient = createApolloClient()
 
 export default class MyApp extends App {
   static async getInitialProps ({ Component, ctx }) {
@@ -59,8 +61,8 @@ export default class MyApp extends App {
 
     return (
       <GlobalProvider value={appState}>
-        <ApolloProvider client={client}>
-          <ApolloHooksProvider client={client}>
+        <ApolloProvider client={apolloClient}>
+          <ApolloHooksProvider client={apolloClient}>
             <ThemeProvider theme={getTheme()}>
               <DefaultSeo
                 title="solUI"

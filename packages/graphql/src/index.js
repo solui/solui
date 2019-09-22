@@ -5,7 +5,7 @@ import createLinks from './links'
 
 const cache = new InMemoryCache()
 
-export const client = new ApolloClient({
+export const createApolloClient = () => new ApolloClient({
   cache,
   link: createLinks({ cache }),
 })
