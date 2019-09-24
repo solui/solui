@@ -10,9 +10,13 @@ export const loadJson = f => JSON.parse(fs.readFileSync(f))
 
 export const loadArtifacts = dir => {
   const resolvedArtifactsDir = path.resolve(process.cwd(), dir)
-  const resolvedArtifactsDirStat = fs.statSync(resolvedArtifactsDir)
-  if (!resolvedArtifactsDirStat.isDirectory()) {
-    throw new Error(`Error reading artifacts from ${dir}`)
+  try {
+    const resolvedArtifactsDirStat = fs.statSync(resolvedArtifactsDir)
+    if (!resolvedArtifactsDirStat.isDirectory()) {
+      throw new Error('not a directory')
+    }
+  } catch (err) {
+    throw new Error(`Unable to load artifacts from ${dir}: ${err.message}`)
   }
 
   const files = glob.sync(`${resolvedArtifactsDir}/*.json`, { absolute: true })

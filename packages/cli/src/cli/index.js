@@ -6,16 +6,11 @@ import commandLineArgs from 'command-line-args'
 import commandLineUsage from 'command-line-usage'
 import chalk from 'chalk'
 
-import { loadSpec, loadArtifacts, watch } from './utils'
-import packageJson from '../package.json'
-import { startGenerator, publish } from './'
-
 // load commands
 const COMMANDS = glob.sync(path.join(__dirname, 'commands', '*.js')).reduce((m, file) => {
   m[path.basename(file, '.js')] = require(file)
   return m
 }, {})
-
 
 const renderParams = params => {
   return (params || []).reduce((m, { name, typeLabel }) => {
@@ -46,7 +41,7 @@ function helpCommand (comm) {
 
       const sections = [
         {
-          header: `solui ${comm}`,
+          header: `solui: ${comm}`,
           content: summary,
         },
         {
@@ -65,7 +60,7 @@ function helpCommand (comm) {
 
       console.log(commandLineUsage(sections))
 
-      return
+      exit()
     }
   }
 
@@ -91,6 +86,8 @@ function helpCommand (comm) {
   ]
 
   console.log(commandLineUsage(sections))
+
+  exit()
 }
 
 async function main () {
@@ -105,79 +102,46 @@ async function main () {
       { name: 'commandForHelp', defaultOption: true }
     ], { argv })
 
-    return helpCommand(commandForHelp)
+    helpCommand(commandForHelp)
   }
 
   if (!COMMANDS[command]) {
-    return helpCommand(command)
+    helpCommand(command)
   }
 
   // command is valid so let's continue
-  // case 'publish': {
-  //   await publishCommand()
-  //   break
-  // }
-  // case 'render':
-  // default: {
-  //   const renderOptions = commandLineArgs([
-  //     { name: 'verbose', type: Boolean, alias: 'v' },
-  //     { name: 'artifacts' },
-  //     { name: 'spec' },
-  //   ])
-  //
-  //   await renderCommand()
-  // }
+  const { params = [], options = [] } = COMMANDS[command].getMeta()
 
-  //
-  // // CLI options
-  // const argv = yargs
-  //   .usage('Usage: $0 [options] --artifacts /path/to/artifacts-folder --spec path/to/ui.json')
-  //   .describe('verbose', 'Verbose logging')
-  //   .describe('artifacts', 'Path to folder containing JSON artifcats for all contracts')
-  //   .nargs('artifacts', 1)
-  //   .describe('spec', 'Path to UI specification JSON file')
-  //   .nargs('spec', 1)
-  //   .describe('web-port', 'Port for web server')
-  //   .nargs('port', 1)
-  //   .default('port', '3001')
-  //   .describe('version', 'Output version.')
-  //   .demandOption([ 'artifacts', 'spec' ])
-  //   .help('h')
-  //   .alias('h', 'help')
-  //   .parse(process.argv.slice(1))
-  //
-  // if (argv.version) {
-  //   console.log(`${packageJson.name} ${packageJson.version}`)
-  //   process.exit(0)
-  // }
-  //
-  // const {
-  //   artifacts: artifactsDir,
-  //   spec: specFile,
-  //   port,
-  // } = argv
-  //
-  // // load data
-  // const spec = loadSpec(specFile)
-  // const artifacts = loadArtifacts(artifactsDir)
-  //
-  // // start generator
-  // const instance = await startGenerator({ artifacts, spec, port, debug: argv.verbose })
-  //
-  // console.log(chalk.white(`Loaded ${Object.keys(artifacts).length} contracts from directory: ${artifactsDir}`))
-  // console.log(chalk.white(`Loaded UI spec from: ${specFile}`))
-  // console.log('')
-  // console.log(chalk.cyan(`Interface available at: ${instance.getLocalEndpoint()}`))
-  //
-  // // watch for changes
-  // watch(specFile, () => instance.updateSpec(loadSpec(specFile)))
-  // watch(artifactsDir, () => instance.updateArtifacts(loadArtifacts(artifactsDir)))
+  let args
+
+  try {
+    const defs = params.concat(options)
+
+    args = defs.length
+      ? commandLineArgs(defs, { argv, stopAtFirstUnknown: true })
+      : {}
+
+    // invalid args?
+    if (args._unknown) {
+      throw new Error(`Invalid argument: ${args._unknown}`)
+    }
+
+    // check that all param values are provided
+    params.forEach(({ name }) => {
+      if (undefined === args[name]) {
+        throw new Error(`Missing parameter: ${name}`)
+      }
+    })
+  } catch (err) {
+    logError(err.message)
+    helpCommand(command)
+  }
+
+  // execute
+  await COMMANDS[command].execute(args)
 }
 
-main().then(
-  () => exit(),
-  err => {
-    logError(err)
-    exit()
-  }
-)
+main().catch(err => {
+  logError(err.stack)
+  exit()
+})

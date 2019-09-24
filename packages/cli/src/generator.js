@@ -8,7 +8,7 @@ import { DIST_FOLDER, createConfig } from './webpack.config'
 class Generator {
   constructor ({ port, artifacts, spec, debug }) {
     this.debug = debug
-    this.port = parseInt(port || '3001', 10)
+    this.port = port
     this.artifacts = artifacts
     this.spec = spec
   }

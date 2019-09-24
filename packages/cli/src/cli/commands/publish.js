@@ -1,5 +1,5 @@
 export const getMeta = () => ({
-  summary: 'Render a UI spec and interact with it in your browser.',
+  summary: 'Publish a UI spec to the solui spec repository.',
   params: [
     {
       name: 'spec',
@@ -12,11 +12,8 @@ export const getMeta = () => ({
       description: 'Path to the folder containing the contract JSON artifacts.'
     }
   ],
-  options: [
-    {
-      name: 'verbose',
-      type: Boolean,
-      description: 'Enable verbose logging.'
-    },
-  ]
 })
+
+export const execute = async () => {
+  console.log('publish')
+}
