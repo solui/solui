@@ -6,8 +6,8 @@ import { assertSpecValid } from '@solui/processor'
 import { DIST_FOLDER, createConfig } from './webpack.config'
 
 class Generator {
-  constructor ({ port, artifacts, spec, debug }) {
-    this.debug = debug
+  constructor ({ port, artifacts, spec, verbose }) {
+    this.verbose = verbose
     this.port = port
     this.artifacts = artifacts
     this.spec = spec
@@ -42,7 +42,7 @@ class Generator {
       compress: true,
       hot: true,
       host: '0.0.0.0',
-      stats: this.debug ? 'normal' : 'errors-only',
+      stats: this.verbose ? 'normal' : 'errors-only',
     }
 
     WebpackDevServer.addDevServerEntrypoints(config, webpackDevServerOptions)

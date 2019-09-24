@@ -71,3 +71,34 @@ export const watch = (pth, callback) => {
     logErr(`Error: ${err}`)
   })
 }
+
+let hasError = false
+
+export const exit = () => {
+  process.exit(hasError ? -1 : 0)
+}
+
+export const logError = msg => {
+  hasError = true
+  console.error(chalk.red(msg))
+}
+
+export const logTrace = msg => {
+  console.log(chalk.white(msg))
+}
+
+export const logInfo = msg => {
+  console.log(chalk.cyan(msg))
+}
+
+export const loadSpecArtifacts = ({ specFile, artifactsDir }) => {
+  // load data
+  const spec = loadSpec(specFile)
+  const artifacts = loadArtifacts(artifactsDir)
+
+  logTrace(`Loaded ${Object.keys(artifacts).length} contracts from directory: ${artifactsDir}`)
+  logTrace(`Loaded UI spec from: ${specFile}`)
+  logTrace('')
+
+  return { spec, artifacts }
+}

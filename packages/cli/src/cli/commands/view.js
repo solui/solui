@@ -1,6 +1,4 @@
-import chalk from 'chalk'
-
-import { loadSpec, loadArtifacts, watch } from '../utils'
+import { loadSpec, loadArtifacts, watch, logInfo, loadSpecArtifacts } from '../utils'
 import { startGenerator } from '../../'
 
 export const getMeta = () => ({
@@ -32,17 +30,12 @@ export const getMeta = () => ({
 })
 
 export const execute = async ({ spec: specFile, artifacts: artifactsDir, port, verbose }) => {
-  // load data
-  const spec = loadSpec(specFile)
-  const artifacts = loadArtifacts(artifactsDir)
+  const { spec, artifacts } = loadSpecArtifacts({ specFile, artifactsDir })
 
   // start generator
-  const instance = await startGenerator({ artifacts, spec, port, debug: verbose })
+  const instance = await startGenerator({ artifacts, spec, port, verbose })
 
-  console.log(chalk.white(`Loaded ${Object.keys(artifacts).length} contracts from directory: ${artifactsDir}`))
-  console.log(chalk.white(`Loaded UI spec from: ${specFile}`))
-  console.log('')
-  console.log(chalk.cyan(`Interface available at: ${instance.getLocalEndpoint()}`))
+  logInfo(`Interface available at: ${instance.getLocalEndpoint()}`)
 
   // watch for changes
   watch(specFile, () => instance.updateSpec(loadSpec(specFile)))

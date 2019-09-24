@@ -25,13 +25,17 @@ const PackageQuery = gql`
   }
 `
 
-export const publish = async () => {
+export const publish = async ({ spec, artifacts, log = () => {} }) => {
   const client = createApolloClient(SERVER_GRAPHQL_ENDPOINT, {
     name: '@solui/cli',
     version,
   })
 
+  log(`Publishing spec ${spec.id} to public repository...`)
+
   const ret = await client.query({ query: PackageQuery })
 
   console.log(ret)
+
+  log(`Successfully published!`)
 }

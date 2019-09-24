@@ -4,7 +4,8 @@ import glob from 'glob'
 import path from 'path'
 import commandLineArgs from 'command-line-args'
 import commandLineUsage from 'command-line-usage'
-import chalk from 'chalk'
+
+import { exit, logError } from './utils'
 
 // load commands
 const COMMANDS = glob.sync(path.join(__dirname, 'commands', '*.js')).reduce((m, file) => {
@@ -18,18 +19,6 @@ const renderParams = params => {
     return m
   }, []).join(' ')
 }
-
-let hasError = false
-
-const exit = () => {
-  process.exit(hasError ? -1 : 0)
-}
-
-const logError = msg => {
-  hasError = true
-  console.error(chalk.red(msg))
-}
-
 
 // show usage guide
 function helpCommand (comm) {
