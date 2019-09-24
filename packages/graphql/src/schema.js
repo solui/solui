@@ -1,6 +1,6 @@
-import { gql } from 'apollo-server-koa'
+import gql from 'graphql-tag'
 
-module.exports = gql`
+export default gql`
   scalar DateTime
   scalar JSON
 

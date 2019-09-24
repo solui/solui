@@ -5,7 +5,7 @@ const { str } = envalid
 const env = envalid.cleanEnv(
   process.env,
   {
-    SERVER_GRAPHQL_ENDPOINT: str({ default: 'https://solui.dev/graphql' }),
+    SOLUI_API_ENDPOINT: str({ default: 'https://solui.dev/graphql' }),
   },
   {
     dotEnvPath: '.env'

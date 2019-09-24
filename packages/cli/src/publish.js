@@ -1,41 +1,46 @@
 import { gql, createApolloClient } from '@solui/graphql'
+import { _, stringifyGraphqlError } from '@solui/utils'
 
 import { version } from '../package.json'
-import { SERVER_GRAPHQL_ENDPOINT } from './config'
+import config from './config'
 
-const PackageQuery = gql`
-  query getPackages {
-    packages: search(criteria:{ bytecodeHash: "0xd32af530a8f951b385c5cea2d8b3cf4b136f789b4b75db336f8b324605a28cbd", page:2 }) {
-      packages {
-        id
-        name
-        author {
-          id
-        }
-        latestVersion {
-          id
-          title
-          description
-          created
-        }
-      }
-      page
-      numPages
+const { SOLUI_API_ENDPOINT } = config
+
+const PublishMutation = gql`
+  mutation publishPackage ($bundle: PublishInput!) {
+    publish(bundle: $bundle) {
+      id
+      error
     }
   }
 `
 
 export const publish = async ({ spec, artifacts, log = () => {} }) => {
-  const client = createApolloClient(SERVER_GRAPHQL_ENDPOINT, {
+  const client = createApolloClient(SOLUI_API_ENDPOINT, {
     name: '@solui/cli',
     version,
   })
 
   log(`Publishing spec ${spec.id} to public repository...`)
 
-  const ret = await client.query({ query: PackageQuery })
+  let ret
+  try {
+    ret = await client.mutate({
+      mutation: PublishMutation,
+      variables: {
+        bundle: { spec, artifacts }
+      }
+    })
+  } catch (err) {
+    throw new Error(stringifyGraphqlError(err))
+  }
 
-  console.log(ret)
+  const id = _.get(ret, 'data.publish.id')
+  const error = _.get(ret, 'data.publish.error')
 
-  log(`Successfully published!`)
+  if (error) {
+    throw new Error(error)
+  }
+
+  log(`Successfully published: ${id}`)
 }

@@ -1,5 +1,5 @@
+import { loadSpecArtifacts, logTrace } from '../utils'
 import { publish } from '../../'
-import { loadSpecArtifacts, logInfo } from '../utils'
 
 export const getMeta = () => ({
   summary: 'Publish a UI spec to the solui spec repository.',
@@ -20,5 +20,5 @@ export const getMeta = () => ({
 export const execute = async ({ spec: specFile, artifacts: artifactsDir }) => {
   const { spec, artifacts } = loadSpecArtifacts({ specFile, artifactsDir })
 
-  await publish({ spec, artifacts, log: logInfo })
+  await publish({ spec, artifacts, log: logTrace })
 }

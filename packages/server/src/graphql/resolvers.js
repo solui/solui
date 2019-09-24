@@ -26,7 +26,7 @@ export default ({ db }) => ({
           versionId: await db.publishPackageVersion(spec, artifacts)
         }
       } catch (err) {
-        return { error: err.message() }
+        return { error: err.message }
       }
     }
   },

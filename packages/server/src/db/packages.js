@@ -200,7 +200,7 @@ export async function publishPackageVersion (spec, artifacts) {
         .limit(1)
         .transacting(trx)
 
-      ;[ { id: pkgId } ] = await this._db()
+      const rows = await this._db()
         .table('package')
         .insert({
           id: uuid(),
@@ -209,15 +209,18 @@ export async function publishPackageVersion (spec, artifacts) {
         })
         .returning('id')
         .transacting(trx)
+
+      pkgId = _.get(this._extractReturnedDbIds(rows), '0')
     }
 
-    const [ { id: versionId } ] = await this._db()
+    const versionRows = await this._db()
       .table('version')
       .insert({
         id: uuid(),
         pkgId,
         title: spec.title,
         description: spec.description,
+        search: `${spec.title} ${spec.description}`.toLowerCase(),
         data: {
           spec,
           // ensure we only insert what's necessary when it comes to artifact data
@@ -233,6 +236,8 @@ export async function publishPackageVersion (spec, artifacts) {
       })
       .returning('id')
       .transacting(trx)
+
+    const versionId = _.get(this._extractReturnedDbIds(versionRows), '0')
 
     const hashRows = Object.values(artifacts).map(({ bytecode }) => ({
       id: uuid(),
