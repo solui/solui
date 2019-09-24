@@ -3,6 +3,9 @@
   "descrption": "Declarative UI generation for smart contracts",
   "version": "0.1.0",
   "license": "MIT",
+  "bin": {
+    "solui": "./bin/solui"
+  },
   "dependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
@@ -50,13 +53,12 @@
   },
   "scripts": {
     "lint": "eslint . && solhint contracts/**/*.sol",
-    "build": "next build",
-    "start": "bin/solui --artifacts ./build/contracts --spec ./contracts/ui.json",
+    "demo": "bin/solui --artifacts ./build/contracts --spec ./contracts/ui.json",
     "truffle": "babel-node node_modules/.bin/truffle",
-    "devnet": "ganache-cli -a 10",
-    "devnet-ci": "ganache-cli -a 10 >ganache.log 2>&1 &",
-    "clean": "yarn truffle networks --clean",
-    "deploy": "yarn truffle compile && yarn truffle migrate"
+    "truffle:devnet": "ganache-cli -a 10",
+    "truffle:devnet-ci": "ganache-cli -a 10 >ganache.log 2>&1 &",
+    "truffle:clean": "yarn truffle networks --clean",
+    "truffle:deploy": "yarn truffle compile && yarn truffle migrate"
   },
   "devDependencies": {
     "solhint": "^2.2.0",

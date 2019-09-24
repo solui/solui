@@ -72,6 +72,10 @@ class Generator {
     this.virtualModules.writeModule('node_modules/artifacts.json', JSON.stringify(this.artifacts))
   }
 
+  getLocalEndpoint () {
+    return `http://localhost:${this.port}`
+  }
+
   getEndpoint () {
     return `http://0.0.0.0:${this.port}`
   }

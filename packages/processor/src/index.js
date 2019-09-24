@@ -163,6 +163,7 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
 
             return contract.methods[method](...args).send({ from })
           } catch (err) {
+            console.warn(err)
             ctx.errors().add(id, `Error executing: ${err}`)
             return null
           }

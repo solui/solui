@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
 require('@babel/register')
-require('./solui.js')
+require('../src/bin.js')

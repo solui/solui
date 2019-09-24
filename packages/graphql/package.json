@@ -41,6 +41,7 @@
     "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.13",
     "apollo-link-http": "^1.5.16",
+    "graphql-tag": "^2.10.1",
     "node-fetch": "^2.6.0"
   }
 }
