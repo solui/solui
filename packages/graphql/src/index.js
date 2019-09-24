@@ -3,7 +3,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 
 import createLinks from './links'
 
-export { gql } from 'graphql-tag'
+export gql from 'graphql-tag'
 
 const cache = new InMemoryCache()
 
