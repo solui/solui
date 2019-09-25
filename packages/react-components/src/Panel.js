@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 
 import { useInput } from './hooks'
-import Inputs from './Inputs'
+import PanelInputs from './PanelInputs'
 import Result from './Result'
 import Icon from './Icon'
 import Button from './Button'

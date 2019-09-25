@@ -6,6 +6,10 @@ const env = envalid.cleanEnv(process.env, {
   APP_MODE: str({ choices: [ 'live', 'development' ], devDefault: 'development' }),
   LOG: str({ choices: [ 'error', 'warn', 'info', 'debug' ], default: 'debug' }),
   SESSION_COOKIE_KEY: str({ devDefault: 'dbf74bb3482b6a2a5836f2ac7fd0ae9c' }),
+  MAILGUN_DOMAIN: str({ default: 'solui.dev' }),
+  ENCRYPTION_IV: str({ devDefault: '7641234e1acdf262' }),
+  ENCRYPTION_KEY: str({ devDefault: '5959ff4902129c674ec40c8028636c92' }),
+  MAILGUN_API_KEY: str(),
 }, {
   dotEnvPath: '.env'
 })

@@ -6,8 +6,17 @@ export const GLOBAL_SCOPE = (typeof window !== 'undefined' ? window : (
 ))
 /* eslint-enable no-nested-ternary, no-restricted-globals, no-undef */
 
-export const openUrlInBrowser = url => {
+export const alert = msg => {
   if (typeof window !== 'undefined') {
-    window.open(url)
+    alert(msg)
   }
+  console.log(msg)
+}
+
+export const getQueryString = key => {
+  if (typeof window !== 'undefined' && window.document && window.URL) {
+    const { searchParams } = new window.URL(window.document.location)
+    return searchParams.get(key)
+  }
+  return null
 }

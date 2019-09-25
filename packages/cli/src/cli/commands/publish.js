@@ -1,4 +1,4 @@
-import { loadSpecArtifacts, logTrace } from '../utils'
+import { loadSpecArtifacts } from '../../utils'
 import { publish } from '../../'
 
 export const getMeta = () => ({
@@ -20,5 +20,5 @@ export const getMeta = () => ({
 export const execute = async ({ spec: specFile, artifacts: artifactsDir }) => {
   const { spec, artifacts } = loadSpecArtifacts({ specFile, artifactsDir })
 
-  await publish({ spec, artifacts, log: logTrace })
+  await publish({ spec, artifacts })
 }

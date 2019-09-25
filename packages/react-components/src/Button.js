@@ -1,7 +1,11 @@
+/* eslint-disable-next-line import/no-extraneous-dependencies */
+import React from 'react'
 import styled from '@emotion/styled'
 import { smoothTransitions, boxShadow } from '@solui/styles'
 
-const Button = styled.button`
+import LoadingIcon from './LoadingIcon'
+
+const StyledButton = styled.button`
   ${smoothTransitions()};
   ${({ theme }) => theme.font('body', 'bold')};
   cursor: pointer;
@@ -21,4 +25,16 @@ const Button = styled.button`
   `)}
 `
 
-export default Button
+const StyledLoadingIcon = styled(LoadingIcon)`
+  color: ${({ theme }) => theme.buttonTextColor};
+`
+
+export default ({ loading, children, ...props }) => (
+  <StyledButton {...props}>
+    {loading ? (
+      <StyledLoadingIcon />
+    ) : (
+      children
+    )}
+  </StyledButton>
+)

@@ -42,6 +42,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.22",
     "@fortawesome/free-solid-svg-icons": "^5.10.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
+    "@solui/graphql": "^0.0.0",
     "@solui/styles": "^0.0.0",
     "@solui/utils": "^0.0.0",
     "clipboard-polyfill": "^2.8.6",
@@ -52,6 +53,7 @@
   },
   "peerDependencies": {
     "react": "^16.9.0",
+    "react-apollo": "^3.1.1",
     "react-dom": "^16.9.0"
   }
 }

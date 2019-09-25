@@ -6,12 +6,15 @@ import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'
 import { _ } from '@solui/utils'
 import { getTheme, loadFonts } from '@solui/styles'
 import { createApolloClient } from '@solui/graphql'
+import { openUrl } from '@solui/react-components'
 import { ThemeProvider } from 'emotion-theming'
 
+// From https://github.com/FortAwesome/react-fontawesome/issues/134#issuecomment-471940596
+import '@fortawesome/fontawesome-svg-core/styles.css'
+
+import { version } from '../package.json'
 import { APP_STATE_KEYS } from '../common/appState'
 import { GlobalProvider, getClientSideAppState } from '../frontend/globalState'
-
-const apolloClient = createApolloClient()
 
 export default class MyApp extends App {
   static async getInitialProps ({ Component, ctx }) {
@@ -59,10 +62,19 @@ export default class MyApp extends App {
   render () {
     const { Component, pageProps, appState } = this.props
 
+    if (!this._apolloClient) {
+      this._apolloClient = createApolloClient({
+        serverHost: appState.baseUrl,
+        openUrl,
+        name: 'solui-server',
+        version,
+      })
+    }
+
     return (
       <GlobalProvider value={appState}>
-        <ApolloProvider client={apolloClient}>
-          <ApolloHooksProvider client={apolloClient}>
+        <ApolloProvider client={this._apolloClient}>
+          <ApolloHooksProvider client={this._apolloClient}>
             <ThemeProvider theme={getTheme()}>
               <DefaultSeo
                 title="solUI"

@@ -8,6 +8,7 @@ import config from './config'
 import createLog from './log'
 import setupGraphQLEndpoint from './graphql'
 import { createDb } from './db'
+import { createNotifier } from './notifier'
 import { APP_STATE_KEYS } from '../common/appState'
 
 const log = createLog(config)
@@ -20,7 +21,7 @@ process.on('unhandledRejection', (reason, p) => {
   log.error('Unhandled Rejection at:', p, 'reason:', reason)
 })
 
-const inDevMode = config.NODE_ENV !== 'production'
+const inDevMode = config.APP_MODE === 'development'
 
 const init = async () => {
   const app = next({
@@ -34,8 +35,21 @@ const init = async () => {
   const server = new Koa()
   const router = new Router()
   const db = await createDb({ config, log })
+  const notifier = createNotifier({ router, config, log, db })
 
   await app.prepare()
+
+  // handle notifier verification links
+  router.get('notify', '/n/:t', async ctx => {
+    ctx.finalizeResVars()
+
+    try {
+      await notifier.handleLink(ctx)
+    } catch (err) {
+      log.warn(err)
+      await app.render(ctx.req, ctx.res, '/error', { msg: err.message, stack: err.stack })
+    }
+  })
 
   // everything else goes to next.js app
   router.get('*', async ctx => {
@@ -56,7 +70,7 @@ const init = async () => {
   // for session cookies
   server.keys = [ config.SESSION_COOKIE_KEY ]
   server.use(koaSession({
-    key: 'buidl',
+    key: 'solui',
     maxAge: 604800000, // 7 days
   }, server))
 
@@ -65,7 +79,13 @@ const init = async () => {
 
     ctx.finalizeResVars = () => {
       APP_STATE_KEYS.forEach(k => {
-        ctx.res[k] = ctx.session[k]
+        switch (k) {
+          case 'baseUrl':
+            ctx.res[k] = config.BASE_URL
+            break
+          default:
+            ctx.res[k] = ctx.session[k]
+        }
       })
     }
 
@@ -73,7 +93,7 @@ const init = async () => {
   })
 
   // graphql
-  setupGraphQLEndpoint({ config, server, db })
+  setupGraphQLEndpoint({ config, server, db, notifier })
 
   server.use(router.routes())
 

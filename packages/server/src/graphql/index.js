@@ -1,6 +1,6 @@
 import { ApolloServer } from 'apollo-server-koa'
+import { schema } from '@solui/graphql'
 
-import schema from './schema'
 import createResolvers from './resolvers'
 
 export default ({ config, server: app, db, notifier, stripe }) => {

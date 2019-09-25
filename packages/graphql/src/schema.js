@@ -47,7 +47,7 @@ export default gql`
   }
 
   type PublishResult {
-    id: ID
+    versionId: ID
     error: String
   }
 
@@ -62,13 +62,20 @@ export default gql`
     artifacts: JSON!
   }
 
+  type AuthToken {
+    token: String!
+    expires: DateTime!
+  }
+
   type Query {
     search(criteria: SearchCritieraInput!): PackageResults!
     getPackage(name: String!, numVersions: Int!): Package
     getVersion(id: String!): Version
+    getAuthToken(loginToken: String!): AuthToken
   }
 
   type Mutation {
     publish(bundle: PublishInput!): PublishResult!
+    login(email: String!, loginToken: String!): Boolean
   }
 `

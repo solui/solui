@@ -2,7 +2,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 
-import Icon from './Icon'
+import LoadingIcon from './LoadingIcon'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.progressBgColor};
@@ -12,7 +12,7 @@ const Container = styled.div`
   font-size: 1.2rem;
 `
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(LoadingIcon)`
   margin-right: 0.4em;
   color: ${({ theme }) => theme.progressIconColor};
   font-size: 150%;
@@ -21,7 +21,7 @@ const StyledIcon = styled(Icon)`
 export default ({ className, children }) => {
   return (
     <Container className={className}>
-      <StyledIcon name="laugh-squint" spin />
+      <StyledIcon />
       {children}
     </Container>
   )

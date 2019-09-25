@@ -1,4 +1,5 @@
 exports.APP_STATE_KEYS = [
   'uid',
-  'isAdmin'
+  'isAdmin',
+  'baseUrl',
 ]

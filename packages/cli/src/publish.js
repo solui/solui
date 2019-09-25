@@ -1,27 +1,13 @@
-import { gql, createApolloClient } from '@solui/graphql'
-import { _, stringifyGraphqlError } from '@solui/utils'
+import { PublishMutation, stringifyGraphqlError } from '@solui/graphql'
+import { _ } from '@solui/utils'
 
-import { version } from '../package.json'
-import config from './config'
+import { getApiClient } from './client'
+import { logTrace, logInfo } from './utils'
 
-const { SOLUI_API_ENDPOINT } = config
+export const publish = async ({ spec, artifacts }) => {
+  const client = getApiClient()
 
-const PublishMutation = gql`
-  mutation publishPackage ($bundle: PublishInput!) {
-    publish(bundle: $bundle) {
-      id
-      error
-    }
-  }
-`
-
-export const publish = async ({ spec, artifacts, log = () => {} }) => {
-  const client = createApolloClient(SOLUI_API_ENDPOINT, {
-    name: '@solui/cli',
-    version,
-  })
-
-  log(`Publishing spec ${spec.id} to public repository...`)
+  logTrace(`Publishing spec ${spec.id} to public repository...`)
 
   let ret
   try {
@@ -31,16 +17,20 @@ export const publish = async ({ spec, artifacts, log = () => {} }) => {
         bundle: { spec, artifacts }
       }
     })
+
+    if (ret.error) {
+      throw ret.error
+    }
   } catch (err) {
     throw new Error(stringifyGraphqlError(err))
   }
 
-  const id = _.get(ret, 'data.publish.id')
+  const versionId = _.get(ret, 'data.publish.versionId')
   const error = _.get(ret, 'data.publish.error')
 
   if (error) {
     throw new Error(error)
   }
 
-  log(`Successfully published: ${id}`)
+  logInfo(`Successfully published: ${versionId}`)
 }

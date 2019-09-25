@@ -11,6 +11,9 @@ import artifacts from 'artifacts.json'
 /* eslint-enable import/no-unresolved */
 /* eslint-enable import/no-extraneous-dependencies */
 
+// From https://github.com/FortAwesome/react-fontawesome/issues/134#issuecomment-471940596
+import '@fortawesome/fontawesome-svg-core/styles.css'
+
 import React, { Component } from 'react'
 import styled from '@emotion/styled'
 import { ThemeProvider } from 'emotion-theming'

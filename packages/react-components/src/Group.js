@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import { flex, boxShadow, smoothTransitions } from '@solui/styles'
 
 import { PanelBuilder } from './Panel'
-import Inputs from './Inputs'
+import PanelInputs from './PanelInputs'
 import Image from './Image'
 import { useInput } from './hooks'
 
@@ -136,7 +136,7 @@ export const Group = ({
       </Info>
       <Content expanded={expanded}>
         {inputs.length ? (
-          <Inputs
+          <PanelInputs
             inputs={inputs}
             inputValue={inputValue}
             inputValidation={inputValidation}

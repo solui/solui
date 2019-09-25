@@ -23,6 +23,13 @@ exports.up = async function (knex) {
     },
   ])
 
+  await schema(knex).createTable('login_token', table => {
+    table.uuid('id').notNullable().primary().defaultTo(knex.raw('uuid_generate_v4()'))
+    table.uuid('user_id').notNullable()
+    addTimestampColumns(knex, table)
+    table.foreign('user_id').references('user.id').onUpdate('RESTRICT').onDelete('CASCADE')
+  })
+
   await schema(knex).createTable('package', table => {
     table.uuid('id').notNullable().primary().defaultTo(knex.raw('uuid_generate_v4()'))
     table.uuid('owner_id').notNullable()
@@ -56,6 +63,7 @@ exports.down = async function (knex) {
   await dropTable(knex, 'bytecode_hash')
   await dropTable(knex, 'version')
   await dropTable(knex, 'package')
+  await dropTable(knex, 'login_token')
   await dropTable(knex, 'user')
 
   await knex.raw('drop extension if exists "uuid-ossp"')

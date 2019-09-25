@@ -5,7 +5,7 @@ import { assertSpecValid } from '@solui/processor'
 
 import { DIST_FOLDER, createConfig } from './webpack.config'
 
-class Generator {
+class Viewer {
   constructor ({ port, artifacts, spec, verbose }) {
     this.verbose = verbose
     this.port = port
@@ -81,10 +81,10 @@ class Generator {
   }
 }
 
-export const startGenerator = async cfg => {
+export const startViewer = async cfg => {
   await assertSpecValid(cfg)
 
-  const g = new Generator(cfg)
+  const g = new Viewer(cfg)
   await g.start()
 
   return g

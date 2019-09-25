@@ -35,13 +35,32 @@ const Input = styled.input`
  `
 
 const StyledErrorBox = styled(ErrorBox)`
+  width: 100%;
   margin-top: 0.5rem;
   font-size: 1rem;
 `
 
-const getPlaceholder = ({ type }) => type
+const getPlaceholder = ({ type }) => {
+  switch (type) {
+    case 'email':
+      return 'Email address'
+    default:
+      return type
+  }
+}
 
-export default ({ className, name, onChange, value, error, config: { title, type } }) => {
+const getInputType = ({ type }) => {
+  switch (type) {
+    case 'address':
+      return 'text'
+    case 'email':
+    default:
+      return type
+  }
+}
+
+export default ({ className, name, onChange, value, error, title, type }) => {
+  const inputType = useMemo(() => getInputType({ type }), [ type ])
   const placeholder = useMemo(() => getPlaceholder({ type }), [ type ])
 
   const onTextChange = useCallback(e => onChange(e.currentTarget.value), [ onChange ])
@@ -50,7 +69,7 @@ export default ({ className, name, onChange, value, error, config: { title, type
     <Container className={className}>
       <Label>{title}</Label>
       <Input
-        type="text"
+        type={inputType}
         name={name}
         onChange={onTextChange}
         value={value}

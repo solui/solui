@@ -1,4 +1,5 @@
 import glob from 'glob'
+import EventEmitter from 'eventemitter3'
 import path from 'path'
 import { addDays } from 'date-fns'
 import { _ } from '@solui/utils'
@@ -30,8 +31,10 @@ export const tsStr = ({ add = 0 } = {}) => {
 
 const mapKeyMapper = (_ignore, key) => _.camelCase(key)
 
-class Db {
+class Db extends EventEmitter {
   constructor ({ config, log }) {
+    super()
+
     this._knex = knex({
       ...config.DB,
       postProcessResponse: this._postProcessDbResponse.bind(this),
@@ -42,6 +45,11 @@ class Db {
     Object.entries(METHODS).forEach(([ methodName, fn ]) => {
       this[methodName] = fn.bind(this)
     })
+
+    this._cryptoParams = {
+      key: config.ENCRYPTION_KEY,
+      iv: config.ENCRYPTION_IV,
+    }
   }
 
   async initConnection () {
