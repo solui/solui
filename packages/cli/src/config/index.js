@@ -33,7 +33,7 @@ export const saveUserConfig = config => {
     fs.writeFileSync(HOME_CONFIG_FILE, dotenvStringify(cfg))
     fs.chmodSync(HOME_CONFIG_FILE, 0o600) // only owner can access
 
-    console.log(`\nUpdated user config file: ${HOME_CONFIG_FILE}\n`)
+    console.log(`\nUpdated user config file: ${HOME_CONFIG_FILE}`)
   } catch (err) {
     console.warn(`Error writing config file ${HOME_CONFIG_FILE}: ${err.message}`)
   }

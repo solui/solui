@@ -32,5 +32,5 @@ export const publish = async ({ spec, artifacts }) => {
     throw new Error(error)
   }
 
-  logInfo(`Successfully published: ${versionId}`)
+  logInfo(`\nSuccessfully published: ${versionId}`)
 }

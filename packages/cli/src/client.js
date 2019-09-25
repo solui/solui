@@ -67,5 +67,9 @@ export const getApiClient = () => {
     })
   }
 
+  if (config.SOLUI_TOKEN) {
+    client.authToken.set(config.SOLUI_TOKEN)
+  }
+
   return client
 }
