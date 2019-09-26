@@ -45,11 +45,6 @@ class Db extends EventEmitter {
     Object.entries(METHODS).forEach(([ methodName, fn ]) => {
       this[methodName] = fn.bind(this)
     })
-
-    this._cryptoParams = {
-      key: config.ENCRYPTION_KEY,
-      iv: config.ENCRYPTION_IV,
-    }
   }
 
   async initConnection () {

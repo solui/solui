@@ -8,7 +8,7 @@ export default ({ config, server: app, db, notifier, stripe }) => {
     introspection: true,
     typeDefs: schema,
     resolvers: createResolvers({ config, db, notifier, stripe }),
-    context: ({ ctx: { session: { uid, isAdmin } } }) => ({ uid, isAdmin })
+    context: ({ ctx: { state: { uid, isAdmin } } }) => ({ uid, isAdmin })
   })
 
   server.applyMiddleware({ app })

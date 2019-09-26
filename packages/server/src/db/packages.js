@@ -83,7 +83,7 @@ export async function _searchPackages ({ filterCondition, filterValue, page }) {
   }
 }
 
-export async function searchByKeywords (keyword, page = 1) {
+export async function searchByKeywords ({ keyword, page = 1 }) {
   this._log.debug(`Search by keyword: "${keyword}" ...`)
 
   return this._searchPackages({
@@ -93,7 +93,7 @@ export async function searchByKeywords (keyword, page = 1) {
   })
 }
 
-export async function searchByBytecodeHash (hash, page = 1) {
+export async function searchByBytecodeHash ({ hash, page = 1 }) {
   this._log.debug(`Search by bytecode hash: "${hash}" ...`)
 
   return this._searchPackages({
@@ -106,7 +106,7 @@ export async function searchByBytecodeHash (hash, page = 1) {
   })
 }
 
-export async function getPackage (name, numVersions) {
+export async function getPackage ({ name, numVersions }) {
   this._log.debug(`Get package: "${name}, ${numVersions} versions" ...`)
 
   // data query
@@ -141,7 +141,7 @@ export async function getPackage (name, numVersions) {
   return pkg
 }
 
-export async function getPackageVersion (id) {
+export async function getPackageVersion ({ id }) {
   this._log.debug(`Get package version: "${id}" ...`)
 
   // data query
@@ -164,7 +164,7 @@ export async function getPackageVersion (id) {
   return this._extractVersionFromResultRow(rows[0])
 }
 
-export async function publishPackageVersion (spec, artifacts) {
+export async function publishPackageVersion ({ spec, artifacts }) {
   try {
     await assertSpecValid({ spec, artifacts })
   } catch (err) {

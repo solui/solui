@@ -4,6 +4,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import schema from './schema'
 import createLinks from './links'
 import AuthToken from './authToken'
+import { stringifyGraphqlError } from './utils'
 
 export * from './queries'
 export * from './mutations'
@@ -41,6 +42,34 @@ export const createApolloClient = ({ serverHost, refreshAuthToken, name, version
   authToken.s = client
 
   client.authToken = authToken
+
+  client.safeQuery = async (...args) => {
+    try {
+      const ret = await client.query(...args)
+
+      if (ret.errors) {
+        throw ret.errors
+      }
+
+      return ret
+    } catch (err) {
+      throw new Error(stringifyGraphqlError(err))
+    }
+  }
+
+  client.safeMutate = async (...args) => {
+    try {
+      const ret = await client.mutate(...args)
+
+      if (ret.errors) {
+        throw ret.errors
+      }
+
+      return ret
+    } catch (err) {
+      throw new Error(stringifyGraphqlError(err))
+    }
+  }
 
   return client
 }

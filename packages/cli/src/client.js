@@ -1,6 +1,6 @@
 import open from 'open'
 import uuid from 'uuid/v4'
-import { createApolloClient, GetAuthTokenQuery, stringifyGraphqlError } from '@solui/graphql'
+import { createApolloClient, GetAuthTokenQuery } from '@solui/graphql'
 import { _ } from '@solui/utils'
 
 import config, { saveUserConfig } from './config'
@@ -15,8 +15,6 @@ const refreshAuthToken = async () => {
   const url = `${config.SOLUI_REPO_HOST}/login?token=${loginToken}`
 
   logInfo(`
-You are not logged in!
-
 Please login using the following URL: ${url}`)
 
   await open(url)
@@ -24,14 +22,16 @@ Please login using the following URL: ${url}`)
   await new Promise((resolve, reject) => {
     const __checkForAuthToken = async () => {
       try {
-        const { data, errors } = await client.query({
-          query: GetAuthTokenQuery,
-          variables: { loginToken },
-          fetchPolicy: 'network-only',
-        })
+        let data
 
-        if (errors) {
-          reject(new Error(stringifyGraphqlError(errors)))
+        try {
+          ({ data } = await client.safeQuery({
+            query: GetAuthTokenQuery,
+            variables: { loginToken },
+            fetchPolicy: 'network-only',
+          }))
+        } catch (err) {
+          reject(err)
           return
         }
 

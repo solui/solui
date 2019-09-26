@@ -1,5 +1,4 @@
 import Koa from 'koa'
-import koaSession from 'koa-session'
 import cors from '@koa/cors'
 import Router from 'koa-router'
 import next from 'next'
@@ -9,6 +8,7 @@ import createLog from './log'
 import setupGraphQLEndpoint from './graphql'
 import { createDb } from './db'
 import { createNotifier } from './notifier'
+import { setupAuthMiddleware } from './auth'
 import { APP_STATE_KEYS } from '../common/appState'
 
 const log = createLog(config)
@@ -39,6 +39,38 @@ const init = async () => {
 
   await app.prepare()
 
+  // cors
+  server.use(
+    cors({
+      origin: '*',
+      credentials: true
+    })
+  )
+
+  server.use(async (ctx, nextHandler) => {
+    ctx.res.statusCode = 200 // Koa doesn't seems to set the default statusCode.
+
+    ctx.finalizeResVars = () => {
+      APP_STATE_KEYS.forEach(k => {
+        switch (k) {
+          case 'baseUrl':
+            ctx.res[k] = config.BASE_URL
+            break
+          default:
+            ctx.res[k] = ctx.state[k]
+        }
+      })
+    }
+
+    await nextHandler()
+  })
+
+  // auth middleware
+  setupAuthMiddleware({ config, server, db, log })
+
+  // graphql
+  setupGraphQLEndpoint({ config, server, db, notifier })
+
   // handle notifier verification links
   router.get('notify', '/n/:t', async ctx => {
     ctx.finalizeResVars()
@@ -58,42 +90,6 @@ const init = async () => {
     await handle(ctx.req, ctx.res)
     ctx.respond = false
   })
-
-  // cors
-  server.use(
-    cors({
-      origin: '*',
-      credentials: true
-    })
-  )
-
-  // for session cookies
-  server.keys = [ config.SESSION_COOKIE_KEY ]
-  server.use(koaSession({
-    key: 'solui',
-    maxAge: 604800000, // 7 days
-  }, server))
-
-  server.use(async (ctx, nextHandler) => {
-    ctx.res.statusCode = 200 // Koa doesn't seems to set the default statusCode.
-
-    ctx.finalizeResVars = () => {
-      APP_STATE_KEYS.forEach(k => {
-        switch (k) {
-          case 'baseUrl':
-            ctx.res[k] = config.BASE_URL
-            break
-          default:
-            ctx.res[k] = ctx.session[k]
-        }
-      })
-    }
-
-    await nextHandler()
-  })
-
-  // graphql
-  setupGraphQLEndpoint({ config, server, db, notifier })
 
   server.use(router.routes())
 

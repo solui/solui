@@ -22,7 +22,7 @@ The friendly solUI bot
 export async function handleLink (ctx, v) {
   const { email, loginToken } = await this._decodePayload(v)
 
-  await this._db.loginUser({ email, loginToken })
+  await this._db.saveLoginToken({ email, loginToken })
 
   return ctx.redirect(buildUrlPath('/logged-in'))
 }

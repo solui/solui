@@ -1,5 +1,6 @@
 import { _, obfuscate } from '@solui/utils'
-import { encrypt } from '../utils/crypto'
+
+import { generateAuthToken } from '../auth'
 
 export async function _createUserOrFetchExisting (email, trx) {
   email = email.toLowerCase()
@@ -27,8 +28,19 @@ export async function _createUserOrFetchExisting (email, trx) {
   return id
 }
 
+export async function getUser ({ id }) {
+  this._log.debug(`Get user: "${id}" ...`)
 
-export async function loginUser ({ email, loginToken }) {
+  const rows = await this._db()
+    .table('user')
+    .select('*')
+    .where('id', id)
+    .limit(1)
+
+  return _.get(rows, '0')
+}
+
+export async function saveLoginToken ({ email, loginToken }) {
   this._log.debug(`User successfully logged in: "${obfuscate(email)}" ...`)
 
   return this._dbTrans(async trx => {
@@ -41,7 +53,7 @@ export async function loginUser ({ email, loginToken }) {
   })
 }
 
-export async function getAuthToken (loginToken) {
+export async function getAuthToken ({ loginToken }) {
   this._log.debug(`Get auth token for login: ${loginToken} ...`)
 
   return this._dbTrans(async trx => {
@@ -71,7 +83,7 @@ export async function getAuthToken (loginToken) {
 
     // generate and return auth token
     return {
-      token: await encrypt({ expires, userId }, this._cryptoParams),
+      token: await generateAuthToken({ expires, userId }),
       expires,
     }
   })
