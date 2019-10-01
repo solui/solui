@@ -29,6 +29,12 @@
     "packages/*"
   ],
   "scripts": {
-    "bootstrap": "lerna bootstrap --use-workspaces"
+    "bootstrap": "lerna bootstrap --use-workspaces",
+    "commitmsg": "commitlint -e $GIT_PARAMS"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   }
 }
