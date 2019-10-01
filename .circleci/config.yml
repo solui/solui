@@ -27,7 +27,7 @@ jobs:
     steps:
       - checkout:
           path: ~/repo
-      - install_node_modules:
+      - install_node_modules
       - run:
           name: Bump to version $CIRCLE_TAG
           command: yarn lerna version $CIRCLE_TAG
