@@ -1,0 +1,48 @@
+version: 2.1
+
+executors:
+  publish:
+    docker:
+      - image: circleci/node:10.16.0
+
+commands:
+  install_node_modules:
+    steps:
+      - restore_cache:
+          name: Restore yarn cache
+          key: yarn-cache-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: yarn
+      - save_cache:
+          name: Save yarn cache
+          key: yarn-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.config/yarn
+
+jobs:
+  publish_to_npm:
+    executor: publish
+    working_directory: ~/repo
+    steps:
+      - checkout:
+          path: ~/repo
+      - install_node_modules:
+      - run:
+          name: Bump to version $CIRCLE_TAG
+          command: yarn lerna version $CIRCLE_TAG
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+      # - run:
+      #     name: Publish package
+      #     command: npm publish
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - publish_to_npm
+          # filters:
+          #   tags:
+          #     only: /^v.*/
