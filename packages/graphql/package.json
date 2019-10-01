@@ -1,6 +1,6 @@
 {
   "name": "@solui/graphql",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "GraphQL utilities for solUI",
   "publishConfig": {
     "access": "public"
@@ -37,8 +37,8 @@
     "core-js": "^3.2.1"
   },
   "dependencies": {
-    "@solui/react-components": "^0.0.0",
-    "@solui/utils": "^0.0.0",
+    "@solui/react-components": "^0.0.1",
+    "@solui/utils": "^0.0.1",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.13",
