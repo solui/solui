@@ -75,7 +75,7 @@ export const Panel = ({
       <Title>{config.title}</Title>
 
       {inputs.length ? (
-        <Inputs
+        <PanelInputs
           inputs={inputs}
           inputValue={inputValue}
           inputValidation={inputValidation}

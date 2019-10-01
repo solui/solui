@@ -18,7 +18,7 @@ export async function _createUserOrFetchExisting (email, trx) {
     this._log.debug(`Create user entry for: ${obfuscate(email)}`)
 
     ret = await this._db().table('user')
-      .insert({ email })
+      .insert({ email, username: `${obfuscate(email)}-${Math.random() * 100000}` })
       .returning('id')
       .transacting(trx)
 

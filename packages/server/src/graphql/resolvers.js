@@ -21,8 +21,8 @@ export default ({ db, notifier }) => {
           return db.searchByBytecodeHash({ bytecodeHash, page })
         }
       },
-      getPackage: (_, { name, numVersions }) => {
-        return db.getPackage({ name, numVersions })
+      getPackage: (_, { name }) => {
+        return db.getPackage({ name })
       },
       getVersion: (_, { id }) => {
         return db.getPackageVersion({ id })

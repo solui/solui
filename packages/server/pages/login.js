@@ -4,12 +4,13 @@ import styled from '@emotion/styled'
 import { LoginMutation } from '@solui/graphql'
 import { isEmail, getQueryString } from '@solui/utils'
 import {
-  Layout,
   Button,
   AlertBox,
   Mutation,
   TextInput,
 } from '@solui/react-components'
+
+import Layout from './_components/Layout'
 
 const StyledAlert = styled(AlertBox)`
   margin: 1.5rem 0;

@@ -96,7 +96,7 @@ exports.seed = async knex => {
       data,
       title,
       description,
-      search: `${title} ${description}`.toLowerCase()
+      search: `${data.spec.id} ${title}`.toLowerCase()
     })
 
     packageIndex = (packages.length > (packageIndex + 1) ? packageIndex + 1 : 0)

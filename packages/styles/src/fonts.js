@@ -6,6 +6,9 @@ const DEFAULT_FONT = {
     thin: 100,
     regular: 400,
     bold: 700,
+  },
+  styles: {
+    normal: 'normal',
   }
 }
 
@@ -31,7 +34,11 @@ export const loadFonts = (cfg, doc) => {
   if (doc) {
     const l = doc.createElement('link')
     const fw = Object.values(cfg).reduce((m, v) => {
-      m.push(`${encodeURIComponent(v.name)}:${Object.values(v.weights).join(',')}`)
+      const vw = Object.values(v.weights)
+      const vwi = vw.map(vwv => `${vwv}i`)
+      m.push(
+        `${encodeURIComponent(v.name)}:${vw.join(',')},${vwi.join(',')}`
+      )
       return m
     }, [])
     l.href = `https://fonts.googleapis.com/css?family=${fw.join('|')}`
@@ -42,11 +49,12 @@ export const loadFonts = (cfg, doc) => {
   return ret
 }
 
-export const font = (id, weight = 'regular') => {
+export const font = (id, weight = 'regular', style = 'normal') => {
   const f = loadedFonts[id] || DEFAULT_FONT
 
   return `
     font-family: '${f.name}', sans-serif;
     font-weight: ${f.weights[weight]};
+    font-style: ${style};
   `
 }

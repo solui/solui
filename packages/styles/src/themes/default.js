@@ -9,8 +9,10 @@ const cs5 = '#FFCC63'
 
 const white = '#fff'
 const black = '#000'
+const darkGrey = '#666'
 const grey = '#999'
 const lightGrey = '#ccc'
+const lighterGrey = '#eee'
 
 const transparent = 'transparent'
 
@@ -19,6 +21,8 @@ const opacify = (c, a) => Color(c).alpha(a).toString()
 export default {
   bodyBgColor: white,
   bodyTextColor: black,
+  // shadows
+  boxShadowColor: opacify(black, 0.2),
   // result component
   resultBgColor: opacify(cs2, 0.4),
   // button component
@@ -62,6 +66,7 @@ export default {
   inputFocusBgColor: white,
   inputErrorBgColor: cs1,
   inputTextColor: black,
+  inputPlaceholderTextColor: lightGrey,
   // alert component
   alertBgColor: opacify(cs2, 0.3),
   alertIconColor: cs2,
@@ -74,7 +79,23 @@ export default {
   progressBgColor: opacify(cs2, 0.3),
   progressIconColor: cs2,
   progressTextColor: black,
-  // network info component
-  networkInfoBgColor: cs3,
-  networkInfoTextColor: white,
+  // header component
+  headerBgColor: cs3,
+  headerTextColor: white,
+  // search common
+  searchResultsMetaTextColor: darkGrey,
+  // search popup
+  searchResultsPopupBackgroundColor: white,
+  searchResultsPopupItemBorderColor: lightGrey,
+  searchResultsPopupItemHoverBgColor: lightGrey,
+  // search page
+  searchResultsPageEvenItemBgColor: lighterGrey,
+  searchResultsPageOddItemBgColor: transparent,
+  searchResultsPageItemHoverBgColor: lightGrey,
+  // search results
+  searchResultTitleTextColor: black,
+  searchResultSummaryTextColor: grey,
+  searchResultMetaTextColor: grey,
+  // pkg info
+  dappPkgInfoBgColor: opacify(cs3, 0.3),
 }

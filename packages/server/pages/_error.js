@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import {
-  Layout,
   ErrorBox,
 } from '@solui/react-components'
+
+import Layout from './_components/Layout'
 
 const Heading = styled.h1`
   ${({ theme }) => theme.font('header', 'bold')}
@@ -43,7 +44,7 @@ const Explanation = styled.p`
   }
 `
 
-export default class Error extends React.Component {
+export default class ErrorPage extends React.Component {
   static async getInitialProps ({ res, err, query: { msg, stack } = {} }) {
     /* eslint-disable-next-line no-nested-ternary */
     const statusCode = (res ? res.statusCode : (err ? err.statusCode : null))

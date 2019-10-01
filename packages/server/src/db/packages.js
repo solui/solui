@@ -3,7 +3,7 @@ import { sha3 } from 'web3-utils'
 import { _ } from '@solui/utils'
 import { assertSpecValid } from '@solui/processor'
 
-const SEARCH_RESULTS_PER_PAGE = 8
+const SEARCH_RESULTS_PER_PAGE = 5
 
 export function _extractVersionFromResultRow (row) {
   return {
@@ -31,7 +31,13 @@ export function _extractPackageFromResultRow (row) {
   }
 }
 
-export async function _searchPackages ({ filterCondition, filterValue, page }) {
+export async function _searchPackages ({
+  filterCondition,
+  filterValue,
+  versionFilterCondition,
+  versionFilterValue,
+  page
+}) {
   // count query
   const [ { count } ] = await this._db().raw(`
     select
@@ -62,23 +68,25 @@ export async function _searchPackages ({ filterCondition, filterValue, page }) {
     inner join "user" u on u.id = p.owner_id
     inner join "version" v on v.pkg_id = p.id
     inner join (
-      select pkg_id, MAX(created_at)
+      select version.pkg_id, MAX(version.created_at)
       from "version"
-      group by pkg_id
+      ${versionFilterCondition}
+      group by version.pkg_id
     ) v2 on v2.pkg_id = p.id and v.created_at = v2.max
     ${filterCondition}
     limit ${SEARCH_RESULTS_PER_PAGE}
     offset ${((page - 1) * SEARCH_RESULTS_PER_PAGE)}
-  `, filterValue)
+  `, [].concat(filterValue, versionFilterValue))
 
   const packages = rows.map(row => ({
     ...this._extractPackageFromResultRow(row),
-    latestVersion: this._extractVersionFromResultRow(row),
+    version: this._extractVersionFromResultRow(row),
   }))
 
   return {
     packages,
     page,
+    totalResults: count,
     numPages: parseInt(Math.ceil(count / SEARCH_RESULTS_PER_PAGE), 10),
   }
 }
@@ -88,26 +96,33 @@ export async function searchByKeywords ({ keyword, page = 1 }) {
 
   return this._searchPackages({
     filterCondition: `WHERE v.search LIKE ?`,
-    filterValue: `%${keyword}%`,
+    filterValue: [ `%${keyword}%` ],
+    versionFilterCondition: '',
+    versionFilterValue: [],
     page,
   })
 }
 
-export async function searchByBytecodeHash ({ hash, page = 1 }) {
-  this._log.debug(`Search by bytecode hash: "${hash}" ...`)
+export async function searchByBytecodeHash ({ bytecodeHash, page = 1 }) {
+  this._log.debug(`Search by bytecode hash: "${bytecodeHash}" ...`)
 
   return this._searchPackages({
     filterCondition: `
       INNER JOIN "bytecode_hash" h ON h.version_id = v.id
       WHERE h.hash = ?
     `,
-    filterValue: hash,
+    filterValue: [ bytecodeHash ],
+    versionFilterCondition: `
+      INNER JOIN "bytecode_hash" ON version_id = version.id
+      WHERE hash = ?
+    `,
+    versionFilterValue: [ bytecodeHash ],
     page,
   })
 }
 
-export async function getPackage ({ name, numVersions }) {
-  this._log.debug(`Get package: "${name}, ${numVersions} versions" ...`)
+export async function getPackage ({ name }) {
+  this._log.debug(`Get package: "${name}" ...`)
 
   // data query
   const rows = await this._db()
@@ -126,36 +141,41 @@ export async function getPackage ({ name, numVersions }) {
     })
     .innerJoin('user', 'package.owner_id', 'user.id')
     .innerJoin('version', 'version.pkg_id', 'package.id')
+    .joinRaw(`
+      inner join
+        (select pkg_id, MAX(created_at) from version group by pkg_id) v2
+        on v2.pkg_id = package.id AND version.created_at = v2.max
+    `)
     .where('package.name', name)
     .orderBy('version.created_at', 'DESC')
-    .limit(numVersions)
+    .limit(1)
 
   if (!rows.length) {
     return null
   }
 
-  const pkg = this._extractPackageFromResultRow(rows[0])
-
-  pkg.versions = rows.map(row => this._extractVersionFromResultRow(row))
-
-  return pkg
+  return {
+    ...this._extractPackageFromResultRow(rows[0]),
+    latestVersion: this._extractVersionFromResultRow(rows[0]),
+  }
 }
 
 export async function getPackageVersion ({ id }) {
   this._log.debug(`Get package version: "${id}" ...`)
 
   // data query
-  const rows = await this._db().raw(`
-    select
-      v.id as v_id,
-      v.title as v_title,
-      v.description as v_description,
-      v.created_at as v_created_at,
-      v.data as v_data
-    from "version" v
-    where v.id = ?
-    limit 1
-  `, id)
+  const rows = await this._db()
+    .table('version')
+    .select()
+    .columns({
+      v_id: 'version.id',
+      v_title: 'version.title',
+      v_description: 'version.description',
+      v_created_at: 'version.created_at',
+      v_data: 'version.data',
+    })
+    .where('id', id)
+    .limit(1)
 
   if (!rows.length) {
     return null
@@ -220,7 +240,7 @@ export async function publishPackageVersion ({ spec, artifacts }) {
         pkgId,
         title: spec.title,
         description: spec.description,
-        search: `${spec.title} ${spec.description}`.toLowerCase(),
+        search: `${spec.id} ${spec.title}`.toLowerCase(),
         data: {
           spec,
           // ensure we only insert what's necessary when it comes to artifact data

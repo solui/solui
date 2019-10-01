@@ -24,19 +24,6 @@ export const createApolloClient = ({ serverHost, refreshAuthToken, name, version
     link: createLinks({ cache, serverHost, authToken }),
     name,
     version,
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: 'cache-and-network',
-        errorPolicy: 'ignore',
-      },
-      query: {
-        fetchPolicy: 'cache-and-network',
-        errorPolicy: 'all',
-      },
-      mutate: {
-        errorPolicy: 'all',
-      },
-    },
   })
 
   authToken.s = client

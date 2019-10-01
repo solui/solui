@@ -86,7 +86,6 @@ const init = async () => {
   // everything else goes to next.js app
   router.get('*', async ctx => {
     ctx.finalizeResVars()
-
     await handle(ctx.req, ctx.res)
     ctx.respond = false
   })

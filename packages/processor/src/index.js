@@ -176,6 +176,7 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
 
             return contract.methods[method](...args).call({ from })
           } catch (err) {
+            console.warn(err)
             ctx.errors().add(id, `Error executing: ${err}`)
             return null
           }
@@ -193,6 +194,7 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
 
             return inst.options.address
           } catch (err) {
+            console.warn(err)
             ctx.errors().add(id, `Error executing: ${err}`)
             return null
           }

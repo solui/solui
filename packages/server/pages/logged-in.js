@@ -1,7 +1,6 @@
 import React from 'react'
-import {
-  Layout,
-} from '@solui/react-components'
+
+import Layout from './_components/Layout'
 
 const LoggedInPage = () => {
   return (

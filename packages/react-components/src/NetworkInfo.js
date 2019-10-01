@@ -3,9 +3,6 @@ import React from 'react'
 import styled from '@emotion/styled'
 
 const Container = styled.div`
-  background-color: ${({ theme }) => theme.networkInfoBgColor};
-  color: ${({ theme }) => theme.networkInfoTextColor};
-  padding: 1em;
   ${({ theme }) => theme.font('body', 'thin')};
   text-transform: uppercase;
 

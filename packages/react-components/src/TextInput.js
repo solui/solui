@@ -1,21 +1,7 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
-import React, { useCallback, useMemo } from 'react'
+import React, { forwardRef, useCallback, useMemo } from 'react'
 import styled from '@emotion/styled'
-import { flex } from '@solui/styles'
 
-import ErrorBox from './ErrorBox'
-
-const Container = styled.div`
-  ${flex({ justify: 'flex-start', align: 'flex-start' })};
-`
-
-const Label = styled.label`
-  ${({ theme }) => theme.font('body', 'thin')};
-  display: block;
-  color: ${({ theme }) => theme.inputLabelTextColor};
-  font-size: 1.1rem;
-  margin-bottom: 0.3rem;
-`
 
 const Input = styled.input`
   ${({ theme }) => theme.font('header')};
@@ -32,13 +18,12 @@ const Input = styled.input`
     border-color: ${({ theme }) => theme.inputFocusBorderColor};
     background-color: ${({ theme }) => theme.inputFocusBgColor};
   }
- `
 
-const StyledErrorBox = styled(ErrorBox)`
-  width: 100%;
-  margin-top: 0.5rem;
-  font-size: 1rem;
-`
+  &::placeholder {
+    ${({ theme }) => theme.font('header', 'regular', 'italic')};
+    color: ${({ theme }) => theme.inputPlaceholderTextColor};
+  }
+ `
 
 const getPlaceholder = ({ type }) => {
   switch (type) {
@@ -59,24 +44,25 @@ const getInputType = ({ type }) => {
   }
 }
 
-export default ({ className, name, onChange, value, error, title, type }) => {
+export default forwardRef(({ className, name, onChange, value, error, type, placeholder }, ref) => {
   const inputType = useMemo(() => getInputType({ type }), [ type ])
-  const placeholder = useMemo(() => getPlaceholder({ type }), [ type ])
+  const placeholderStr = useMemo(
+    () => placeholder || getPlaceholder({ type }),
+    [ type, placeholder ]
+  )
 
   const onTextChange = useCallback(e => onChange(e.currentTarget.value), [ onChange ])
 
   return (
-    <Container className={className}>
-      <Label>{title}</Label>
-      <Input
-        type={inputType}
-        name={name}
-        onChange={onTextChange}
-        value={value}
-        placeholder={placeholder}
-        hasError={!!error}
-      />
-      {error ? <StyledErrorBox error={error} /> : null}
-    </Container>
+    <Input
+      ref={ref}
+      className={className}
+      type={inputType}
+      name={name}
+      onChange={onTextChange}
+      value={value}
+      placeholder={placeholderStr}
+      hasError={!!error}
+    />
   )
-}
+})

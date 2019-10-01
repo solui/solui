@@ -11,5 +11,8 @@ export default ({ config, server: app, db, notifier, stripe }) => {
     context: ({ ctx: { state: { uid, isAdmin } } }) => ({ uid, isAdmin })
   })
 
-  server.applyMiddleware({ app })
+  server.applyMiddleware({
+    app,
+    path: '/q'
+  })
 }
