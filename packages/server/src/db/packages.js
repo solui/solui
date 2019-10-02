@@ -1,7 +1,8 @@
 import uuid from 'uuid/v4'
-import { sha3 } from 'web3-utils'
 import { _ } from '@solui/utils'
 import { assertSpecValid } from '@solui/processor'
+
+import { calculateVersionHash } from '../utils/data'
 
 const SEARCH_RESULTS_PER_PAGE = 5
 
@@ -197,9 +198,9 @@ export async function publishPackageVersion ({ spec, artifacts }) {
     throw new Error(errStr)
   }
 
-  const { id: name } = spec
-
   return this._dbTrans(async trx => {
+    const { id: name } = spec
+
     const [ pkg ] = await this._db()
       .table('package')
       .select('id')
@@ -233,6 +234,22 @@ export async function publishPackageVersion ({ spec, artifacts }) {
       pkgId = _.get(this._extractReturnedDbIds(rows), '0')
     }
 
+    // calculate hash of this version so that we can check to see if it has
+    // already been published
+    const versionHash = calculateVersionHash({ spec, artifacts })
+
+    const alreadyPublished = await this._db()
+      .table('version')
+      .select('id')
+      .where('pkg_id', pkgId)
+      .andWhere('hash', versionHash)
+      .limit(1)
+
+    if (alreadyPublished.length) {
+      throw new Error(`This version has aleady been published: ${alreadyPublished[0].id}`)
+    }
+
+    // insert version
     const versionRows = await this._db()
       .table('version')
       .insert({
@@ -244,30 +261,36 @@ export async function publishPackageVersion ({ spec, artifacts }) {
         data: {
           spec,
           // ensure we only insert what's necessary when it comes to artifact data
-          artifacts: Object.entries(artifacts).reduce((m, [ k, v ]) => {
-            m[k] = {
-              abi: v.abi,
-              bytecode: v.bytecode,
-            }
-
+          artifacts: Object.keys(artifacts).reduce((m, k) => {
+            const { abi, bytecode } = artifacts[k]
+            m[k] = { abi, bytecode }
             return m
-          })
+          }, {})
         },
+        hash: versionHash,
       })
       .returning('id')
       .transacting(trx)
 
     const versionId = _.get(this._extractReturnedDbIds(versionRows), '0')
 
-    const hashRows = Object.values(artifacts).map(({ bytecode }) => ({
-      id: uuid(),
-      versionId,
-      hash: sha3(bytecode),
-    }))
+    // insert bytecode hashes if present
+    const hashRows = Object.values(artifacts).reduce((m, { bytecodeHash }) => {
+      if (bytecodeHash) {
+        m.push({
+          id: uuid(),
+          versionId,
+          hash: bytecodeHash,
+        })
+      }
+      return m
+    }, [])
 
-    await this._db()
-      .batchInsert('bytecode_hash', hashRows)
-      .transacting(trx)
+    if (hashRows.length) {
+      await this._db()
+        .batchInsert('bytecode_hash', hashRows)
+        .transacting(trx)
+    }
 
     return versionId
   })

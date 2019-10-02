@@ -1,12 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
+import { sha3 } from 'web3-utils'
 import { useRect } from '@reach/rect'
 import styled from '@emotion/styled'
 import { withApollo } from 'react-apollo'
 import { SearchQuery } from '@solui/graphql'
 import Router from 'next/router'
+import { boxShadow } from '@solui/styles'
+import { _, getNetworkInfoFromGlobalScope, isEthereumAddress, assertEthAddressIsValidOnChain, getBytecode } from '@solui/utils'
 
 import {
   Layout,
+  NetworkContext,
+  LoadingIcon,
+  ErrorBox,
 } from '@solui/react-components'
 
 import Header from './Header'
@@ -26,13 +32,23 @@ const Content = styled.div`
   margin-top: 100px;
 `
 
-const StyledSearchResultsBox = styled(SearchResultsBox)`
+const popupPositioning = ({ theme, rect }) => `
+  background-color: ${theme.searchResultsPopupBackgroundColor};
+  ${boxShadow({ color: theme.boxShadowColor })};
   position: fixed;
   z-index: 2;
-  top: ${({ rect }) => rect.top + 50}px;
-  left: ${({ rect }) => rect.left}px;
-  width: ${({ rect }) => rect.width}px;
+  top: ${rect.top + 50}px;
+  left: ${rect.left}px;
+  width: ${rect.width}px;
   height: auto;
+`
+
+const StyledSearchResultsBox = styled(SearchResultsBox)`
+  ${p => popupPositioning(p)};
+`
+
+const SearchProgressBox = styled.div`
+  ${p => popupPositioning(p)};
 `
 
 let searchQueryTimer
@@ -41,15 +57,60 @@ const PageLayout = ({ client, children }) => {
   const [ results, setResults ] = useState(null)
   const [ searching, setSearching ] = useState(false)
   const [ searchText, setSearchText ] = useState('')
+  const [ inputError, setInputError ] = useState()
   const [ page ] = useState(1)
   const searchInputRef = useRef(null)
   const searchInputRect = useRect(searchInputRef)
+  const [ network, setNetwork ] = useState(null)
+
+  const isPotentialContractAddress = useMemo(() => searchText.startsWith('0x'), [ searchText ])
+
+  const onSearchTextChange = useCallback(v => {
+    setSearchText(v)
+    setInputError(null)
+  }, [ setSearchText, setInputError ])
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const n = await getNetworkInfoFromGlobalScope()
+        if (n && _.get(n, 'id') !== _.get(network, 'id')) {
+          setNetwork(n)
+        }
+      } catch (err) {
+        console.error(err)
+        setNetwork(null)
+      }
+    })()
+  }, [ network ])
 
   useEffect(() => {
     clearTimeout(searchQueryTimer)
 
     searchQueryTimer = setTimeout(async () => {
       setResults(null)
+
+      let bytecodeHash
+
+      if (isPotentialContractAddress) {
+        if (!isEthereumAddress(searchText)) {
+          return
+        }
+        try {
+          if (!_.get(network, 'id')) {
+            throw new Error('Unable to detect Ethereum network. Searching by contract address will not work!')
+          }
+
+          await assertEthAddressIsValidOnChain(searchText, network.web3, {
+            allowContract: true, allowEoa: false
+          })
+
+          bytecodeHash = sha3(await getBytecode(network.web3, searchText))
+        } catch (err) {
+          setInputError(err.message)
+          return
+        }
+      }
 
       if (!searchText) {
         return
@@ -63,7 +124,11 @@ const PageLayout = ({ client, children }) => {
           fetchPolicy: 'network-only',
           variables: {
             criteria: {
-              keyword: searchText,
+              ...(bytecodeHash ? {
+                bytecodeHash
+              } : {
+                keyword: searchText,
+              }),
               page,
             }
           }
@@ -76,32 +141,47 @@ const PageLayout = ({ client, children }) => {
         setSearching(false)
       }
     }, 250 /* wait for user to stop typing */)
-  }, [ client, searchText, page ])
+  }, [ client, searchText, page, isPotentialContractAddress, network ])
 
-  // hide popup when page changes
+  // hide search results popup when page changes
   useEffect(() => {
     Router.events.on('routeChangeStart', () => setResults(null))
   }, [/*  run once  */])
 
   return (
-    <Layout>
-      <StyledHeader
-        ref={searchInputRef}
-        searchText={searchText}
-        onSearchTextChange={setSearchText}
-      />
-      {(searching || results) ? (
-        <StyledSearchResultsBox
-          rect={searchInputRect}
-          searching={searching}
-          results={results}
-          keyword={searchText}
+    <NetworkContext.Provider value={{ network }}>
+      <Layout>
+        <StyledHeader
+          ref={searchInputRef}
+          searchText={searchText}
+          onSearchTextChange={onSearchTextChange}
         />
-      ) : null}
-      <Content>
-        {children}
-      </Content>
-    </Layout>
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {searching ? (
+          <SearchProgressBox rect={searchInputRect}>
+            <LoadingIcon />
+          </SearchProgressBox>
+        ) : (
+          /* eslint-disable-next-line no-nested-ternary */
+          results ? (
+            <StyledSearchResultsBox
+              rect={searchInputRect}
+              results={results}
+              keyword={searchText}
+            />
+          ) : (
+            inputError ? (
+              <SearchProgressBox rect={searchInputRect}>
+                <ErrorBox error={inputError} />
+              </SearchProgressBox>
+            ) : null
+          )
+        )}
+        <Content>
+          {children}
+        </Content>
+      </Layout>
+    </NetworkContext.Provider>
   )
 }
 

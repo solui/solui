@@ -45,6 +45,7 @@ exports.up = async function (knex) {
     table.text('description').notNullable()
     table.text('search').notNullable()
     table.json('data').notNullable()
+    table.string('hash').notNullable()
     addTimestampColumns(knex, table)
     table.foreign('pkg_id').references('package.id').onUpdate('RESTRICT').onDelete('CASCADE')
   })

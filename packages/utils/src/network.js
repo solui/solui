@@ -47,6 +47,21 @@ const DEFAULT_NETWORK = {
   askWalletOwnerForPermissionToViewAccounts: () => {}
 }
 
+export const getWeb3Instance = async url => {
+  const id = await axios.post(url, {
+    jsonrpc: '2.0',
+    method: 'net_version',
+    params: [],
+    id: 69,
+  })
+
+  if (id) {
+    return new Web3(new Web3.providers.HttpProvider(url))
+  }
+
+  throw new Error(`Unable to connect to network: ${url}`)
+}
+
 export const getNetworkInfoFromGlobalScope = async () => {
   try {
     const network = { ...DEFAULT_NETWORK }
@@ -71,16 +86,8 @@ export const getNetworkInfoFromGlobalScope = async () => {
       network.web3 = new Web3(GLOBAL_SCOPE.web3.currentProvider)
     } else {
       // try local node
-      const url = 'http://localhost:8545'
-
       try {
-        network.id = await axios.post(url, {
-          jsonrpc: '2.0',
-          method: 'net_version',
-          params: [],
-          id: 69,
-        })
-        network.web3 = new Web3(new Web3.providers.HttpProvider(url))
+        network.web3 = await getWeb3Instance('http://localhost:8545')
       } catch (err) {
         console.warn(err)
       }
@@ -123,7 +130,12 @@ export const getWeb3Account = async web3 => {
   return account
 }
 
-export const assertEthAddressIsValid = async (
+export const getBytecode = async (web3, address) => {
+  const code = await web3.eth.getCode(address)
+  return ('0x' === code) ? null : code
+}
+
+export const assertEthAddressIsValidOnChain = async (
   value,
   web3,
   { allowContract = true, allowEoa = true } = {}
@@ -139,9 +151,7 @@ export const assertEthAddressIsValid = async (
     let isContract
 
     try {
-      // check if there is code at the address
-      const code = await web3.eth.getCode(value)
-      isContract = ('0x' !== code)
+      isContract = !!(await getBytecode(web3, value))
     } catch (err) {
       throw new Error(`unable to check for code at address: ${err.message}`)
     }

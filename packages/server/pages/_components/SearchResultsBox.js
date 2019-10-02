@@ -1,19 +1,15 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
 import React from 'react'
 import styled from '@emotion/styled'
-import { flex, boxShadow } from '@solui/styles'
+import { flex } from '@solui/styles'
 import {
   ErrorBox,
-  LoadingIcon,
 } from '@solui/react-components'
 
 import SearchResult from './SearchResult'
 import { Link, PkgVersionLink } from './Link'
 
-const Container = styled.div`
-  background-color: ${({ theme }) => theme.searchResultsPopupBackgroundColor};
-  ${({ theme }) => boxShadow({ color: theme.boxShadowColor })};
-`
+const Container = styled.div``
 
 const List = styled.ul`
   ${flex({ align: 'stretch', justify: 'flex-start' })};
@@ -36,45 +32,42 @@ const MetaListItem = styled(ListItem)`
   color: ${({ theme }) => theme.searchResultsMetaTextColor};
 `
 
-export default ({ className, searching, results, keyword }) => {
+export default ({ className, results, keyword }) => {
   let resultRender
 
-  if (!searching) {
-    if (results.error) {
-      resultRender = <ErrorBox error={results.error} />
+  if (results.error) {
+    resultRender = <ErrorBox error={results.error} />
+  } else {
+    if (results.packages.length) {
+      resultRender = (
+        <List>
+          {results.packages.map(r => (
+            <PkgVersionLink key={r.name} pkg={r.name} vid={r.version.id}>
+              <ListItem>
+                <SearchResult pkg={r} />
+              </ListItem>
+            </PkgVersionLink>
+          ))}
+          {(results.totalResults > results.packages.length) ? (
+            <Link key="more" page='search' query={{ keyword }}>
+              <MetaListItem>
+                See all results...
+              </MetaListItem>
+            </Link>
+          ) : null}
+        </List>
+      )
     } else {
-      if (results.packages.length) {
-        resultRender = (
-          <List>
-            {results.packages.map(r => (
-              <PkgVersionLink key={r.name} pkg={r.name} vid={r.version.id}>
-                <ListItem>
-                  <SearchResult pkg={r} />
-                </ListItem>
-              </PkgVersionLink>
-            ))}
-            {(results.totalResults > results.packages.length) ? (
-              <Link key="more" page='search' query={{ keyword }}>
-                <MetaListItem>
-                  See all results...
-                </MetaListItem>
-              </Link>
-            ) : null}
-          </List>
-        )
-      } else {
-        resultRender = (
-          <List>
-            <MetaListItem>No results found :/</MetaListItem>
-          </List>
-        )
-      }
+      resultRender = (
+        <List>
+          <MetaListItem>No results found :/</MetaListItem>
+        </List>
+      )
     }
   }
 
   return (
     <Container className={className}>
-      {searching ? <LoadingIcon /> : null}
       {resultRender}
     </Container>
   )
