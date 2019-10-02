@@ -30,3 +30,17 @@ To create new package (note: if `folder_name` = `pkg1` then `name`
 ```shell
 $ yarn lerna create <folder_name>
 ```
+
+## Publishing
+
+Update version:
+
+```
+$ yarn prepare-release <x.y.z>
+```
+
+Publish NPM packages:
+
+```
+$ yarn release
+```

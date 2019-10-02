@@ -35,7 +35,8 @@
   "scripts": {
     "bootstrap": "lerna bootstrap --use-workspaces",
     "commitmsg": "commitlint -e $GIT_PARAMS",
-    "bump": "lerna version --conventional-commits"
+    "prepare-release": "lerna version --conventional-commits",
+    "release": "lerna publish from-git"
   },
   "commitlint": {
     "extends": [
