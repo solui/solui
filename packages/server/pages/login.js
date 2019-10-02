@@ -10,7 +10,7 @@ import {
   TextInput,
 } from '@solui/react-components'
 
-import Layout from './_components/Layout'
+import Layout from '../frontend/components/Layout'
 
 const StyledAlert = styled(AlertBox)`
   margin: 1.5rem 0;

@@ -14,7 +14,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 
 import { version } from '../package.json'
 import { APP_STATE_KEYS } from '../common/appState'
-import { GlobalProvider, getClientSideAppState } from './_globalState'
+import { GlobalProvider, getClientSideAppState } from '../frontend/globalState'
 
 export default class MyApp extends App {
   static async getInitialProps ({ Component, ctx }) {

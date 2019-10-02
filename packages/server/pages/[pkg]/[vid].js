@@ -7,9 +7,9 @@ import {
 } from '@solui/react-components'
 import { GetPackageQuery, GetVersionQuery } from '@solui/graphql'
 
-import { PkgLink } from '../_components/Link'
-import RenderDapp from '../_components/RenderDapp'
-import Layout from '../_components/Layout'
+import { PkgLink } from '../../frontend/components/Link'
+import RenderDapp from '../../frontend/components/RenderDapp'
+import Layout from '../../frontend/components/Layout'
 
 const HomePage = () => {
   const router = useRouter()

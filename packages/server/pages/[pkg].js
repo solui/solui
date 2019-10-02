@@ -8,8 +8,8 @@ import {
 } from '@solui/react-components'
 import { GetPackageQuery, GetVersionQuery } from '@solui/graphql'
 
-import { PkgVersionLink } from './_components/Link'
-import Layout from './_components/Layout'
+import { PkgVersionLink } from '../frontend/components/Link'
+import Layout from '../frontend/components/Layout'
 
 const HomePage = () => {
   const router = useRouter()

@@ -14,7 +14,7 @@ const etherscanPrefix = {
 }
 
 const getNetworkName = id => {
-  switch (id) {
+  switch (`${id}`) {
     case '1':
       return 'Mainnet'
     case '3':
@@ -32,7 +32,7 @@ const getNetworkName = id => {
 
 const _finalizeNetwork = async network => {
   network.id = `${await network.web3.eth.net.getId()}`
-  network.name = getNetworkName(network.networkId)
+  network.name = getNetworkName(network.id)
 
   network.getEtherscanLink = addr => {
     if (etherscanPrefix[network.id]) {

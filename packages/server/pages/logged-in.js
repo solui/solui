@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Layout from './_components/Layout'
+import Layout from '../frontend/components/Layout'
 
 const LoggedInPage = () => {
   return (

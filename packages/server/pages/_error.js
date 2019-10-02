@@ -4,7 +4,7 @@ import {
   ErrorBox,
 } from '@solui/react-components'
 
-import Layout from './_components/Layout'
+import Layout from '../frontend/components/Layout'
 
 const Heading = styled.h1`
   ${({ theme }) => theme.font('header', 'bold')}

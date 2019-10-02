@@ -6,8 +6,8 @@ import {
   Query,
 } from '@solui/react-components'
 
-import Layout from './_components/Layout'
-import SearchResultsPage from './_components/SearchResultsPage'
+import Layout from '../frontend/components/Layout'
+import SearchResultsPage from '../frontend/components/SearchResultsPage'
 
 const StyledSearchResultsPage = styled(SearchResultsPage)`
   margin: 2rem auto 0;
