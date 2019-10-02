@@ -34,7 +34,8 @@
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap --use-workspaces",
-    "commitmsg": "commitlint -e $GIT_PARAMS"
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "version": "lerna version --conventional-commits --no-git-tag-version --no-push"
   },
   "commitlint": {
     "extends": [
