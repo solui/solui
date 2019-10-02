@@ -1,4 +1,4 @@
-import { _, assertEthAddressIsValid } from '@solui/utils'
+import { _, assertEthAddressIsValidOnChain } from '@solui/utils'
 
 
 export const isValidId = id => (id.length >= 3) && (!(/[^A-Za-z0-9-]/gm.exec(id)))
@@ -44,7 +44,7 @@ export const checkAddressIsValid = async (ctx, value, allowedTypes) => {
       throw new Error(`allowedTypes must be an array`)
     }
 
-    await assertEthAddressIsValid(value, ctx.web3(), {
+    await assertEthAddressIsValidOnChain(value, ctx.web3(), {
       allowContract: allowedTypes.includes('contract'),
       allowEoa: allowedTypes.includes('eoa')
     })

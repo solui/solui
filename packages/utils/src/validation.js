@@ -1,3 +1,4 @@
+import { isAddress } from 'web3-utils'
 import validator from 'validator'
 
 export const isEmail = val => {
@@ -7,3 +8,5 @@ export const isEmail = val => {
     return validator.isEmail(val)
   }
 }
+
+export const isEthereumAddress = val => isAddress(val)

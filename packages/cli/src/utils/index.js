@@ -1,5 +1,4 @@
-/* eslint-disable import/no-dynamic-require */
-
+import { _ } from '@solui/utils'
 import fs from 'fs'
 import path from 'path'
 import glob from 'glob'
@@ -27,7 +26,9 @@ export const loadArtifacts = dir => {
 
   return files.reduce((m, f) => {
     try {
-      m[path.basename(f, '.json')] = loadJson(f)
+      const { abi, bytecode, contractName, networks } = loadJson(f)
+
+      m[path.basename(f, '.json')] = { abi, bytecode, contractName, networks }
     } catch (err) {
       throw new Error(`Error loading artifact ${f}: ${err}`)
     }

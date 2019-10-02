@@ -75,6 +75,31 @@ export const assertSpecValid = async ({ spec, artifacts }) => {
   }
 }
 
+export const getUsedContracts = ({ spec }) => {
+  const contractsUsed = {}
+
+  const _parse = obj => {
+    Object.keys(obj).forEach(k => {
+      switch (typeof obj[k]) {
+        case 'object':
+          _parse(obj[k])
+          break
+        case 'string':
+          if ('contract' === k) {
+            contractsUsed[obj[k]] = true
+          }
+          break
+        default:
+          break
+      }
+    })
+  }
+
+  _parse(spec)
+
+  return Object.keys(contractsUsed)
+}
+
 // validate group inputs
 export const validateGroupInputs = async ({ artifacts, spec, groupId, inputs, web3 }) => (
   new Promise(async (resolve, reject) => {
@@ -155,39 +180,39 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
       web3,
       callbacks: {
         getInput: id => inputs[id],
-        sendTransaction: async (id, { abi, method, address, args }) => {
+        sendTransaction: async (id, { contract, abi, method, address, args }) => {
           try {
             const from = await getWeb3Account(web3)
 
-            const contract = new web3.eth.Contract(abi, address)
+            const contractInstance = new web3.eth.Contract(abi, address)
 
-            return contract.methods[method](...args).send({ from })
+            return contractInstance.methods[method](...args).send({ from })
           } catch (err) {
             console.warn(err)
-            ctx.errors().add(id, `Error executing: ${err}`)
+            ctx.errors().add(id, `Error executing ${contract}.${method}: ${err}`)
             return null
           }
         },
-        callMethod: async (id, { abi, method, address, args }) => {
+        callMethod: async (id, { contract, abi, method, address, args }) => {
           try {
             const from = await getWeb3Account(web3)
 
-            const contract = new web3.eth.Contract(abi, address)
+            const contractInstance = new web3.eth.Contract(abi, address)
 
-            return contract.methods[method](...args).call({ from })
+            return contractInstance.methods[method](...args).call({ from })
           } catch (err) {
             console.warn(err)
-            ctx.errors().add(id, `Error executing: ${err}`)
+            ctx.errors().add(id, `Error executing ${contract}.${method}: ${err}`)
             return null
           }
         },
-        deployContract: async (id, { abi, bytecode, args }) => {
+        deployContract: async (id, { contract, abi, bytecode, args }) => {
           try {
             const from = await getWeb3Account(web3)
 
-            const contract = new web3.eth.Contract(abi)
+            const contractInstance = new web3.eth.Contract(abi)
 
-            const inst = await contract.deploy({
+            const inst = await contractInstance.deploy({
               data: bytecode,
               arguments: args,
             }).send({ from })
@@ -195,7 +220,7 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
             return inst.options.address
           } catch (err) {
             console.warn(err)
-            ctx.errors().add(id, `Error executing: ${err}`)
+            ctx.errors().add(id, `Error deploying ${contract}: ${err}`)
             return null
           }
         }

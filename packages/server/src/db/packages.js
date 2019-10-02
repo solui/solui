@@ -244,14 +244,11 @@ export async function publishPackageVersion ({ spec, artifacts }) {
         data: {
           spec,
           // ensure we only insert what's necessary when it comes to artifact data
-          artifacts: Object.entries(artifacts).reduce((m, [ k, v ]) => {
-            m[k] = {
-              abi: v.abi,
-              bytecode: v.bytecode,
-            }
-
+          artifacts: Object.keys(artifacts).reduce((m, k) => {
+            const { abi, bytecode } = artifacts[k]
+            m[k] = { abi, bytecode }
             return m
-          })
+          }, {})
         },
       })
       .returning('id')
@@ -259,15 +256,23 @@ export async function publishPackageVersion ({ spec, artifacts }) {
 
     const versionId = _.get(this._extractReturnedDbIds(versionRows), '0')
 
-    const hashRows = Object.values(artifacts).map(({ bytecode }) => ({
-      id: uuid(),
-      versionId,
-      hash: sha3(bytecode),
-    }))
+    // insert bytecode hashes if present
+    const hashRows = Object.values(artifacts).reduce((m, { bytecodeHash }) => {
+      if (bytecodeHash) {
+        m.push({
+          id: uuid(),
+          versionId,
+          hash: bytecodeHash,
+        })
+      }
+      return m
+    }, [])
 
-    await this._db()
-      .batchInsert('bytecode_hash', hashRows)
-      .transacting(trx)
+    if (hashRows.length) {
+      await this._db()
+        .batchInsert('bytecode_hash', hashRows)
+        .transacting(trx)
+    }
 
     return versionId
   })

@@ -1,6 +1,5 @@
 const { subDays, addDays } = require('date-fns')
 const uuid = require('uuid/v4')
-const { sha3 } = require('web3-utils')
 const faker = require('faker')
 const { _ } = require('@solui/utils')
 
@@ -103,19 +102,4 @@ exports.seed = async knex => {
   }
 
   await knex('version').insert(versions)
-
-  const bytecodeHashes = []
-  let versionIndex = 0
-
-  for (let i = 0; TOTAL_NUM_VERSIONS > i; i += 1) {
-    bytecodeHashes.push({
-      id: uuid(),
-      hash: sha3(Ownable.bytecode),
-      version_id: versions[versionIndex].id,
-    })
-
-    versionIndex = (versions.length > (versionIndex + 1) ? versionIndex + 1 : 0)
-  }
-
-  await knex('bytecode_hash').insert(bytecodeHashes)
 }

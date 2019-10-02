@@ -131,6 +131,6 @@ async function main () {
 }
 
 main().catch(err => {
-  logError(err.stack)
+  logError(err.message)
   exit()
 })

@@ -101,7 +101,9 @@ const EXECS = {
         // prep
         const { abi, args } = prepareContractCall(ctx, { ...config, method: 'constructor' })
         // do it!
-        const result = await ctx.callbacks().deployContract(ctx.id, { abi, bytecode, args })
+        const result = await ctx.callbacks().deployContract(
+          ctx.id, { contract, abi, bytecode, args }
+        )
         // further execs may need this output as input!
         if (saveResultAs) {
           ctx.inputs()[saveResultAs] = result
@@ -117,7 +119,7 @@ const EXECS = {
         return
       }
 
-      const { saveResultAs, method, address } = config
+      const { contract, saveResultAs, method, address } = config
 
       if (!saveResultAs) {
         ctx.errors().add(ctx.id, `must save its result into a param`)
@@ -129,6 +131,7 @@ const EXECS = {
       // do it!
       ctx.inputs()[saveResultAs] = await ctx.callbacks().callMethod(
         ctx.id, {
+          contract,
           abi,
           method,
           args,
@@ -145,7 +148,7 @@ const EXECS = {
         return
       }
 
-      const { method, address } = config
+      const { contract, method, address } = config
 
       // prep
       const { abi, args } = prepareContractCall(ctx, config)
@@ -153,6 +156,7 @@ const EXECS = {
       // do it!
       ctx.inputs()[config.saveResultAs] = await ctx.callbacks().sendTransaction(
         ctx.id, {
+          contract,
           abi,
           method,
           args,
