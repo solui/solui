@@ -5,6 +5,7 @@ const { _ } = require('@solui/utils')
 
 const Ownable = require('./Ownable.json')
 const spec = require('./spec.json')
+const { calculateVersionHash } = require('../../src/utils/data')
 
 const NUM_AUTHORS = 2
 const NUM_PACKAGES = 10
@@ -95,7 +96,8 @@ exports.seed = async knex => {
       data,
       title,
       description,
-      search: `${data.spec.id} ${title}`.toLowerCase()
+      search: `${data.spec.id} ${title}`.toLowerCase(),
+      hash: calculateVersionHash(data)
     })
 
     packageIndex = (packages.length > (packageIndex + 1) ? packageIndex + 1 : 0)
