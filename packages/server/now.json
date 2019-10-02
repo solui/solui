@@ -5,6 +5,7 @@
   "regions": [ "all" ],
   "env": {
     "NODE_ENV": "production",
+    "APP_MODE": "live",
     "DB_HOST": "@db_host",
     "DB_PORT": "@db_port",
     "DB_USERNAME": "@db_username",
