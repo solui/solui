@@ -6,6 +6,9 @@
   "env": {
     "NODE_ENV": "production",
     "APP_MODE": "live",
+    "ENCRYPTION_IV": "@encryption_iv",
+    "ENCRYPTION_KEY": "@encryption_key",
+    "MAILGUN_API_KEY": "@mailgun_api_key",
     "DB_HOST": "@db_host",
     "DB_PORT": "@db_port",
     "DB_USERNAME": "@db_username",

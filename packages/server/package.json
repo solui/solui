@@ -7,7 +7,8 @@
   "scripts": {
     "build": "next build",
     "lint": "eslint .",
-    "start": "nodemon index.js",
+    "dev": "nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
     "db:migrate": "yarn knex migrate:latest",
     "db:rollback": "yarn knex migrate:rollback",
     "db:seed": "yarn knex seed:run",
