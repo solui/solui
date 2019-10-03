@@ -1,12 +1,11 @@
-import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
-import { sha3 } from 'web3-utils'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { useRect } from '@reach/rect'
 import styled from '@emotion/styled'
 import { withApollo } from 'react-apollo'
 import { SearchQuery } from '@solui/graphql'
 import Router from 'next/router'
 import { boxShadow } from '@solui/styles'
-import { _, getNetworkInfoFromGlobalScope, isEthereumAddress, assertEthAddressIsValidOnChain, getBytecode } from '@solui/utils'
+import { _, getNetworkInfoFromGlobalScope } from '@solui/utils'
 
 import {
   Layout,
@@ -63,8 +62,6 @@ const PageLayout = ({ client, children }) => {
   const searchInputRect = useRect(searchInputRef)
   const [ network, setNetwork ] = useState(null)
 
-  const isPotentialContractAddress = useMemo(() => searchText.startsWith('0x'), [ searchText ])
-
   const onSearchTextChange = useCallback(v => {
     setSearchText(v)
     setInputError(null)
@@ -90,28 +87,6 @@ const PageLayout = ({ client, children }) => {
     searchQueryTimer = setTimeout(async () => {
       setResults(null)
 
-      let bytecodeHash
-
-      if (isPotentialContractAddress) {
-        if (!isEthereumAddress(searchText)) {
-          return
-        }
-        try {
-          if (!_.get(network, 'id')) {
-            throw new Error('Unable to detect Ethereum network. Searching by contract address will not work!')
-          }
-
-          await assertEthAddressIsValidOnChain(searchText, network.web3, {
-            allowContract: true, allowEoa: false
-          })
-
-          bytecodeHash = sha3(await getBytecode(network.web3, searchText))
-        } catch (err) {
-          setInputError(err.message)
-          return
-        }
-      }
-
       if (!searchText) {
         return
       }
@@ -124,11 +99,7 @@ const PageLayout = ({ client, children }) => {
           fetchPolicy: 'network-only',
           variables: {
             criteria: {
-              ...(bytecodeHash ? {
-                bytecodeHash
-              } : {
-                keyword: searchText,
-              }),
+              keyword: searchText,
               page,
             }
           }
@@ -141,7 +112,7 @@ const PageLayout = ({ client, children }) => {
         setSearching(false)
       }
     }, 250 /* wait for user to stop typing */)
-  }, [ client, searchText, page, isPotentialContractAddress, network ])
+  }, [ client, searchText, page ])
 
   // hide search results popup when page changes
   useEffect(() => {

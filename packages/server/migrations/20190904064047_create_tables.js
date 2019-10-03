@@ -49,19 +49,9 @@ exports.up = async function (knex) {
     addTimestampColumns(knex, table)
     table.foreign('pkg_id').references('package.id').onUpdate('RESTRICT').onDelete('CASCADE')
   })
-
-  await schema(knex).createTable('bytecode_hash', table => {
-    table.uuid('id').notNullable().primary().defaultTo(knex.raw('uuid_generate_v4()'))
-    table.string('hash').notNullable()
-    table.uuid('version_id').notNullable()
-    addTimestampColumns(knex, table)
-    table.unique([ 'hash', 'version_id' ])
-    table.foreign('version_id').references('version.id').onUpdate('RESTRICT').onDelete('CASCADE')
-  })
 }
 
 exports.down = async function (knex) {
-  await dropTable(knex, 'bytecode_hash')
   await dropTable(knex, 'version')
   await dropTable(knex, 'package')
   await dropTable(knex, 'login_token')

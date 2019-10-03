@@ -14,7 +14,7 @@
     "db:seed": "yarn knex seed:run",
     "knex": "babel-node --presets @babel/env node_modules/.bin/knex",
     "now": "now --token $NOW_TOKEN --scope solui",
-    "deploy": "yarn now --prod -f --public",
+    "deploy": "yarn now --prod -f --public; yarn now alias",
     "clean-old-deploys": "yarn now rm solui-live --safe --yes"
   },
   "dependencies": {
@@ -89,6 +89,9 @@
   },
   "bugs": {
     "url": "https://github.com/solui/monorepo/issues"
+  },
+  "engines": {
+    "node": "10.x"
   },
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "license": "MIT",

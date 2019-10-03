@@ -1,8 +1,13 @@
 {
-  "version": 2,
+  "version": 1,
   "name": "solui-live",
   "alias": "solui.dev",
-  "regions": [ "all" ],
+  "scale": {
+    "bru1": {
+      "min": 1,
+      "max": 3
+    }
+  },
   "env": {
     "NODE_ENV": "production",
     "APP_MODE": "live",

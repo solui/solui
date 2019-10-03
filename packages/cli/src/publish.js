@@ -1,12 +1,11 @@
 import { PublishMutation } from '@solui/graphql'
-import { _, getWeb3Instance, getBytecode } from '@solui/utils'
+import { _ } from '@solui/utils'
 import { getUsedContracts, assertSpecValid } from '@solui/processor'
-import { sha3 } from 'web3-utils'
 
 import { getApiClient } from './client'
-import { logTrace, logInfo } from './utils'
+import { logInfo } from './utils'
 
-export const publish = async ({ spec, artifacts, testNetworkRpc, publishBytecodeHashes }) => {
+export const publish = async ({ spec, artifacts }) => {
   // check spec is valid
   await assertSpecValid({ spec, artifacts })
 
@@ -26,28 +25,6 @@ export const publish = async ({ spec, artifacts, testNetworkRpc, publishBytecode
   }, {})
 
   const client = getApiClient()
-
-  // publish bytecode hashes?
-  if (publishBytecodeHashes) {
-    logInfo(`Obtaining deployed bytecode hashes from network: ${testNetworkRpc} ...`)
-
-    const web3 = await getWeb3Instance(testNetworkRpc)
-
-    await Promise.all(Object.values(filteredArtifacts).map(async c => {
-      const networkId = await web3.eth.net.getId()
-
-      const { address } = _.get(c, `networks.${networkId}`, {})
-      if (address) {
-        const code = await getBytecode(web3, address)
-
-        if (code) {
-          c.bytecodeHash = sha3(code)
-
-          logTrace(`Got bytecode hash for "${c.contractName}": ${c.bytecodeHash}`)
-        }
-      }
-    }))
-  }
 
   logInfo(`Publishing spec ${spec.id} to public repository ...`)
 

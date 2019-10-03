@@ -47,7 +47,6 @@ const tsStr = ({ add = 0, sub = 0 } = {}) => {
 
 exports.seed = async knex => {
   await deleteTableData(knex, [
-    'bytecode_hash',
     'version',
     'package',
   ])

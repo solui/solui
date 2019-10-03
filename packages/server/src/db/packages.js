@@ -104,24 +104,6 @@ export async function searchByKeywords ({ keyword, page = 1 }) {
   })
 }
 
-export async function searchByBytecodeHash ({ bytecodeHash, page = 1 }) {
-  this._log.debug(`Search by bytecode hash: "${bytecodeHash}" ...`)
-
-  return this._searchPackages({
-    filterCondition: `
-      INNER JOIN "bytecode_hash" h ON h.version_id = v.id
-      WHERE h.hash = ?
-    `,
-    filterValue: [ bytecodeHash ],
-    versionFilterCondition: `
-      INNER JOIN "bytecode_hash" ON version_id = version.id
-      WHERE hash = ?
-    `,
-    versionFilterValue: [ bytecodeHash ],
-    page,
-  })
-}
-
 export async function getPackage ({ name }) {
   this._log.debug(`Get package: "${name}" ...`)
 
@@ -273,24 +255,6 @@ export async function publishPackageVersion ({ spec, artifacts }) {
       .transacting(trx)
 
     const versionId = _.get(this._extractReturnedDbIds(versionRows), '0')
-
-    // insert bytecode hashes if present
-    const hashRows = Object.values(artifacts).reduce((m, { bytecodeHash }) => {
-      if (bytecodeHash) {
-        m.push({
-          id: uuid(),
-          versionId,
-          hash: bytecodeHash,
-        })
-      }
-      return m
-    }, [])
-
-    if (hashRows.length) {
-      await this._db()
-        .batchInsert('bytecode_hash', hashRows)
-        .transacting(trx)
-    }
 
     return versionId
   })
