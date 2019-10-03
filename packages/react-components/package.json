@@ -1,6 +1,6 @@
 {
   "name": "@solui/react-components",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "React UI components for solUI",
   "publishConfig": {
     "access": "public"
@@ -42,9 +42,9 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.22",
     "@fortawesome/free-solid-svg-icons": "^5.10.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
-    "@solui/graphql": "^0.0.3",
-    "@solui/styles": "^0.0.3",
-    "@solui/utils": "^0.0.3",
+    "@solui/graphql": "^0.0.4",
+    "@solui/styles": "^0.0.4",
+    "@solui/utils": "^0.0.4",
     "clipboard-polyfill": "^2.8.6",
     "emotion-theming": "^10.0.19",
     "react-svg": "^10.0.20",
