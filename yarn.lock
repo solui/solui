@@ -6224,10 +6224,10 @@ ethjs-util@0.1.6:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethval@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/ethval/-/ethval-1.3.0.tgz#292cb628d04d60bdda7f289bdec79a3b71da06d9"
-  integrity sha512-Rhsz3YTGbhdcVVo0dgDzNnEoD8GXYjNlrOUN4AzM/VQ2chpZ53ELErrD+BCONjJ9U2uEtUlZlXnbXRgLYQP14A==
+ethval@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/ethval/-/ethval-1.4.0.tgz#2acf49f0d4dbbb980a6e402d2a95d710ec68162e"
+  integrity sha512-1Ppx3MeY6LaF3zvPNGEyG/AopwixugA/RgrLDSHkURLJY31vDzu4LO+9QcZpfiv5Szg5+OvM9Hjq5mgv/zsINg==
   dependencies:
     decimal.js "^10.0.1"
     web3-utils "^1.0.0-beta.36"
