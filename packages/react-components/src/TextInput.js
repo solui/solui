@@ -35,16 +35,18 @@ const getPlaceholder = ({ type }) => {
 }
 
 const getInputType = ({ type }) => {
-  switch (type) {
-    case 'address':
-      return 'text'
-    case 'email':
-    default:
-      return type
-  }
+  return type
 }
 
-export default forwardRef(({ className, name, onChange, value, error, type, placeholder }, ref) => {
+export default forwardRef(({
+  className,
+  name,
+  onChange,
+  value,
+  error,
+  type,
+  placeholder
+}, ref) => {
   const inputType = useMemo(() => getInputType({ type }), [ type ])
   const placeholderStr = useMemo(
     () => placeholder || getPlaceholder({ type }),

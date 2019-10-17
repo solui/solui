@@ -8,7 +8,7 @@ import Image from './Image'
 
 const Container = styled.div`
   ${flex()}
-  margin: 2rem 0;
+  margin: 2rem 1rem;
 `
 
 const Info = styled.div`
@@ -42,6 +42,7 @@ const Description = styled.p`
 `
 
 const Groups = styled.div`
+  width: 100%;
   ${media.when({ minW: 'mobile' })} {
     max-width: 700px;
   }

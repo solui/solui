@@ -22,6 +22,7 @@ class Context {
       'artifacts',
       'errors',
       'inputs',
+      'outputs',
       'callbacks',
       'web3',
     ].forEach(p => {
@@ -31,14 +32,6 @@ class Context {
 
   get id () {
     return this._id
-  }
-
-  setOutput (value) {
-    if (this._parentContext) {
-      this._parentContext.setOutput(value)
-    } else {
-      this._output = value
-    }
   }
 
   createChildContext (id) {
@@ -58,21 +51,16 @@ class GroupContext extends Context {
 }
 
 export class RootContext extends Context {
-  constructor (id, { web3, artifacts, inputs, callbacks }) {
+  constructor (id, { web3, artifacts, callbacks }) {
     super(id)
     this._web3 = web3
     this._artifacts = artifacts
     this._errors = new ProcessingErrors()
-    this._inputs = inputs
     this._callbacks = { ...DEFAULT_CALLBACKS, ...callbacks }
-    this._output = null
+    this._outputs = {}
   }
 
   createGroupContext (id) {
     return new GroupContext(id, this)
-  }
-
-  output () {
-    return this._output
   }
 }

@@ -24,6 +24,7 @@ const StyledButton = styled(Button)`
 
 const StyledResult = styled(Result)`
   margin-top: 1rem;
+  max-width: 100%;
 `
 
 export const Panel = ({
@@ -91,7 +92,7 @@ export const Panel = ({
       </StyledButton>
 
       {execResult ? (
-        <StyledResult result={execResult} config={config.output} />
+        <StyledResult result={execResult} />
       ) : null}
     </Container>
   )

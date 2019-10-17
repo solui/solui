@@ -32,11 +32,13 @@ const Details = styled.div`
 
 const Msg = styled.p`
   font-size: 100%;
+  word-break: break-all;
 `
 
 const SubMsg = styled.p`
   font-size: 90%;
   margin: 0.5em 0 0 1em;
+  word-break: break-all;
 `
 
 export default ({ className, error }) => {

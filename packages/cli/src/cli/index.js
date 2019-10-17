@@ -132,5 +132,10 @@ async function main () {
 
 main().catch(err => {
   logError(err.message)
+
+  if (err.details) {
+    logError(Array.isArray(err.details) ? err.details.join('\n') : err.details)
+  }
+
   exit()
 })

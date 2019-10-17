@@ -1,3 +1,6 @@
+export EthVal from 'ethval'
+export { toBN } from 'web3-utils'
+
 export * from './errors'
 export * from './lodash'
 export * from './network'
@@ -6,3 +9,4 @@ export * from './promise'
 export * from './validation'
 export * from './string'
 export * from './date'
+export * from './number'

@@ -66,6 +66,7 @@ export default {
   inputFocusBgColor: white,
   inputErrorBgColor: cs1,
   inputTextColor: black,
+  inputHelpTextColor: lightGrey,
   inputPlaceholderTextColor: lightGrey,
   // alert component
   alertBgColor: opacify(cs2, 0.3),

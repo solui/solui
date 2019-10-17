@@ -5,9 +5,19 @@ import styled from '@emotion/styled'
 import ErrorBox from './ErrorBox'
 import Value from './Value'
 
-const Container = styled.div`
+const Results = styled.ul`
+  list-style: none;
+  display: block;
   padding: 1rem;
+  margin-bottom: 0.5rem;
   background-color: ${({ theme }) => theme.resultBgColor};
+`
+
+const ResultItem = styled.li`
+  margin-bottom: ${({ moreThanOne }) => (moreThanOne ? '2rem' : '0')};
+  &:last-child {
+    margin-bottom: 0;
+  }
 `
 
 const Title = styled.h3`
@@ -16,19 +26,24 @@ const Title = styled.h3`
   font-weight: cold;
 `
 
-export default ({ className, result: { value, error }, config: { title, type } = {} }) => {
+export default ({ className, result: { value, error } }) => {
   if (error) {
     return <ErrorBox className={className} error={error} />
   } else {
-    if (title && type) {
+    const valueKeys = Object.keys(value || {})
+
+    const resultItems = valueKeys.length ? valueKeys.map(k => {
+      const { type, title, result: actualValue } = value[k]
       return (
-        <Container className={className}>
+        <ResultItem key={k} moreThanOne={!!valueKeys.length}>
           <Title>{title}</Title>
-          <Value type={type} value={value} />
-        </Container>
+          <Value type={type} value={actualValue} />
+        </ResultItem>
       )
-    } else {
-      return <Container className={className}>Success!</Container>
-    }
+    }) : (
+      <ResultItem>Success!</ResultItem>
+    )
+
+    return <Results className={className}>{resultItems}</Results>
   }
 }

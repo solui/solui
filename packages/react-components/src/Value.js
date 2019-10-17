@@ -26,7 +26,7 @@ export default ({ value, type }) => {
 
   const meta = (
     <StyledIconButton
-      title={copyButtonTooltip}
+      tooltip={copyButtonTooltip}
       icon={{ name: 'copy' }}
       onClick={copyToClipboard}
     />
@@ -43,7 +43,7 @@ export default ({ value, type }) => {
 
             const link = etherscanLink ? (
               <StyledIconButton
-                title='View on Etherscan'
+                tooltip='View on Etherscan'
                 icon={{ name: 'link' }}
                 onClick={() => openUrl(etherscanLink)}
               />

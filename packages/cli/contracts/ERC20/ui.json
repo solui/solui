@@ -1,0 +1,332 @@
+{
+  "version": 1,
+  "id": "solui-repo-erc20",
+  "title": "ERC-20",
+  "description": "Deploy your own ERC-20 token and manage it.",
+  "image": {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Basic_Attention_Token_Icon.svg"
+  },
+  "groups": [
+    {
+      "id": "create",
+      "title": "Create token",
+      "description": "Deploy new ERC-20 tokens.",
+      "image": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Google-Cloud-Functions.svg"
+      },
+      "panels": [
+        {
+          "id": "createInstance",
+          "title": "Create new token",
+          "inputs": [
+            {
+              "name": "name",
+              "title": "Name",
+              "type": "string",
+              "length": {
+                "min": "5",
+                "max": "100"
+              }
+            },
+            {
+              "name": "symbol",
+              "title": "Symbol",
+              "type": "string",
+              "length": {
+                "min": "2",
+                "max": "10"
+              }
+            },
+            {
+              "name": "initialSupply",
+              "title": "Initial no. of tokens",
+              "type": "uint",
+              "range": {
+                "min": "1",
+                "max": "1000000000"
+              },
+              "unit": "eth"
+            }
+          ],
+          "execs": [
+            {
+              "type": "deploy",
+              "contract": "ERC20",
+              "args": {
+                "_name": "name",
+                "_symbol": "symbol",
+                "_initialSupply": "initialSupply"
+              },
+              "saveResultAs": "contractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "title": "New contract address",
+              "type": "address",
+              "param": "contractAddress"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "view",
+      "title": "View data",
+      "description": "View token details, balances and allowances.",
+      "image": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Infobox_info_icon.svg"
+      },
+      "inputs": [
+        {
+          "name": "contractAddress",
+          "title": "Token contract address",
+          "type": "address",
+          "allowedTypes": [ "contract" ]
+        }
+      ],
+      "panels": [
+        {
+          "id": "details",
+          "title": "Basic details",
+          "execs": [
+            {
+              "type": "call",
+              "contract": "ERC20",
+              "address": "contractAddress",
+              "method": "name",
+              "saveResultAs": "tokenName"
+            },
+            {
+              "type": "call",
+              "contract": "ERC20",
+              "address": "contractAddress",
+              "method": "symbol",
+              "saveResultAs": "tokenSymbol"
+            },
+            {
+              "type": "call",
+              "contract": "ERC20",
+              "address": "contractAddress",
+              "method": "totalSupply",
+              "saveResultAs": "tokenSupply"
+            }
+          ],
+          "outputs": [
+            {
+              "title": "Name",
+              "type": "string",
+              "param": "tokenName"
+            },
+            {
+              "title": "Symbol",
+              "type": "string",
+              "param": "tokenSymbol"
+            },
+            {
+              "title": "Total supply",
+              "type": "string",
+              "param": "tokenSupply"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transfers",
+      "title": "Transfer tokens",
+      "description": "Transfer tokens, and approve other people to transfer on one's behalf.",
+      "image": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Message_%28Send%29.png"
+      },
+      "inputs": [
+        {
+          "name": "contractAddress",
+          "title": "Token contract address",
+          "type": "address",
+          "allowedTypes": [ "contract" ]
+        }
+      ],
+      "panels": [
+        {
+          "id": "balance",
+          "title": "Account balance",
+          "inputs": [
+            {
+              "name": "owner",
+              "title": "Owner",
+              "type": "address",
+              "allowedTypes": [ "eoa", "contract" ]
+            }
+          ],
+          "execs": [
+            {
+              "type": "call",
+              "contract": "ERC20",
+              "address": "contractAddress",
+              "method": "balanceOf",
+              "args": {
+                "account": "owner"
+              },
+              "saveResultAs": "balanceAmount"
+            }
+          ],
+          "outputs": [
+            {
+              "title": "Balance",
+              "type": "uint",
+              "param": "balanceAmount"
+            }
+          ]
+        },
+        {
+          "id": "allowance",
+          "title": "Spender allowance",
+          "inputs": [
+            {
+              "name": "owner",
+              "title": "Owner",
+              "type": "address",
+              "allowedTypes": [ "eoa", "contract" ]
+            },
+            {
+              "name": "spender",
+              "title": "Spender",
+              "type": "address",
+              "allowedTypes": [ "eoa", "contract" ]
+            }
+          ],
+          "execs": [
+            {
+              "type": "call",
+              "contract": "ERC20",
+              "address": "contractAddress",
+              "method": "allowance",
+              "args": {
+                "owner": "owner",
+                "spender": "spender"
+              },
+              "saveResultAs": "allowanceAmount"
+            }
+          ],
+          "outputs": [
+            {
+              "title": "Allowance",
+              "type": "uint",
+              "param": "allowanceAmount"
+            }
+          ]
+        },
+        {
+          "id": "approve",
+          "title": "Approve allowance",
+          "inputs": [
+            {
+              "name": "spender",
+              "title": "Spender",
+              "type": "address",
+              "allowedTypes": [ "eoa", "contract" ]
+            },
+            {
+              "name": "amount",
+              "title": "Amount",
+              "type": "uint",
+              "range": {
+                "min": "1",
+                "max": "1000000000"
+              },
+              "unit": "eth"
+            }
+          ],
+          "execs": [
+            {
+              "type": "send",
+              "contract": "ERC20",
+              "address": "contractAddress",
+              "method": "approve",
+              "args": {
+                "spender": "spender",
+                "amount": "amount"
+              }
+            }
+          ]
+        },
+        {
+          "id": "send",
+          "title": "Send tokens",
+          "inputs": [
+            {
+              "name": "recipient",
+              "title": "Recipient",
+              "type": "address",
+              "allowedTypes": [ "eoa" ]
+            },
+            {
+              "name": "amount",
+              "title": "Amount to send",
+              "type": "uint",
+              "range": {
+                "min": "1",
+                "max": "1000000000"
+              },
+              "unit": "eth"
+            }
+          ],
+          "execs": [
+            {
+              "type": "send",
+              "contract": "ERC20",
+              "address": "contractAddress",
+              "method": "transfer",
+              "args": {
+                "recipient": "recipient",
+                "amount": "amount"
+              }
+            }
+          ]
+        },
+        {
+          "id": "spendOnBehalfOf",
+          "title": "Send on behalf of",
+          "inputs": [
+            {
+              "name": "from",
+              "title": "From",
+              "type": "address",
+              "allowedTypes": [ "eoa", "contract" ]
+            },
+            {
+              "name": "to",
+              "title": "To",
+              "type": "address",
+              "allowedTypes": [ "eoa", "contract" ]
+            },
+            {
+              "name": "amount",
+              "title": "Amount to send",
+              "type": "uint",
+              "range": {
+                "min": "1",
+                "max": "1000000000"
+              },
+              "unit": "eth"
+            }
+          ],
+          "execs": [
+            {
+              "type": "send",
+              "contract": "ERC20",
+              "address": "contractAddress",
+              "method": "transferFrom",
+              "args": {
+                "sender": "from",
+                "recipient": "to",
+                "amount": "amount"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

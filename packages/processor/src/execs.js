@@ -34,30 +34,30 @@ const validateContractMethod = (ctx, config) => {
       if (!methodAbi) {
         foundError = true
         ctx.errors().add(ctx.id, `must specify a valid contract method`)
-      }
-
-      // check arg mappings
-      _.each(args, (inputId, argId) => {
-        if (!methodArgExists(methodAbi, argId)) {
-          foundError = true
-          ctx.errors().add(ctx.id, `method ${method} does not have arg: ${argId}`)
-        }
-
-        if (!inputIsPresent(ctx, inputId)) {
-          foundError = true
-          ctx.errors().add(ctx.id, `method argument ${argId} maps from an invalid input: ${inputId}`)
-        }
-      })
-
-      // check contract address mapping
-      if ('deploy' !== type) {
-        if (!address) {
-          foundError = true
-          ctx.errors().add(ctx.id, `must specify contract address mapping`)
-        } else {
-          if (!inputIsPresent(ctx, address)) {
+      } else {
+        // check arg mappings
+        _.each(args, (inputId, argId) => {
+          if (!methodArgExists(methodAbi, argId)) {
             foundError = true
-            ctx.errors().add(ctx.id, `contract address maps from an invalid input: ${address}`)
+            ctx.errors().add(ctx.id, `method ${method} does not have arg: ${argId}`)
+          }
+
+          if (!inputIsPresent(ctx, inputId)) {
+            foundError = true
+            ctx.errors().add(ctx.id, `method argument ${argId} maps from an invalid input: ${inputId}`)
+          }
+        })
+
+        // check contract address mapping
+        if ('deploy' !== type) {
+          if (!address) {
+            foundError = true
+            ctx.errors().add(ctx.id, `must specify contract address mapping`)
+          } else {
+            if (!inputIsPresent(ctx, address)) {
+              foundError = true
+              ctx.errors().add(ctx.id, `contract address maps from an invalid input: ${address}`)
+            }
           }
         }
       }
@@ -148,13 +148,17 @@ const EXECS = {
         return
       }
 
-      const { contract, method, address } = config
+      const { contract, method, address, saveResultAs } = config
+
+      if (saveResultAs) {
+        ctx.errors().add(ctx.id, `must not save its result into a param`)
+      }
 
       // prep
       const { abi, args } = prepareContractCall(ctx, config)
 
       // do it!
-      ctx.inputs()[config.saveResultAs] = await ctx.callbacks().sendTransaction(
+      await ctx.callbacks().sendTransaction(
         ctx.id, {
           contract,
           abi,

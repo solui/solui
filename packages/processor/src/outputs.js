@@ -2,9 +2,14 @@ import { inputIsPresent } from './utils'
 
 const OUTPUT_TYPES = {
   address: true,
+  bool: true,
+  string: true,
+  bytes: true,
+  uint: true,
+  int: true,
 }
 
-export const process = (ctx, config) => {
+const process = (ctx, config) => {
   if (!config) {
     return
   }
@@ -22,6 +27,16 @@ export const process = (ctx, config) => {
       ctx.errors().add(ctx.id, `output param is not a valid input or result: ${param}`)
     }
 
-    ctx.setOutput(ctx.inputs()[param])
+    ctx.outputs()[ctx.id] = {
+      ...config,
+      result: ctx.inputs()[param],
+    }
   }
+}
+
+export const processList = async (parentCtx, outputs) => {
+  return Promise.all((outputs || []).map(async (outputConfig, ouputIndex) => {
+    const ctx = parentCtx.createChildContext(`output[${ouputIndex}]`)
+    return process(ctx, outputConfig)
+  }))
 }

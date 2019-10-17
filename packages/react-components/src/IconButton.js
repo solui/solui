@@ -28,14 +28,14 @@ const IconButton = styled.button`
   `)}
 `
 
-export default ({ icon, title, ...props }) => {
+export default ({ icon, tooltip, ...props }) => {
   const tooltipRef = useRef(null)
 
   const onMouseOver = useCallback(() => tooltipRef.current.show(), [ tooltipRef ])
   const onMouseOut = useCallback(() => tooltipRef.current.hide(), [ tooltipRef ])
 
   return (
-    <Tooltip text={title} ref={tooltipRef}>
+    <Tooltip text={tooltip} ref={tooltipRef}>
       {({ tooltipElement }) => (
         <IconButton
           {...props}

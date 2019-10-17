@@ -1,6 +1,13 @@
-import { _, promiseSerial } from '@solui/utils'
+import {
+  _,
+  promiseSerial,
+} from '@solui/utils'
 
-import { checkAddressIsValid } from './utils'
+import {
+  checkAddressIsValid,
+  checkStringIsValid,
+  deriveRealNumberAndCheckValidity,
+} from './utils'
 
 const _process = async (ctx, name, config) => ctx.callbacks().getInput(ctx.id, name, config)
 
@@ -10,28 +17,42 @@ const INPUTS = {
       const result = await ctx.callbacks().getInput(ctx.id, name, config)
 
       if (result) {
-        await checkAddressIsValid(ctx, result, config.addressType)
+        await checkAddressIsValid(ctx, result, config)
       }
 
       return result
     },
   },
-  uint: {
-    process: _process
-  },
   int: {
-    process: _process
+    process: async (ctx, name, config) => {
+      const result = await ctx.callbacks().getInput(ctx.id, name, config)
+
+      const resultEthVal = result
+        ? await deriveRealNumberAndCheckValidity(ctx, result, { ...config, unsigned: config.type === 'uint' })
+        : null
+
+      return resultEthVal ? resultEthVal.toWei().toString(10) : undefined
+    },
   },
   bool: {
     process: _process
   },
   string: {
-    process: _process
+    process: async (ctx, name, config) => {
+      const result = await ctx.callbacks().getInput(ctx.id, name, config)
+
+      if (result) {
+        await checkStringIsValid(ctx, result, config)
+      }
+
+      return result
+    },
   },
   bytes32: {
     process: _process
   },
 }
+INPUTS.uint = INPUTS.int
 
 export const processList = async (parentCtx, inputs) => (
   promiseSerial(inputs || [], async inputConfig => {

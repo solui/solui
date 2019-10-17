@@ -69,7 +69,7 @@ export const watch = (pth, callback) => {
   watcher.on('unlink', handler)
 
   watcher.on('error', err => {
-    logErr(`Error: ${err}`)
+    logErr(`Watcher error: ${err}`)
   })
 }
 

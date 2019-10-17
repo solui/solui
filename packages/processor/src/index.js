@@ -186,10 +186,12 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
 
             const contractInstance = new web3.eth.Contract(abi, address)
 
-            return contractInstance.methods[method](...args).send({ from })
+            await contractInstance.methods[method](...args).send({ from })
+
+            return true
           } catch (err) {
             console.warn(err)
-            ctx.errors().add(id, `Error executing ${contract}.${method}: ${err}`)
+            ctx.errors().add(id, `Error calling ${contract}.${method}: ${err}`)
             return null
           }
         },
@@ -202,7 +204,7 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
             return contractInstance.methods[method](...args).call({ from })
           } catch (err) {
             console.warn(err)
-            ctx.errors().add(id, `Error executing ${contract}.${method}: ${err}`)
+            ctx.errors().add(id, `Error calling ${contract}.${method}: ${err}`)
             return null
           }
         },
@@ -238,7 +240,7 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
         createErrorWithDetails('There were one or more execution errors. See details.', ctx.errors().toStringArray())
       )
     } else {
-      resolve(ctx.output())
+      resolve(ctx.outputs())
     }
   })
 )

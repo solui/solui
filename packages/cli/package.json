@@ -59,14 +59,16 @@
   },
   "scripts": {
     "lint": "eslint . && solhint contracts/**/*.sol",
-    "demo": "bin/solui view --artifacts ./build/contracts --spec ./contracts/ui.json",
+    "demo:basic": "bin/solui view --artifacts ./build/contracts --spec ./contracts/basic/ui.json",
+    "demo:erc20": "bin/solui view --artifacts ./build/contracts --spec ./contracts/erc20/ui.json",
     "truffle": "babel-node node_modules/.bin/truffle",
     "truffle:devnet": "ganache-cli -a 10",
-    "truffle:devnet-ci": "ganache-cli -a 10 >ganache.log 2>&1 &",
+    "truffle:devnet-ci": "yarn truffle:devnet >ganache.log 2>&1 &",
     "truffle:clean": "yarn truffle networks --clean",
     "truffle:deploy": "yarn truffle compile && yarn truffle migrate"
   },
   "devDependencies": {
+    "ganache-cli": "^6.7.0",
     "solhint": "^2.2.0",
     "truffle": "^5.0.33"
   },
