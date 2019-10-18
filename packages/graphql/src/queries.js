@@ -5,7 +5,7 @@ import { PackageFragment, PackageResultFragment, VersionFragment } from './fragm
 export const GetVersionQuery = gql`
   ${VersionFragment}
 
-  query getVersion ($id: ID!) {
+  query getVersion ($id: String!) {
     result: getVersion(id: $id) @disableAuth {
       ...VersionFragment
     }
@@ -15,8 +15,8 @@ export const GetVersionQuery = gql`
 export const GetPackageQuery = gql`
   ${PackageFragment}
 
-  query getPackage ($name: String!) {
-    result: getPackage(name: $name) @disableAuth {
+  query getPackage ($id: String!) {
+    result: getPackage(id: $id) @disableAuth {
       ...PackageFragment
     }
   }

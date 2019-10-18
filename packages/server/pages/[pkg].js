@@ -13,13 +13,13 @@ import Layout from '../frontend/components/Layout'
 
 const HomePage = () => {
   const router = useRouter()
-  const { pkg: pkgName, vid } = router.query
+  const { pkg: pkgId, vid } = router.query
 
   return (
     <Layout>
       <Query
         query={GetPackageQuery}
-        variables={{ name: pkgName }}
+        variables={{ id: pkgId }}
         fetch-policy='cache-and-network'
       >
         {({ data: { result: pkg } }) => (
@@ -31,12 +31,12 @@ const HomePage = () => {
             >
               {({ data: { result: version } }) => (
                 <div>
-                  <p>Name: {pkgName}</p>
+                  <p>Id: {pkgId}</p>
                   <p>Author: {pkg.author.username}</p>
                   {version ? (
                     <p>
                       Selected version: <DateTime dateTime={version.created} />
-                      <PkgVersionLink pkg={pkgName} vid={version.id}>
+                      <PkgVersionLink pkg={pkgId} vid={version.id}>
                         <Button>Use it</Button>
                       </PkgVersionLink>
                     </p>
@@ -47,7 +47,7 @@ const HomePage = () => {
               )}
             </Query>
           ) : (
-            <ErrorBox error={`Package "${pkgName}" not found!`} />
+            <ErrorBox error={`Package "${pkgId}" not found!`} />
           )
         )}
       </Query>

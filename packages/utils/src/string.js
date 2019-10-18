@@ -1,4 +1,5 @@
 import slug from 'slug'
+import { sha3 } from 'web3-utils'
 import validator from 'validator'
 
 export const obfuscate = str => {
@@ -17,3 +18,5 @@ export const obfuscate = str => {
 }
 
 export const slugify = str => slug(`${str} ${Math.random().toString(36).substr(2, 6)}`)
+
+export const hash = data => sha3(typeof data !== 'string' ? JSON.stringify(data) : data).substr(2)

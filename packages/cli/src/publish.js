@@ -1,13 +1,15 @@
 import { PublishMutation } from '@solui/graphql'
-import { _ } from '@solui/utils'
+import { _, hash } from '@solui/utils'
 import { getUsedContracts, assertSpecValid } from '@solui/processor'
 
 import { getApiClient } from './client'
-import { logInfo } from './utils'
+import { logInfo, logWarn } from './utils'
 
 export const publish = async ({ spec, artifacts }) => {
   // check spec is valid
   await assertSpecValid({ spec, artifacts })
+
+  logInfo(`Preparing artifacts ...`)
 
   // find out which contracts to keep
   const contractsToPublish = getUsedContracts({ spec })
@@ -26,14 +28,26 @@ export const publish = async ({ spec, artifacts }) => {
 
   const client = getApiClient()
 
-  logInfo(`Publishing spec ${spec.id} to public repository ...`)
-
   // sanitize artifacts
   const artifactsToPublish = Object.keys(filteredArtifacts).reduce((m, k) => {
-    const { contractName, abi, bytecode, bytecodeHash } = artifacts[k]
-    m[k] = { contractName, abi, bytecode, bytecodeHash }
+    const { contractName, abi, bytecode, deployedBytecode } = artifacts[k]
+
+    if (!deployedBytecode) {
+      logWarn(`No "deployedBytecode" key found for ${k} - search by on-chain contract address will not work!`)
+    }
+
+    m[k] = {
+      contractName,
+      abi,
+      bytecode,
+      ...(deployedBytecode ? {
+        bytecodeHash: hash(deployedBytecode)
+      } : null)
+    }
     return m
   }, {})
+
+  logInfo(`Publishing spec ${spec.id} to public repository ...`)
 
   const ret = await client.safeMutate({
     mutation: PublishMutation,

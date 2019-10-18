@@ -32,7 +32,6 @@ export const PackageResultFragment = gql`
 
   fragment PackageResultFragment on PackageResult {
     id
-    name
     author {
       ...UserFragment
     }
@@ -49,7 +48,6 @@ export const PackageFragment = gql`
 
   fragment PackageFragment on Package {
     id
-    name
     author {
       ...UserFragment
     }

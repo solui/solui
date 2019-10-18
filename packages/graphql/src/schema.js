@@ -10,7 +10,7 @@ export default gql`
   }
 
   type Version {
-    id: ID!
+    id: String!
     title: String!
     description: String!
     created: DateTime!
@@ -18,22 +18,21 @@ export default gql`
   }
 
   type VersionCompact {
-    id: ID!
+    id: String!
     title: String!
     description: String!
     created: DateTime!
   }
 
   type Package {
-    id: ID!
-    name: String!
+    id: String!
     author: User!
     created: DateTime!
     latestVersion: VersionCompact!
   }
 
   type PackageResult {
-    id: ID!
+    id: String!
     name: String!
     author: User!
     created: DateTime!
@@ -48,7 +47,7 @@ export default gql`
   }
 
   type PublishResult {
-    versionId: ID
+    versionId: String
     error: String
   }
 
@@ -70,8 +69,8 @@ export default gql`
 
   type Query {
     search(criteria: SearchCritieraInput!): SearchResults!
-    getPackage(name: String!): Package
-    getVersion(id: ID!): Version
+    getPackage(id: String!): Package
+    getVersion(id: String!): Version
     getAuthToken(loginToken: String!): AuthToken
   }
 

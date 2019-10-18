@@ -42,7 +42,7 @@ export default ({ className, results, keyword }) => {
       resultRender = (
         <List>
           {results.packages.map(r => (
-            <PkgVersionLink key={r.name} pkg={r.name} vid={r.version.id}>
+            <PkgVersionLink key={r.id} pkg={r.id} vid={r.version.id}>
               <ListItem>
                 <SearchResult pkg={r} />
               </ListItem>

@@ -39,7 +39,7 @@ export default forwardRef(({ className, searchText, onSearchTextChange, onClickH
           name='search'
           value={searchText}
           type='text'
-          placeholder='Search by keyword or contract address'
+          placeholder='Search by keyword or on-chain contract address'
           onChange={onSearchTextChange}
         />
       </Search>

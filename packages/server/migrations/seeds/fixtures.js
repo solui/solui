@@ -47,6 +47,7 @@ const tsStr = ({ add = 0, sub = 0 } = {}) => {
 
 exports.seed = async knex => {
   await deleteTableData(knex, [
+    'bytecode_hash',
     'version',
     'package',
   ])
@@ -71,9 +72,8 @@ exports.seed = async knex => {
 
   for (let i = 0; NUM_PACKAGES > i; i += 1) {
     packages.push({
-      id: uuid(),
       owner_id: users[userIndex].id,
-      name: `fixture-${i}`
+      id: `fixture-${i}`
     })
 
     userIndex = (users.length > (userIndex + 1) ? userIndex + 1 : 0)
@@ -89,14 +89,13 @@ exports.seed = async knex => {
     const { title, description } = data.spec
 
     versions.push({
-      id: uuid(),
       pkg_id: packages[packageIndex].id,
       created_at: tsStr({ add: i }),
       data,
       title,
       description,
       search: `${data.spec.id} ${title}`.toLowerCase(),
-      hash: calculateVersionHash(data)
+      id: calculateVersionHash(data)
     })
 
     packageIndex = (packages.length > (packageIndex + 1) ? packageIndex + 1 : 0)

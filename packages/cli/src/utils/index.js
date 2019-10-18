@@ -26,9 +26,9 @@ export const loadArtifacts = dir => {
 
   return files.reduce((m, f) => {
     try {
-      const { abi, bytecode, contractName, networks } = loadJson(f)
+      const { abi, bytecode, deployedBytecode, contractName, networks } = loadJson(f)
 
-      m[path.basename(f, '.json')] = { abi, bytecode, contractName, networks }
+      m[path.basename(f, '.json')] = { abi, bytecode, deployedBytecode, contractName, networks }
     } catch (err) {
       throw new Error(`Error loading artifact ${f}: ${err}`)
     }
@@ -86,6 +86,10 @@ export const logError = msg => {
 
 export const logTrace = msg => {
   console.log(chalk.white(msg))
+}
+
+export const logWarn = msg => {
+  console.log(chalk.yellow(msg))
 }
 
 export const logInfo = msg => {

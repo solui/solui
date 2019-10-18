@@ -33,7 +33,7 @@ export default ({ pkg, version }) => {
   return (
     <Container>
       <Top>
-        <TopSection>Package: <PkgLink pkg={pkg.name}><a>{pkg.name}</a></PkgLink></TopSection>
+        <TopSection>Package: <PkgLink pkg={pkg.id}><a>{pkg.id}</a></PkgLink></TopSection>
         <TopSection>Version: {version.id}</TopSection>
       </Top>
       <Render>

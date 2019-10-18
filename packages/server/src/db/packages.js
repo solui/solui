@@ -26,7 +26,6 @@ export function _extractUserFromResultRow (row) {
 export function _extractPackageFromResultRow (row) {
   return {
     id: row.pId,
-    name: row.pName,
     author: this._extractUserFromResultRow(row),
     created: row.pCreatedAt,
   }
@@ -57,7 +56,6 @@ export async function _searchPackages ({
   const rows = await this._db().raw(`
     select
       p.id as p_id,
-      p.name as p_name,
       p.created_at as p_created_at,
       u.id as u_id,
       u.username as u_username,
@@ -104,8 +102,26 @@ export async function searchByKeywords ({ keyword, page = 1 }) {
   })
 }
 
-export async function getPackage ({ name }) {
-  this._log.debug(`Get package: "${name}" ...`)
+export async function searchByBytecodeHash ({ bytecodeHash, page = 1 }) {
+  this._log.debug(`Search by bytecode hash: "${bytecodeHash}" ...`)
+
+  return this._searchPackages({
+    filterCondition: `
+      INNER JOIN "bytecode_hash" h ON h.version_id = v.id
+      WHERE h.hash = ?
+    `,
+    filterValue: [ bytecodeHash ],
+    versionFilterCondition: `
+      INNER JOIN "bytecode_hash" ON version_id = version.id
+      WHERE hash = ?
+    `,
+    versionFilterValue: [ bytecodeHash ],
+    page,
+  })
+}
+
+export async function getPackage ({ id }) {
+  this._log.debug(`Get package: "${id}" ...`)
 
   // data query
   const rows = await this._db()
@@ -113,7 +129,6 @@ export async function getPackage ({ name }) {
     .select()
     .columns({
       p_id: 'package.id',
-      p_name: 'package.name',
       p_created_at: 'package.created_at',
       u_id: 'user.id',
       u_username: 'user.username',
@@ -129,7 +144,7 @@ export async function getPackage ({ name }) {
         (select pkg_id, MAX(created_at) from version group by pkg_id) v2
         on v2.pkg_id = package.id AND version.created_at = v2.max
     `)
-    .where('package.name', name)
+    .where('package.id', id)
     .orderBy('version.created_at', 'DESC')
     .limit(1)
 
@@ -181,12 +196,12 @@ export async function publishPackageVersion ({ spec, artifacts }) {
   }
 
   return this._dbTrans(async trx => {
-    const { id: name } = spec
+    const { id } = spec
 
     const [ pkg ] = await this._db()
       .table('package')
       .select('id')
-      .where('name', name)
+      .where('id', id)
       .limit(1)
       .transacting(trx)
 
@@ -203,39 +218,36 @@ export async function publishPackageVersion ({ spec, artifacts }) {
         .limit(1)
         .transacting(trx)
 
-      const rows = await this._db()
+      await this._db()
         .table('package')
         .insert({
-          id: uuid(),
+          id,
           ownerId: userId,
-          name,
         })
-        .returning('id')
         .transacting(trx)
 
-      pkgId = _.get(this._extractReturnedDbIds(rows), '0')
+      pkgId = id
     }
 
     // calculate hash of this version so that we can check to see if it has
     // already been published
-    const versionHash = calculateVersionHash({ spec, artifacts })
+    const versionId = calculateVersionHash({ spec, artifacts })
 
     const alreadyPublished = await this._db()
       .table('version')
       .select('id')
-      .where('pkg_id', pkgId)
-      .andWhere('hash', versionHash)
+      .where('id', versionId)
       .limit(1)
 
     if (alreadyPublished.length) {
-      throw new Error(`This version has aleady been published: ${alreadyPublished[0].id}`)
+      throw new Error(`This version has aleady been published: ${versionId}`)
     }
 
     // insert version
-    const versionRows = await this._db()
+    await this._db()
       .table('version')
       .insert({
-        id: uuid(),
+        id: versionId,
         pkgId,
         title: spec.title,
         description: spec.description,
@@ -249,12 +261,26 @@ export async function publishPackageVersion ({ spec, artifacts }) {
             return m
           }, {})
         },
-        hash: versionHash,
       })
-      .returning('id')
       .transacting(trx)
 
-    const versionId = _.get(this._extractReturnedDbIds(versionRows), '0')
+    // insert bytecode hashes if present
+    const hashRows = Object.values(artifacts).reduce((m, { bytecodeHash }) => {
+      if (bytecodeHash) {
+        m.push({
+          id: uuid(),
+          versionId,
+          hash: bytecodeHash,
+        })
+      }
+      return m
+    }, [])
+
+    if (hashRows.length) {
+      await this._db()
+        .batchInsert('bytecode_hash', hashRows)
+        .transacting(trx)
+    }
 
     return versionId
   })
