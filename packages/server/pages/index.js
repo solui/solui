@@ -1,13 +1,16 @@
 import React from 'react'
 
-import Layout from '../frontend/components/Layout'
+import { getInitialPageProps } from '../frontend/ssr'
+import PageWrapper from '../frontend/components/PageWrapper'
 
-const HomePage = () => {
+const HomePage = props => {
   return (
-    <Layout>
+    <PageWrapper {...props}>
       Homepage!
-    </Layout>
+    </PageWrapper>
   )
 }
+
+HomePage.getInitialProps = getInitialPageProps
 
 export default HomePage

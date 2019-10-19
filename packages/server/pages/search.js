@@ -6,7 +6,8 @@ import {
   Query,
 } from '@solui/react-components'
 
-import Layout from '../frontend/components/Layout'
+import { getInitialPageProps } from '../frontend/ssr'
+import PageWrapper from '../frontend/components/PageWrapper'
 import SearchResultsPage from '../frontend/components/SearchResultsPage'
 
 const StyledSearchResultsPage = styled(SearchResultsPage)`
@@ -14,12 +15,12 @@ const StyledSearchResultsPage = styled(SearchResultsPage)`
   width: 80%;
 `
 
-const SearchPage = () => {
+const SearchPage = props => {
   const router = useRouter()
   const { keyword, page = 1 } = router.query
 
   return (
-    <Layout>
+    <PageWrapper {...props}>
       <h1>Search for "{keyword}" ...</h1>
       <Query
         query={SearchQuery}
@@ -39,8 +40,10 @@ const SearchPage = () => {
           />
         )}
       </Query>
-    </Layout>
+    </PageWrapper>
   )
 }
+
+SearchPage.getInitialProps = getInitialPageProps
 
 export default SearchPage

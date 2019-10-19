@@ -41,9 +41,7 @@ export async function getUser ({ id }) {
 }
 
 export async function saveLoginToken ({ email, loginToken }) {
-  this._log.debug(`User successfully logged in: "${obfuscate(email)}" ...`)
-
-  return this._dbTrans(async trx => {
+  await this._dbTrans(async trx => {
     return this._db()
       .table('login_token')
       .insert({
@@ -51,6 +49,8 @@ export async function saveLoginToken ({ email, loginToken }) {
         userId: await this._createUserOrFetchExisting(email, trx),
       })
   })
+
+  this._log.debug(`User successfully logged in: "${obfuscate(email)}" ...`)
 }
 
 export async function getAuthToken ({ loginToken }) {

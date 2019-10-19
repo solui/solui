@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 
-exports.decrypt = async (ciphertext, { key, iv }) => {
+export const decrypt = async (ciphertext, { key, iv }) => {
   const cipher = crypto.createDecipheriv(
     'aes-256-cbc',
     key,
@@ -12,7 +12,7 @@ exports.decrypt = async (ciphertext, { key, iv }) => {
   return JSON.parse(plaintext)[1]
 }
 
-exports.encrypt = async (data, { key, iv }) => {
+export const encrypt = async (data, { key, iv }) => {
   const cipher = crypto.createCipheriv(
     'aes-256-cbc',
     key,

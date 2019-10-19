@@ -1,6 +1,8 @@
 const withImages = require('next-images')
 const withCss = require('@zeit/next-css')
 
+const env = require('./config')
+
 // From https://github.com/zeit/next-plugins/issues/392#issuecomment-475845330
 function hackRemoveMinimizeOptionFromCssLoaders (config) {
   console.warn(
@@ -21,5 +23,6 @@ module.exports = withCss(withImages({
   webpack: config => {
     hackRemoveMinimizeOptionFromCssLoaders(config)
     return config
-  }
+  },
+  env
 }))

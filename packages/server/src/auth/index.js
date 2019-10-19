@@ -1,7 +1,7 @@
-import jwtMiddleware from 'koa-jwt'
 import jwt from 'jsonwebtoken'
+import { _ } from '@solui/utils'
 
-import config from '../config'
+import config from '../../config'
 import { encrypt, decrypt } from '../utils/crypto'
 
 const SECRET = 'solui'
@@ -20,50 +20,56 @@ export const generateAuthToken = async ({ expires, userId }) => {
   })
 }
 
-export const setupAuthMiddleware = ({ server, db, log }) => {
-  server.use(
-    jwtMiddleware({
-      secret: SECRET,
-      algorithm: ALGORITHM,
-      // don't reject a request just because auth failed!
-      passthrough: true,
-    })
-  )
+const AUTH_PREFIX = 'Bearer '
 
-  server.use(async (ctx, next) => {
-    // if we successfully decoded a JWT
-    if (ctx.state.user) {
-      const { authBlob } = ctx.state.user
+export const middleware = ({ db, log }) => next => async (req, res) => {
+  req.state = {}
 
-      try {
-        let expires
-        let userId
+  let decoded
 
-        try {
-          ({ expires, userId } = await decrypt(authBlob, CRYPTO_PARAMS))
-        } catch (err) {
-          throw new Error('Authentication token is corrupted!')
-        }
+  try {
+    let authToken = _.get(req, 'headers.authorization')
 
-        if (new Date(expires).getTime() < Date.now()) {
-          throw new Error('Authentication token has expired!')
-        }
-
-        const user = await db.getUser({ id: userId })
-
-        if (!user) {
-          throw new Error('Authentication token is invalid!')
-        }
-
-        ctx.state.uid = userId
-        ctx.state.isAdmin = !!user.isAdmin
-      } catch (err) {
-        log.debug(err.message)
-      }
-    } else {
-      ctx.state = {}
+    if (typeof authToken === 'string' && authToken.startsWith(AUTH_PREFIX)) {
+      authToken = authToken.substr(AUTH_PREFIX.length)
     }
 
-    await next()
-  })
+    decoded = jwt.verify(authToken, SECRET, {
+      algorithm: ALGORITHM
+    })
+  } catch (err) {
+    // not authenticated!
+  }
+
+  if (decoded) {
+    try {
+      const { authBlob } = decoded
+
+      let expires
+      let userId
+
+      try {
+        ({ expires, userId } = await decrypt(authBlob, CRYPTO_PARAMS))
+      } catch (err) {
+        throw new Error('Authentication token is corrupted!')
+      }
+
+      if (new Date(expires).getTime() < Date.now()) {
+        throw new Error('Authentication token has expired!')
+      }
+
+      const user = await db.getUser({ id: userId })
+
+      if (!user) {
+        throw new Error('Authentication token is invalid!')
+      }
+
+      req.state.uid = userId
+      req.state.isAdmin = !!user.isAdmin
+    } catch (err) {
+      log.debug(err.message)
+    }
+  }
+
+  await next(req, res)
 }

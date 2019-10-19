@@ -1,3 +1,4 @@
+import url from 'url'
 import mailgun from 'mailgun.js'
 import { obfuscate } from '@solui/utils'
 
@@ -6,8 +7,7 @@ import { encrypt, decrypt } from '../utils/crypto'
 import { buildAbsoluteUrl } from '../utils/url'
 
 class Notifier {
-  constructor ({ router, config, db, log }) {
-    this._router = router
+  constructor ({ config, db, log }) {
     this._log = log.create('notifier')
 
     this._cryptoParams = {
@@ -30,6 +30,8 @@ class Notifier {
       [LOGIN]: require(`./handlers/${LOGIN}`),
       /* eslint-enable import/no-dynamic-require */
     }
+
+    this._isSimulated = !!config.MAIL_SIMULATED
   }
 
   _getHandler (type) {
@@ -40,11 +42,10 @@ class Notifier {
     return this._handlers[type]
   }
 
-  async handleLink (ctx) {
-    const { t: type } = ctx.params
-    const { v } = ctx.query
+  async handleLink ({ req, res }) {
+    const { type, v } = req.query
 
-    return this._getHandler(type).handleLink.call(this, ctx, v)
+    return this._getHandler(type).handleLink.call(this, { req, res }, v)
   }
 
   async sendNotification (type, params) {
@@ -61,17 +62,19 @@ class Notifier {
   }
 
   async _sendEmail (email, type, payload, templateVars = {}) {
-    const urlPath = this._router.url('notify', {
-      t: type
-    }, {
+    const urlPath = url.format({
+      pathname: `/api/verify/${type}`,
       query: {
         v: await this._encodePayload(payload)
       }
     })
 
-    const url = buildAbsoluteUrl(urlPath)
+    const absUrl = buildAbsoluteUrl(urlPath)
 
-    const { subject, body: text } = this._handlers[type].render({ url, ...templateVars })
+    const { subject, body: text } = this._handlers[type].render({
+      url: absUrl,
+      ...templateVars
+    })
 
     try {
       this._log.debug(`Sending email to ${obfuscate(email)} ...`)
@@ -83,9 +86,13 @@ class Notifier {
         text,
       }
 
-      await this._mg.messages.create(this._domain, msg)
-
-      this._log.debug(`... email sent`)
+      if (this._isSimulated) {
+        this._log.info(msg)
+        this._log.info('... email simulated')
+      } else {
+        await this._mg.messages.create(this._domain, msg)
+        this._log.debug(`... email sent`)
+      }
     } catch (err) {
       const errStr = `Error sending email to ${obfuscate(email)}: ${err.message}`
       this._log.error(errStr, err)

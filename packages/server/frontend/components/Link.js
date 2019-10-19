@@ -9,9 +9,9 @@ export const Link = ({ page, query = {}, children }) => {
 }
 
 export const PkgLink = ({ pkg, children }) => (
-  <DefaultLink href='/[pkg]' as={`/${pkg}`}>{children}</DefaultLink>
+  <DefaultLink href='/p/[pkg]' as={`/p/${pkg}`}>{children}</DefaultLink>
 )
 
 export const PkgVersionLink = ({ pkg, vid, children }) => (
-  <DefaultLink href='/[pkg]/[vid]' as={`/${pkg}/${vid}`}>{children}</DefaultLink>
+  <DefaultLink href='/p/[pkg]/[vid]' as={`/p/${pkg}/${vid}`}>{children}</DefaultLink>
 )

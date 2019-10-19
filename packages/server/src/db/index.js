@@ -1,23 +1,10 @@
-import glob from 'glob'
 import EventEmitter from 'eventemitter3'
-import path from 'path'
 import { addDays } from 'date-fns'
 import { _ } from '@solui/utils'
 import knex from 'knex'
 
-// load in db methods
-const METHODS = glob.sync(path.join(__dirname, '*.js')).reduce((m, file) => {
-  if (file !== __filename) {
-    // eslint-disable-next-line import/no-dynamic-require
-    Object.entries(require(file)).forEach(([ n, f ]) => {
-      if (m[n]) {
-        throw new Error(`Method ${n} already declared!`)
-      }
-      m[n] = f
-    })
-  }
-  return m
-}, {})
+import * as packageMethods from './packages'
+import * as userMethods from './users'
 
 export const tsStr = ({ add = 0 } = {}) => {
   let d = new Date()
@@ -42,14 +29,11 @@ class Db extends EventEmitter {
     })
     this._log = log.create('db')
 
-    Object.entries(METHODS).forEach(([ methodName, fn ]) => {
-      this[methodName] = fn.bind(this)
+    ;[ packageMethods, userMethods ].forEach(methods => {
+      Object.entries(methods).forEach(([ methodName, fn ]) => {
+        this[methodName] = fn.bind(this)
+      })
     })
-  }
-
-  async initConnection () {
-    await this._db().table('user').select()
-    this._log.info('Db connected')
   }
 
   async shutdown () {
@@ -137,8 +121,4 @@ class Db extends EventEmitter {
   }
 }
 
-export const createDb = async ({ config, log }) => {
-  const db = new Db({ config, log })
-  await db.initConnection()
-  return db
-}
+export const createDb = ({ config, log }) => new Db({ config, log })

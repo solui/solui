@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 
-export default gql`
+export const getTypeDefs = () => gql`
   scalar DateTime
   scalar JSON
 

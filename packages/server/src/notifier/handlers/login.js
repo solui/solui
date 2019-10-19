@@ -19,12 +19,14 @@ The friendly solUI bot
   }
 }
 
-export async function handleLink (ctx, v) {
+export async function handleLink ({ res }, v) {
   const { email, loginToken } = await this._decodePayload(v)
 
   await this._db.saveLoginToken({ email, loginToken })
 
-  return ctx.redirect(buildUrlPath('/logged-in'))
+  res.status(302)
+  res.setHeader('Location', buildUrlPath('/logged-in'))
+  res.end('Redirection to logged-in page')
 }
 
 export async function sendNotification ({ email, loginToken }) {

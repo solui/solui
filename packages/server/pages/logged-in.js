@@ -1,14 +1,17 @@
 import React from 'react'
 
-import Layout from '../frontend/components/Layout'
+import { getInitialPageProps } from '../frontend/ssr'
+import PageWrapper from '../frontend/components/PageWrapper'
 
-const LoggedInPage = () => {
+const LoggedInPage = props => {
   return (
-    <Layout>
+    <PageWrapper {...props}>
       <p>Congrats, you are now logged in!</p>
       <p>You may close this browser tab.</p>
-    </Layout>
+    </PageWrapper>
   )
 }
+
+LoggedInPage.getInitialProps = getInitialPageProps
 
 export default LoggedInPage

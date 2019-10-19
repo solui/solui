@@ -60,7 +60,7 @@ Please login using the following URL: ${url}`)
 export const getApiClient = () => {
   if (!client) {
     client = createApolloClient({
-      serverHost: config.SOLUI_REPO_HOST,
+      endpoint: `${config.SOLUI_REPO_HOST}/api/graphql`,
       refreshAuthToken,
       name: '@solui/cli',
       version,

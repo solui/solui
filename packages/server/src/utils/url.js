@@ -1,5 +1,5 @@
 import url from 'url'
-import config from '../config'
+import config from '../../config'
 
 export const buildAbsoluteUrl = urlPath => url.resolve(config.BASE_URL, urlPath)
 

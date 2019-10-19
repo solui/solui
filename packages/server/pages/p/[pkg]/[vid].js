@@ -7,16 +7,17 @@ import {
 } from '@solui/react-components'
 import { GetPackageQuery, GetVersionQuery } from '@solui/graphql'
 
-import { PkgLink } from '../../frontend/components/Link'
-import RenderDapp from '../../frontend/components/RenderDapp'
-import Layout from '../../frontend/components/Layout'
+import { PkgLink } from '../../../frontend/components/Link'
+import RenderDapp from '../../../frontend/components/RenderDapp'
+import { getInitialPageProps } from '../../../frontend/ssr'
+import PageWrapper from '../../../frontend/components/PageWrapper'
 
-const HomePage = () => {
+const VersionPage = props => {
   const router = useRouter()
   const { pkg: pkgId, vid } = router.query
 
   return (
-    <Layout>
+    <PageWrapper {...props}>
       <Query
         query={GetPackageQuery}
         variables={{ id: pkgId }}
@@ -47,8 +48,10 @@ const HomePage = () => {
           )
         )}
       </Query>
-    </Layout>
+    </PageWrapper>
   )
 }
 
-export default HomePage
+VersionPage.getInitialProps = getInitialPageProps
+
+export default VersionPage

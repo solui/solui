@@ -1,17 +1,15 @@
 import Document, { Main, Head, NextScript } from 'next/document'
 
-import { APP_STATE_KEYS } from '../common/appState'
+import { getInitialPageProps } from '../frontend/ssr'
 
 export default class MyDocument extends Document {
   static async getInitialProps (ctx) {
     const initialProps = await Document.getInitialProps(ctx)
 
-    const ret = { ...initialProps }
-
-    ret.appState = APP_STATE_KEYS.reduce((m, k) => {
-      m[k] = ctx.res[k]
-      return m
-    }, {})
+    const ret = {
+      ...initialProps,
+      ...(await getInitialPageProps(ctx))
+    }
 
     return ret
   }

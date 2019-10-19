@@ -1,107 +1,20 @@
-import Koa from 'koa'
-import cors from '@koa/cors'
-import Router from 'koa-router'
-import next from 'next'
-
-import config from './config'
+import config from '../config'
 import createLog from './log'
-import setupGraphQLEndpoint from './graphql'
 import { createDb } from './db'
 import { createNotifier } from './notifier'
-import { setupAuthMiddleware } from './auth'
-import { APP_STATE_KEYS } from '../common/appState'
 
-const log = createLog(config)
+export const doBootstrap = () => {
+  const log = createLog(config)
+  const db = createDb({ config, log })
+  const notifier = createNotifier({ config, log, db })
 
-process.on('uncaughtExceptions', e => {
-  log.error('Uncaught exception', e)
-})
-
-process.on('unhandledRejection', (reason, p) => {
-  log.error('Unhandled Rejection at:', p, 'reason:', reason)
-})
-
-const inDevMode = config.APP_MODE === 'development'
-
-const init = async () => {
-  const app = next({
-    dev: inDevMode,
+  process.on('uncaughtExceptions', e => {
+    log.error('Uncaught exception', e)
   })
 
-  const handle = app.getRequestHandler()
-
-  log.info(`App mode: ${config.APP_MODE}`)
-
-  const server = new Koa()
-  const router = new Router()
-  const db = await createDb({ config, log })
-  const notifier = createNotifier({ router, config, log, db })
-
-  await app.prepare()
-
-  // cors
-  server.use(
-    cors({
-      origin: '*',
-      credentials: true
-    })
-  )
-
-  server.use(async (ctx, nextHandler) => {
-    ctx.res.statusCode = 200 // Koa doesn't seems to set the default statusCode.
-
-    ctx.finalizeResVars = () => {
-      APP_STATE_KEYS.forEach(k => {
-        switch (k) {
-          case 'baseUrl':
-            ctx.res[k] = config.BASE_URL
-            break
-          default:
-            ctx.res[k] = ctx.state[k]
-        }
-      })
-    }
-
-    await nextHandler()
+  process.on('unhandledRejection', (reason, p) => {
+    log.error('Unhandled Rejection at:', p, 'reason:', reason)
   })
 
-  // auth middleware
-  setupAuthMiddleware({ config, server, db, log })
-
-  // graphql
-  setupGraphQLEndpoint({ config, server, db, notifier })
-
-  // handle notifier verification links
-  router.get('notify', '/n/:t', async ctx => {
-    ctx.finalizeResVars()
-
-    try {
-      await notifier.handleLink(ctx)
-    } catch (err) {
-      log.warn(err)
-      await app.render(ctx.req, ctx.res, '/error', { msg: err.message, stack: err.stack })
-    }
-  })
-
-  // everything else goes to next.js app
-  router.get('*', async ctx => {
-    ctx.finalizeResVars()
-    await handle(ctx.req, ctx.res)
-    ctx.respond = false
-  })
-
-  server.use(router.routes())
-
-  server.listen(config.PORT, err => {
-    if (err) {
-      throw err
-    }
-
-    log.info(`> Ready on http://localhost:${config.PORT}`)
-  })
+  return { log, db, notifier, config }
 }
-
-init().catch(err => {
-  log.error(err)
-  process.exit(-1)
-})

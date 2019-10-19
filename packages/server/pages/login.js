@@ -10,7 +10,8 @@ import {
   TextInput,
 } from '@solui/react-components'
 
-import Layout from '../frontend/components/Layout'
+import { getInitialPageProps } from '../frontend/ssr'
+import PageWrapper from '../frontend/components/PageWrapper'
 
 const StyledAlert = styled(AlertBox)`
   margin: 1.5rem 0;
@@ -25,7 +26,7 @@ const StyledButton = styled(Button)`
   margin-bottom: 1rem;
 `
 
-const LoginPage = () => {
+const LoginPage = props => {
   const [ sent, setSent ] = useState(false)
   const [ email, setEmail ] = useState('')
   const [ validationError, setValidationError ] = useState(null)
@@ -43,7 +44,7 @@ const LoginPage = () => {
   }, [])
 
   return (
-    <Layout>
+    <PageWrapper {...props}>
       {sent ? (
         <StyledAlert msg={`We have sent an email to: ${email}. Please follow the link in this email to finish logging in.`} />
       ) : (
@@ -77,8 +78,10 @@ const LoginPage = () => {
           )}
         </Mutation>
       )}
-    </Layout>
+    </PageWrapper>
   )
 }
+
+LoginPage.getInitialProps = getInitialPageProps
 
 export default LoginPage

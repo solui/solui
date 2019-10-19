@@ -3,7 +3,6 @@ import GraphQLJSON from 'graphql-type-json'
 
 import { LOGIN } from '../notifier/types'
 
-
 export default ({ db, notifier }) => {
   const assertIsLoggedIn = async (ctx = {}) => {
     if (!ctx.uid) {
