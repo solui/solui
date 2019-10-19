@@ -3,7 +3,7 @@
   "name": "solui-live",
   "alias": "solui.dev",
   "regions": [ "bru" ],
-  "builds": [{ "src": "package.json", "use": "@now/next" }]
+  "builds": [{ "src": "package.json", "use": "@now/next" }],
   "env": {
     "NODE_ENV": "production",
     "APP_MODE": "live",

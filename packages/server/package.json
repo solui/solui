@@ -80,7 +80,7 @@
   },
   "devDependencies": {
     "faker": "^4.1.0",
-    "now": "^16.3.0",
+    "now": "^16.3.1",
     "react-hot-loader": "^4.8.0",
     "webpack": "^4.28.4"
   },
