@@ -58,7 +58,7 @@
     "graphql-type-json": "^0.2.4",
     "immutable": "^4.0.0-rc.12",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.16.3",
+    "knex": "^0.19.5",
     "koa": "^2.6.2",
     "koa-router": "^7.4.0",
     "mailgun.js": "^2.0.1",
