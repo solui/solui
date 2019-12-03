@@ -58,12 +58,6 @@ Publish NPM packages:
 $ yarn release
 ```
 
-Publish server:
-
-```
-$ cd packages/server; yarn deploy
-```
-
 ## License
 
 AGPLv3
