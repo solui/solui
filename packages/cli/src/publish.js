@@ -1,15 +1,15 @@
 import { PublishMutation } from '@solui/graphql'
-import { _, hash } from '@solui/utils'
+import { _, hash, uploadDataToIpfs } from '@solui/utils'
 import { getUsedContracts, assertSpecValid } from '@solui/processor'
 
 import { getApiClient } from './client'
-import { logInfo, logWarn } from './utils'
+import { logInfo, logTrace, logWarn } from './utils'
 
-export const publish = async ({ spec, artifacts }) => {
+export const publish = async ({ spec, artifacts, customIpfs }) => {
   // check spec is valid
   await assertSpecValid({ spec, artifacts })
 
-  logInfo(`Preparing artifacts ...`)
+  logTrace(`Preparing artifacts ...`)
 
   // find out which contracts to keep
   const contractsToPublish = getUsedContracts({ spec })
@@ -25,8 +25,6 @@ export const publish = async ({ spec, artifacts }) => {
     }
     return m
   }, {})
-
-  const client = getApiClient()
 
   // sanitize artifacts
   const artifactsToPublish = Object.keys(filteredArtifacts).reduce((m, k) => {
@@ -47,21 +45,37 @@ export const publish = async ({ spec, artifacts }) => {
     return m
   }, {})
 
-  logInfo(`Publishing spec ${spec.id} to public repository ...`)
+  if (customIpfs) {
+    logTrace(`Publishing spec ${spec.id} to custom IPFS: ${customIpfs} ...`)
 
-  const ret = await client.safeMutate({
-    mutation: PublishMutation,
-    variables: {
-      bundle: { spec, artifacts: artifactsToPublish }
+    const [ { hash: cid } ] = await uploadDataToIpfs(
+      JSON.stringify({ spec, artifacts: artifactsToPublish }),
+      customIpfs
+    )
+
+    logInfo(`CID:`, cid)
+    logInfo(`View:`, `https://gateway.temporal.cloud/ipns/ui.solui.dev#<YOUR_IPFS_GATEWAY>/${cid}`)
+  } else {
+    logTrace(`Publishing spec ${spec.id} to solUI cloud ...`)
+
+    const client = getApiClient()
+
+    const ret = await client.safeMutate({
+      mutation: PublishMutation,
+      variables: {
+        bundle: { spec, artifacts: artifactsToPublish }
+      }
+    })
+
+    const versionId = _.get(ret, 'data.publish.versionId')
+    const error = _.get(ret, 'data.publish.error')
+
+    if (error) {
+      throw new Error(error)
     }
-  })
 
-  const versionId = _.get(ret, 'data.publish.versionId')
-  const error = _.get(ret, 'data.publish.error')
-
-  if (error) {
-    throw new Error(error)
+    logTrace(`CID:`, versionId)
   }
 
-  logInfo(`\nSuccessfully published: ${versionId}`)
+  logTrace('Published successfully!')
 }

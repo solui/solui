@@ -1,0 +1,34 @@
+{
+  "name": "@solui/docs",
+  "private": true,
+  "version": "0.0.5",
+  "description": "Documentation for solUI.",
+  "keywords": [
+    "solui",
+    "docs"
+  ],
+  "author": "Ramesh Nair <ram@hiddentao.com>",
+  "homepage": "https://solui.dev",
+  "license": "GFDL-1.3-or-later",
+  "main": "lib/docs.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.yarnpkg.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solui/solui.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/solui/solui/issues"
+  }
+}

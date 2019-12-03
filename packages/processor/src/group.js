@@ -2,7 +2,14 @@ import { _, promiseSerial } from '@solui/utils'
 
 import { processList as processInputs } from './inputs'
 import { process as processPanel } from './panel'
-import { extractChildById, checkImageIsValid } from './utils'
+import {
+  extractChildById,
+} from './utils'
+import {
+  checkIdIsValid,
+  checkImageIsValid,
+  checkTitleIsValid,
+} from './validate'
 
 export const processGroupInputs = async (rootCtx, id, config) => {
   const ctx = rootCtx.createGroupContext(id)
@@ -28,6 +35,8 @@ export const processGroupPanel = async (rootCtx, id, config, panelId) => {
 export const processGroup = async (rootCtx, id, config) => {
   const ctx = rootCtx.createGroupContext(id)
 
+  checkIdIsValid(ctx, id)
+
   if (_.isEmpty(config)) {
     ctx.errors().add(ctx.id, `must not be empty`)
   }
@@ -35,9 +44,7 @@ export const processGroup = async (rootCtx, id, config) => {
   const { title, description, image, inputs, panels } = config
 
   // need title
-  if (!title) {
-    ctx.errors().add(ctx.id, `must have a title`)
-  }
+  checkTitleIsValid(ctx, title)
 
   if (image) {
     await checkImageIsValid(ctx, image)
@@ -48,7 +55,7 @@ export const processGroup = async (rootCtx, id, config) => {
   await processInputs(ctx, inputs)
 
   if (_.isEmpty(panels)) {
-    ctx.errors().add(ctx.id, `must have alteast 1 panel`)
+    ctx.errors().add(ctx.id, `must have at least 1 panel`)
   } else {
     const existingPanels = {}
 

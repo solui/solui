@@ -1,37 +1,50 @@
-# SolUI
+# solUI
 
-Declarative UIs for smart contracts.
+_"Declarative UIs for smart contracts"_
 
-_TBC..._
+solUI allows you to quickly and easily define, build and deploy user-friendly interfaces for your smart contracts on any chain.
 
-## Development
+## Getting started
 
-Install and setup:
+Please [read the docs](https://solui.dev/docs) for more info and instructions on
+getting started.
+
+## For contributors
+
+**Note: The instructions below are for developers who wish to work on the solUI
+codebase itself and contribute improvements**
+
+Bootstrap the [monorepo](https://lerna.js.org/):
 
 ```shell
 $ yarn bootstrap
 ```
 
-To add dependency across all packages:
+At this point you can go into [individual packages](./packages) and test them out.
+
+To add a dependency across all packages:
 
 ```shell
 $ yarn add --dev -W <package_name>
 ```
 
-To add dependency for specific packages:
+To add a dependency for specific packages:
 
 ```shell
 $ yarn lerna add --scope=@solui/<pkg_which_needs_dependency> @solui/<package_which_is_the_dependency>
 ```
 
 To create new package (note: if `folder_name` = `pkg1` then `name`
-  in `package.json` should be set to `@solui/pkg1`):
+  in `pkg1/package.json` should be set to `@solui/pkg1`):
 
 ```shell
 $ yarn lerna create <folder_name>
 ```
 
-## Publishing
+Ensure you set the license to `MIT` and include a corresponding section in the
+README.md.
+
+### Publishing
 
 Update version:
 
@@ -50,3 +63,7 @@ Publish server:
 ```
 $ cd packages/server; yarn deploy
 ```
+
+## License
+
+AGPLv3

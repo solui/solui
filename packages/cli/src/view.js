@@ -3,7 +3,7 @@ import WebpackDevServer from 'webpack-dev-server'
 import VirtualModulesPlugin from 'webpack-virtual-modules'
 import { assertSpecValid } from '@solui/processor'
 
-import { DIST_FOLDER, createConfig } from './webpack.config'
+import { BUILD_FOLDER, createConfig } from './webpack.config'
 
 class Viewer {
   constructor ({ port, artifacts, spec, verbose }) {
@@ -37,11 +37,13 @@ class Viewer {
       })
     })
 
+    const host = '127.0.0.1'
+
     const webpackDevServerOptions = {
-      contentBase: DIST_FOLDER,
+      contentBase: BUILD_FOLDER,
       compress: true,
       hot: true,
-      host: '0.0.0.0',
+      host,
       stats: this.verbose ? 'normal' : 'errors-only',
     }
 
@@ -50,7 +52,7 @@ class Viewer {
     this.server = new WebpackDevServer(webpackCompiler, webpackDevServerOptions)
 
     await new Promise((resolve, reject) => {
-      this.server.listen(this.port, '0.0.0.0', err => {
+      this.server.listen(this.port, host, err => {
         if (err) {
           reject(err)
         } else {

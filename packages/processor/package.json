@@ -6,9 +6,9 @@
     "access": "public"
   },
   "scripts": {
-    "clean": "rm -rf ./dist; mkdir ./dist",
-    "watch": "yarn clean; babel ./src --watch --out-dir ./dist",
-    "build": "yarn clean; babel ./src --out-dir ./dist"
+    "clean": "rm -rf ./dist && mkdir ./dist",
+    "build": "yarn clean && babel ./src --out-dir ./dist",
+    "watch": "yarn build --watch"
   },
   "keywords": [
     "parser",
@@ -23,12 +23,14 @@
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "license": "MIT",
   "main": "dist/index.js",
+  "module": "src/index.js",
+  "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/solui/monorepo.git"
+    "url": "git+https://github.com/solui/solui.git"
   },
   "bugs": {
-    "url": "https://github.com/solui/monorepo/issues"
+    "url": "https://github.com/solui/solui/issues"
   },
   "homepage": "https://solui.dev",
   "dependencies": {

@@ -1,11 +1,14 @@
 {
   "name": "@solui/cli",
-  "descrption": "Declarative UI generation for smart contracts",
+  "description": "Declarative UI generation for smart contracts",
   "version": "0.0.5",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "bin": {
-    "solui": "./bin/solui"
+    "solui": "./dist/solui"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
@@ -14,12 +17,10 @@
     "@emotion/core": "^10.0.16",
     "@emotion/styled": "^10.0.15",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
-    "@fortawesome/free-solid-svg-icons": "^5.10.2",
-    "@fortawesome/react-fontawesome": "^0.1.4",
     "@hot-loader/react-dom": "^16.9.0",
     "@solui/graphql": "^0.0.5",
     "@solui/processor": "^0.0.5",
-    "@solui/react-components": "^0.0.5",
+    "@solui/react": "^0.0.5",
     "@solui/styles": "^0.0.5",
     "@solui/utils": "^0.0.5",
     "axios": "^0.19.0",
@@ -40,47 +41,31 @@
     "glob": "^7.1.4",
     "home": "^2.0.0",
     "html-webpack-plugin": "^3.2.0",
-    "lodash.foreach": "^4.5.0",
-    "lodash.get": "^4.4.2",
-    "lodash.isempty": "^4.4.0",
     "open": "^6.4.0",
     "react": "^16.8.6",
-    "react-apollo": "^3.1.1",
     "react-hot-loader": "^4.12.12",
-    "react-svg": "^10.0.20",
-    "react-tooltip": "^3.11.0",
     "style-loader": "^1.0.0",
     "uuid": "^3.3.3",
-    "web3": "^1.2.1",
-    "web3-utils": "^1.2.1",
     "webpack": "^4.39.3",
     "webpack-dev-server": "^3.8.0",
     "webpack-virtual-modules": "^0.1.11"
   },
   "scripts": {
-    "lint": "eslint . && solhint contracts/**/*.sol",
-    "demo:basic": "bin/solui view --artifacts ./build/contracts --spec ./contracts/basic/ui.json",
-    "demo:erc20": "bin/solui view --artifacts ./build/contracts --spec ./contracts/erc20/ui.json",
-    "truffle": "babel-node node_modules/.bin/truffle",
-    "truffle:devnet": "ganache-cli -a 10",
-    "truffle:devnet-ci": "yarn truffle:devnet >ganache.log 2>&1 &",
-    "truffle:clean": "yarn truffle networks --clean",
-    "truffle:deploy": "yarn truffle compile && yarn truffle migrate"
-  },
-  "devDependencies": {
-    "ganache-cli": "^6.7.0",
-    "solhint": "^2.2.0",
-    "truffle": "^5.0.33"
+    "lint": "eslint .",
+    "clean": "rm -rf ./dist && mkdir -p ./dist/frontend",
+    "prebuild": "cp ./src/solui ./dist && cp ./src/frontend/index.html ./dist/frontend",
+    "build": "yarn clean && yarn prebuild && babel ./src --out-dir ./dist",
+    "watch": "yarn build --watch"
   },
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/solui/monorepo.git"
+    "url": "git+https://github.com/solui/solui.git"
   },
   "bugs": {
-    "url": "https://github.com/solui/monorepo/issues"
+    "url": "https://github.com/solui/solui/issues"
   },
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "homepage": "https://solui.dev"

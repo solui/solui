@@ -2,6 +2,10 @@ import gql from 'graphql-tag'
 
 import { PackageFragment, PackageResultFragment, VersionFragment } from './fragments'
 
+/**
+ * Get package version.
+ * @type {Query}
+ */
 export const GetVersionQuery = gql`
   ${VersionFragment}
 
@@ -12,6 +16,10 @@ export const GetVersionQuery = gql`
   }
 `
 
+/**
+ * Get package.
+ * @type {Query}
+ */
 export const GetPackageQuery = gql`
   ${PackageFragment}
 
@@ -22,6 +30,10 @@ export const GetPackageQuery = gql`
   }
 `
 
+/**
+ * Get authentication token.
+ * @type {Query}
+ */
 export const GetAuthTokenQuery = gql`
   query getAuthToken ($loginToken: String!) {
     authToken: getAuthToken(loginToken: $loginToken) @disableAuth {
@@ -31,6 +43,10 @@ export const GetAuthTokenQuery = gql`
   }
 `
 
+/**
+ * Search package list.
+ * @type {Query}
+ */
 export const SearchQuery = gql`
   ${PackageResultFragment}
 

@@ -6,9 +6,9 @@
     "access": "public"
   },
   "scripts": {
-    "clean": "rm -rf ./dist; mkdir ./dist",
-    "watch": "yarn clean; babel ./src --watch --out-dir ./dist",
-    "build": "yarn clean; babel ./src --out-dir ./dist"
+    "clean": "rm -rf ./dist && mkdir ./dist",
+    "build": "yarn clean && babel ./src --out-dir ./dist",
+    "watch": "yarn build --watch"
   },
   "keywords": [
     "graphql",
@@ -24,12 +24,14 @@
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "license": "MIT",
   "main": "dist/index.js",
+  "module": "src/index.js",
+  "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/solui/monorepo.git"
+    "url": "git+https://github.com/solui/solui.git"
   },
   "bugs": {
-    "url": "https://github.com/solui/monorepo/issues"
+    "url": "https://github.com/solui/solui/issues"
   },
   "homepage": "https://solui.dev",
   "devDependencies": {
@@ -44,7 +46,9 @@
     "apollo-link-http": "^1.5.16",
     "apollo-utilities": "^1.3.2",
     "graphql": "^14.5.8",
+    "graphql-iso-date": "^3.6.1",
     "graphql-tag": "^2.10.1",
+    "graphql-type-json": "^0.3.1",
     "node-fetch": "^2.6.0"
   }
 }

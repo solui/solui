@@ -1,7 +1,8 @@
-import Web3 from 'web3'
 import axios from 'axios'
-import { isAddress } from 'web3-utils'
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { ContractFactory, Contract } from '@ethersproject/contracts'
 
+import { isEthereumAddress } from './validation'
 import { _ } from './lodash'
 import { GLOBAL_SCOPE } from './platform'
 
@@ -31,7 +32,9 @@ const getNetworkName = id => {
 }
 
 const _finalizeNetwork = async network => {
-  network.id = `${await network.web3.eth.net.getId()}`
+  const info = await network.node.getNetwork()
+
+  network.id = info.chainId
   network.name = getNetworkName(network.id)
 
   network.getEtherscanLink = addr => {
@@ -43,11 +46,16 @@ const _finalizeNetwork = async network => {
   }
 }
 
-const DEFAULT_NETWORK = {
-  askWalletOwnerForPermissionToViewAccounts: () => {}
-}
-
-export const getWeb3Instance = async url => {
+/**
+ * Get node connection pointing to given http endpoint URL.
+ *
+ * This will check to ensure that it is a valid Ethereum node endpoint.
+ *
+ * @name getNodeConnection
+ * @param  {String}  url The node endpoint.
+ * @return {Promise<Node>}
+ */
+export const getNodeConnection = async url => {
   const id = await axios.post(url, {
     jsonrpc: '2.0',
     method: 'net_version',
@@ -56,21 +64,52 @@ export const getWeb3Instance = async url => {
   })
 
   if (id) {
-    return new Web3(new Web3.providers.HttpProvider(url))
+    return new JsonRpcProvider(url)
   }
 
   throw new Error(`Unable to connect to network: ${url}`)
 }
 
+
+/**
+ * Get node connection from given `Web3` connection.
+ *
+ * @param  {Web3}  web3 Web3 instance.
+ * @return {Promise<Node>}
+ */
+export const getNodeConnectionFromWeb3 = async web3 => {
+  return new Web3Provider(web3)
+}
+
+
+/**
+ * @typedef {Object} NetworkInfo
+ * @property {String} id Network id.
+ * @property {String} name Network name.
+ * @property {Node} node  Connection to node.
+ * @property {Function} getEtherscanLink Get [Etherscan](https://etherscan.io/) link for given address.
+*/
+
+
+/**
+ * Get network information from the node exposed in the Javascript global scope.
+ *
+ * This attemps to construct a node connection pointing to the Ethereum endpoint
+ * accessible via the Global scope (whether in browser or server-side).
+ *
+ * @name getNetworkInfoFromGlobalScope
+ * @return {Promise<NetworkInfo>}
+ */
 export const getNetworkInfoFromGlobalScope = async () => {
   try {
-    const network = { ...DEFAULT_NETWORK }
+    const network = {}
 
     if (GLOBAL_SCOPE.ethereum) {
-      network.web3 = new Web3(GLOBAL_SCOPE.ethereum)
+      network.node = new Web3Provider(GLOBAL_SCOPE.ethereum)
       // See https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
       if (typeof _.get(GLOBAL_SCOPE.ethereum, 'enable') === 'function') {
-        network.askWalletOwnerForPermissionToViewAccounts = () => GLOBAL_SCOPE.ethereum.enable()
+        network.node.askWalletOwnerForPermissionToViewAccounts =
+          () => GLOBAL_SCOPE.ethereum.enable()
       }
       // From https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.on(eventname%2C-callback
       // we will manually reload page on a network change
@@ -83,19 +122,19 @@ export const getNetworkInfoFromGlobalScope = async () => {
         })
       }
     } else if (GLOBAL_SCOPE.web3 && GLOBAL_SCOPE.web3.currentProvider) {
-      network.web3 = new Web3(GLOBAL_SCOPE.web3.currentProvider)
+      network.node = new Web3Provider(GLOBAL_SCOPE.web3.currentProvider)
     } else {
       // try local node
       try {
-        network.web3 = await getWeb3Instance('http://localhost:8545')
+        network.node = await getNodeConnection('http://localhost:8545')
       } catch (err) {
         console.warn(err)
       }
     }
 
     // if web3 not set then something failed
-    if (!network.web3) {
-      throw new Error('Error setting up web3')
+    if (!network.node) {
+      throw new Error('Error setting up connection')
     }
 
     await _finalizeNetwork(network)
@@ -108,20 +147,35 @@ export const getNetworkInfoFromGlobalScope = async () => {
   }
 }
 
-export const getNetworkInfo = async web3 => {
-  const network = { ...DEFAULT_NETWORK, web3 }
+/**
+ * Get network information from given node.
+ *
+ * @param  {Node}  node connection.
+ * @return {Promise<NetworkInfo>}
+ */
+export const getNetworkInfo = async node => {
+  const network = { node }
 
   await _finalizeNetwork(network)
 
   return network
 }
 
-export const getWeb3Account = async web3 => {
-  if (web3.requestPermission) {
-    await web3.requestPermission()
+/**
+ * Get default account for given node.
+ *
+ * If the user's permission is required to fetch account addresses then it will
+ * be requested first.
+ *
+ * @param  {Node}  node node.
+ * @return {Promise<String>}  Account address.
+ */
+export const getDefaultAccount = async node => {
+  if (node.askWalletOwnerForPermissionToViewAccounts) {
+    await node.askWalletOwnerForPermissionToViewAccounts()
   }
 
-  const [ account ] = await web3.eth.getAccounts()
+  const [ account ] = await node.listAccounts()
 
   if (!account) {
     throw new Error('Unable to get Ethereum address. Ensure your Ethereum wallet is properly initialized.')
@@ -130,39 +184,87 @@ export const getWeb3Account = async web3 => {
   return account
 }
 
-export const getBytecode = async (web3, address) => {
-  const code = await web3.eth.getCode(address)
+/**
+ * Construct contract interface object for existing contract.
+ *
+ * @param {Object} params Parameters.
+ * @param {Object} params.abi contract ABI
+ * @param {Node} params.node connection
+ * @param {String} params.address on-chain address.
+ *
+ * @return {Object}
+ */
+export const getContractAt = async ({ abi, node, address }) => {
+  return new Contract(address, abi, node.getSigner(0))
+}
+
+/**
+ * Construct contract interface object for deploying new contract instances.
+ *
+ * @param {Object} params Parameters.
+ * @param {Object} params.abi contract ABI
+ * @param {String} params.bytecode contract bytecode
+ * @param {Node} params.node connection
+ * @param {String} params.address on-chain address.
+ *
+ * @return {Object}
+ */
+export const getContractDeployer = async ({ abi, bytecode, node }) => {
+  return new ContractFactory(abi, bytecode, node.getSigner(0))
+}
+
+/**
+ * Get bytecode at given on-chain address.
+ *
+ * @param  {Node}  node node.
+ * @param  {String}  address Address of contract.
+ * @return {Promise<String>} Bytecode in hex format.
+ */
+export const getBytecode = async (node, address) => {
+  const code = await node.getCode(address)
   return ('0x' === code) ? null : code
 }
 
+/**
+ * Check that given Ethereum address is valid.
+ *
+ * @param  {String}  value  Ethereum address.
+ * @param  {Node}  node node.
+ * @param {Object} [options]  Additional options.
+ * @param {Boolean} [options.allowContract=true] If false then address must not
+ * be a contract address.
+ * @param {Boolean} [options.allowEoa=true] If false then address must not
+ * be a non-contract address.
+ * @return {Promise} Resolves if checks pass, rejects if they fail.
+ */
 export const assertEthAddressIsValidOnChain = async (
   value,
-  web3,
+  node,
   { allowContract = true, allowEoa = true } = {}
 ) => {
-  if (!isAddress(value)) {
+  if (!isEthereumAddress(value)) {
     throw new Error(`must be a valid address`)
   } else {
     // do the on-chain check...
-    if (!web3) {
+    if (!node) {
       return
     }
 
     let isContract
 
     try {
-      isContract = !!(await getBytecode(web3, value))
+      isContract = !!(await getBytecode(node, value))
     } catch (err) {
       throw new Error(`unable to check for code at address: ${err.message}`)
     }
 
 
     if (isContract && !allowContract) {
-      throw new Error('must not be a contract address')
+      throw new Error('must NOT be an on-chain contract address')
     }
 
     if (!isContract && !allowEoa) {
-      throw new Error('must be a contract address')
+      throw new Error('must be an on-chain contract address')
     }
   }
 }

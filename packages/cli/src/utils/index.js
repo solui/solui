@@ -84,16 +84,21 @@ export const logError = msg => {
   console.error(chalk.red(msg))
 }
 
+const _log = (...msgs) => {
+  console.log(`\n${msgs.join(' ')}`)
+}
+
 export const logTrace = msg => {
-  console.log(chalk.white(msg))
+  _log(chalk.white(msg))
 }
 
 export const logWarn = msg => {
-  console.log(chalk.yellow(msg))
+  _log(chalk.yellow(msg))
 }
 
-export const logInfo = msg => {
-  console.log(chalk.cyan(msg))
+export const logInfo = (msg, ...more) => {
+  const args = [ chalk.cyan(msg) ].concat(more.map(m => chalk.bold(m)))
+  _log(...args)
 }
 
 export const loadSpecArtifacts = ({ specFile, artifactsDir }) => {

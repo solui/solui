@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "bad-spec",
+  "title": "bad spec",
+  "groups": [
+    {
+      "id": "group1"
+    }
+  ]
+}

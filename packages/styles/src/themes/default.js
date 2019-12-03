@@ -1,12 +1,13 @@
-import Color from 'color'
+import { opacify } from '../color'
 
-// Theme: https://color.adobe.com/en/Mars-2-color-theme-13115904
-const cs1 = '#FFF5EA'
-const cs2 = '#23AD7B'
-const cs3 = '#26303D'
-const cs4 = '#FF714F'
-const cs5 = '#FFCC63'
+/*
+  Palettes:
+  * https://color.adobe.com/en/Mars-2-color-theme-13115904
+  * https://colorhunt.co/palette/162500
+*/
 
+const yellow = '#ffd739'
+const red = '#FF714F'
 const white = '#fff'
 const black = '#000'
 const darkGrey = '#666'
@@ -16,37 +17,63 @@ const lighterGrey = '#eee'
 
 const transparent = 'transparent'
 
-const opacify = (c, a) => Color(c).alpha(a).toString()
+const primary = '#6807f9'
+const secondary = '#9852f9'
+const tertiary = '#98f907'
 
+/**
+ * Default theme.
+ *
+ * @type {Object}
+ */
 export default {
-  bodyBgColor: white,
-  bodyTextColor: black,
+  black,
+  white,
+  grey,
+  darkGrey,
+  lightGrey,
+  lighterGrey,
+  yellow,
+  red,
+  primary,
+  secondary,
+  tertiary,
+  transparent,
+  // body
+  bodyTextColor: white,
   // shadows
   boxShadowColor: opacify(black, 0.2),
-  // result component
-  resultBgColor: opacify(cs2, 0.4),
+  // interface
+  interfaceBgColor: white,
+  interfaceTextColor: black,
+  interfaceShadowColor: darkGrey,
+  // network info component
+  networkInfoIconColor: grey,
+  networkInfoTextColor: darkGrey,
   // button component
   buttonBorderColor: transparent,
-  buttonBgColor: cs3,
+  buttonBgColor: primary,
   buttonTextColor: white,
   buttonDisabledBorderColor: transparent,
   buttonDisabledBgColor: lightGrey,
   buttonDisabledTextColor: grey,
   buttonHoverBorderColor: transparent,
-  buttonHoverBgColor: cs3,
+  buttonHoverBgColor: primary,
   buttonHoverTextColor: white,
-  buttonShadowColor: opacify(black, 0.3),
+  buttonShadowColor: grey,
   // iconButton component
-  iconButtonBorderColor: cs3,
+  iconButtonBorderColor: secondary,
   iconButtonBgColor: transparent,
-  iconButtonTextColor: cs3,
+  iconButtonTextColor: secondary,
   iconButtonDisabledBorderColor: lightGrey,
   iconButtonDisabledBgColor: transparent,
   iconButtonDisabledTextColor: grey,
-  iconButtonHoverBorderColor: cs3,
-  iconButtonHoverBgColor: cs3,
+  iconButtonHoverBorderColor: secondary,
+  iconButtonHoverBgColor: secondary,
   iconButtonHoverTextColor: white,
   iconButtonShadowColor: opacify(black, 0),
+  // result component
+  resultBgColor: opacify(tertiary, 0.3),
   // group component
   groupBorderColor: lightGrey,
   groupBgColor: white,
@@ -60,43 +87,24 @@ export default {
   // generic input component
   inputLabelTextColor: black,
   inputBorderColor: lightGrey,
-  inputFocusBorderColor: black,
-  inputErrorBorderColor: cs4,
+  inputFocusBorderColor: darkGrey,
+  inputErrorBorderColor: red,
   inputBgColor: white,
   inputFocusBgColor: white,
-  inputErrorBgColor: cs1,
+  inputErrorBgColor: opacify(yellow, 0.1),
   inputTextColor: black,
-  inputHelpTextColor: lightGrey,
+  inputHelpTextColor: grey,
   inputPlaceholderTextColor: lightGrey,
   // alert component
-  alertBgColor: opacify(cs2, 0.3),
-  alertIconColor: cs2,
+  alertBgColor: opacify(tertiary, 0.3),
+  alertIconColor: tertiary,
   alertTextColor: black,
   // error component
-  errorBgColor: opacify(cs4, 0.3),
-  errorIconColor: cs4,
+  errorBgColor: opacify(red, 0.3),
+  errorIconColor: red,
   errorTextColor: black,
   // progress component
-  progressBgColor: opacify(cs2, 0.3),
-  progressIconColor: cs2,
+  progressBgColor: opacify(yellow, 0.2),
+  progressIconColor: yellow,
   progressTextColor: black,
-  // header component
-  headerBgColor: cs3,
-  headerTextColor: white,
-  // search common
-  searchResultsMetaTextColor: darkGrey,
-  // search popup
-  searchResultsPopupBackgroundColor: white,
-  searchResultsPopupItemBorderColor: lightGrey,
-  searchResultsPopupItemHoverBgColor: lightGrey,
-  // search page
-  searchResultsPageEvenItemBgColor: lighterGrey,
-  searchResultsPageOddItemBgColor: transparent,
-  searchResultsPageItemHoverBgColor: lightGrey,
-  // search results
-  searchResultTitleTextColor: black,
-  searchResultSummaryTextColor: grey,
-  searchResultMetaTextColor: grey,
-  // pkg info
-  dappPkgInfoBgColor: opacify(cs3, 0.3),
 }

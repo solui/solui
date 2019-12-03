@@ -7,14 +7,14 @@ import {
   checkAddressIsValid,
   checkStringIsValid,
   deriveRealNumberAndCheckValidity,
-} from './utils'
+} from './validate'
 
-const _process = async (ctx, name, config) => ctx.callbacks().getInput(ctx.id, name, config)
+const _process = async (ctx, name, config) => ctx.callbacks().processInput(ctx.id, name, config)
 
 const INPUTS = {
   address: {
     process: async (ctx, name, config) => {
-      const result = await ctx.callbacks().getInput(ctx.id, name, config)
+      const result = await ctx.callbacks().processInput(ctx.id, name, config)
 
       if (result) {
         await checkAddressIsValid(ctx, result, config)
@@ -25,7 +25,7 @@ const INPUTS = {
   },
   int: {
     process: async (ctx, name, config) => {
-      const result = await ctx.callbacks().getInput(ctx.id, name, config)
+      const result = await ctx.callbacks().processInput(ctx.id, name, config)
 
       const resultEthVal = result
         ? await deriveRealNumberAndCheckValidity(ctx, result, { ...config, unsigned: config.type === 'uint' })
@@ -39,7 +39,7 @@ const INPUTS = {
   },
   string: {
     process: async (ctx, name, config) => {
-      const result = await ctx.callbacks().getInput(ctx.id, name, config)
+      const result = await ctx.callbacks().processInput(ctx.id, name, config)
 
       if (result) {
         await checkStringIsValid(ctx, result, config)

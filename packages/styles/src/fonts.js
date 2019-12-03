@@ -14,6 +14,13 @@ const DEFAULT_FONT = {
 
 const loadedFonts = {}
 
+/**
+ * Load fonts.
+ *
+ * @param  {FontsConfig} cfg Configuration.
+ * @param  {Document} doc The `window.document` object.
+ * @return {Promise}
+ */
 export const loadFonts = (cfg, doc) => {
   const ret = Promise.all(Object.keys(cfg).map(id => {
     const { name } = cfg[id]
@@ -58,3 +65,22 @@ export const font = (id, weight = 'regular', style = 'normal') => {
     font-style: ${style};
   `
 }
+
+/**
+ * @typedef {Object} FontWeights
+ * @property {Number} [thin] Thin weight.
+ * @property {Number} [regular] Regular weight.
+ * @property {Number} [bold] Bold weight.
+ */
+
+/**
+ * @typedef {Object} FontConfig
+ * @property {String} name Font name
+ * @property {FontWeights} weights Font weights
+ */
+
+/**
+ * @typedef {Object} FontsConfig
+ * @property {FontConfig} body
+ * @property {FontConfig} header
+*/

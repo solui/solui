@@ -1,46 +1,57 @@
-import { _, promiseSerial, createErrorWithDetails, getWeb3Account } from '@solui/utils'
+import { _, promiseSerial, createErrorWithDetails, getContractDeployer, getContractAt } from '@solui/utils'
 
-import { isValidId, extractChildById, checkImageIsValid } from './utils'
+import {
+  extractChildById,
+} from './utils'
+import {
+  checkIdIsValid,
+  checkVersionIsValid,
+  checkTitleIsValid,
+  checkImageIsValid,
+} from './validate'
+
 import { RootContext } from './context'
 import { processGroup, processGroupInputs, processGroupPanel } from './group'
 
-const SPEC_VERSION = [ 1 ]
+export { RootContext }
 
-const isValidVersion = version => (version === 1)
-
-// process the spec
+/**
+ * Process a [UI spec](https://solui.dev/docs/specification).
+ *
+ * This is the core parser/processor function. Use this to parse a spec and
+ * operate on its components in any custom manner you desire.
+ *
+ * @param  {Object}  params                Parameters.
+ * @param  {Object}  params.spec           The UI specification.
+ * @param  {Object}  params.artifacts      Contract artifacts.
+ * @param  {Object}  [callbacks={}]        Processor callbacks.
+ *
+ * @return {Promise<RootContext>}
+ */
 export const process = async ({ spec, artifacts }, callbacks = {}) => {
   const { id, version, title, description, image, groups } = (spec || {})
 
-  const ctx = new RootContext(id, { artifacts, callbacks })
+  const ctx = new RootContext('<root>', { artifacts, callbacks })
 
-  let basicDetailsValid = true
+  checkIdIsValid(ctx, id)
 
-  if (!isValidId(id)) {
-    ctx.errors().add('spec must have a valid id (letters, numbers and hyphens only)')
-    basicDetailsValid = false
+  // set to actual id if all ok!
+  if (!ctx.errors().notEmpty) {
+    ctx.id = id
   }
 
-  if (!isValidVersion(version)) {
-    ctx.errors().add(`spec version is invalid, valid versions are: ${SPEC_VERSION.join(', ')}`)
-    basicDetailsValid = false
-  }
-
-  if (!title) {
-    ctx.errors().add(ctx.id, 'must have a title')
-    basicDetailsValid = false
-  }
+  checkVersionIsValid(ctx, version)
+  checkTitleIsValid(ctx, title)
 
   if (image) {
     await checkImageIsValid(ctx, image)
   }
 
   if (_.isEmpty(groups)) {
-    ctx.errors().add(ctx.id, 'must have atleast one group')
-    basicDetailsValid = false
+    ctx.errors().add(ctx.id, 'must have at least one group')
   }
 
-  if (basicDetailsValid) {
+  if (!ctx.errors().notEmpty) {
     await ctx.callbacks().startUi(id, { title, description, image })
 
     const existingGroups = {}
@@ -64,7 +75,18 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
   return ctx
 }
 
-// assert that spec is valid
+/**
+ * Validate a [UI spec](https://solui.dev/docs/specification).
+ *
+ * @param  {Object}  params                Parameters.
+ * @param  {Object}  params.spec           The UI specification.
+ * @param  {Object}  params.artifacts      Contract artifacts.
+ *
+ * @throw {Error} If validation errors occur. The `details` property will
+ * contain the individual errors.
+ *
+ * @return {Promise}
+ */
 export const assertSpecValid = async ({ spec, artifacts }) => {
   const ctx = await process({ spec, artifacts })
 
@@ -75,6 +97,14 @@ export const assertSpecValid = async ({ spec, artifacts }) => {
   }
 }
 
+/**
+ * Get names of contracts which are referenced in the given [UI spec](https://solui.dev/docs/specification).
+ *
+ * @param  {Object}  params                Parameters.
+ * @param  {Object}  params.spec           The UI specification.
+ *
+ * @return {Array} List of canonical contract names.
+ */
 export const getUsedContracts = ({ spec }) => {
   const contractsUsed = {}
 
@@ -100,8 +130,22 @@ export const getUsedContracts = ({ spec }) => {
   return Object.keys(contractsUsed)
 }
 
-// validate group inputs
-export const validateGroupInputs = async ({ artifacts, spec, groupId, inputs, web3 }) => (
+/**
+ * Validate [group](https://solui.dev/docs/specification/groups) inputs.
+ *
+ * @param  {Object}  params                Parameters.
+ * @param  {Object}  params.spec           The UI specification.
+ * @param  {Object}  params.artifacts      Contract artifacts.
+ * @param  {String}  params.groupId      Id of group within spec.
+ * @param  {Object}  params.inputs      The user input values.
+ * @param  {Node}  [params.node]      Node connection for on-chain validation.
+ *
+ * @throw {Error} If validation errors occur. The `details` property will
+ * contain the individual errors.
+ *
+ * @return {Promise}
+ */
+export const validateGroupInputs = async ({ artifacts, spec, groupId, inputs, node }) => (
   new Promise(async (resolve, reject) => {
     const groupConfig = extractChildById(_.get(spec, `groups`), groupId)
     if (!groupConfig) {
@@ -111,9 +155,9 @@ export const validateGroupInputs = async ({ artifacts, spec, groupId, inputs, we
 
     const ctx = new RootContext(spec.id, {
       artifacts,
-      web3,
+      node,
       callbacks: {
-        getInput: id => inputs[id],
+        processInput: id => inputs[id],
       }
     })
 
@@ -133,8 +177,23 @@ export const validateGroupInputs = async ({ artifacts, spec, groupId, inputs, we
   })
 )
 
-// validate a panel
-export const validatePanel = async ({ artifacts, spec, groupId, panelId, inputs, web3 }) => (
+/**
+ * Validate [panel](https://solui.dev/docs/specification/panels) inputs.
+ *
+ * @param  {Object}  params                Parameters.
+ * @param  {Object}  params.spec           The UI specification.
+ * @param  {Object}  params.artifacts      Contract artifacts.
+ * @param  {String}  params.groupId      Id of group within spec.
+ * @param  {String}  params.panelId      Id of panel within group.
+ * @param  {Object}  params.inputs      The user input values.
+ * @param  {Node}    [params.node]      Node connection. If set then on-chain validation is possible.
+ *
+ * @throw {Error} If validation errors occur. The `details` property will
+ * contain the individual errors.
+ *
+ * @return {Promise}
+ */
+export const validatePanel = async ({ artifacts, spec, groupId, panelId, inputs, node }) => (
   new Promise(async (resolve, reject) => {
     const groupConfig = extractChildById(_.get(spec, `groups`), groupId)
     if (!groupConfig) {
@@ -144,9 +203,9 @@ export const validatePanel = async ({ artifacts, spec, groupId, panelId, inputs,
 
     const ctx = new RootContext(spec.id, {
       artifacts,
-      web3,
+      node,
       callbacks: {
-        getInput: id => inputs[id],
+        processInput: id => inputs[id],
       }
     })
 
@@ -166,8 +225,27 @@ export const validatePanel = async ({ artifacts, spec, groupId, panelId, inputs,
   })
 )
 
-// Execute a panel
-export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, web3 }) => (
+/**
+ * Execute a [panel](https://solui.dev/docs/specification/panels).
+ *
+ * This will validate the inputs and make the configured on-chain calls,
+ * executing all [tasks](https://solui.dev/docs/specification/execs) until outputs are obtained.
+ *
+ * @param  {Object}  params               Parameters.
+ * @param  {Object}  params.spec          The UI specification.
+ * @param  {Object}  params.artifacts     Contract artifacts.
+ * @param  {String}  params.groupId       Id of group within spec.
+ * @param  {String}  params.panelId       Id of panel within group.
+ * @param  {Object}  params.inputs        The user input values.
+ * @param  {Node}    params.node          Node connection.
+ *
+ * @throw {Error} If validation errors occur. The `details` property will
+ * contain the individual errors.
+ *
+ * @return {Promise<Object>} Key-value pair of output values according to the
+ * [outputs](https://solui.dev/docs/specification/outputs) configured for the panel.
+ */
+export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, node }) => (
   new Promise(async (resolve, reject) => {
     const groupConfig = extractChildById(_.get(spec, `groups`), groupId)
     if (!groupConfig) {
@@ -177,16 +255,16 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
 
     const ctx = new RootContext(spec.id, {
       artifacts,
-      web3,
+      node,
       callbacks: {
-        getInput: id => inputs[id],
+        processInput: id => inputs[id],
         sendTransaction: async (id, { contract, abi, method, address, args }) => {
           try {
-            const from = await getWeb3Account(web3)
+            const contractInstance = await getContractAt({ abi, node, address })
 
-            const contractInstance = new web3.eth.Contract(abi, address)
+            const tx = await (contractInstance[method](...args))
 
-            await contractInstance.methods[method](...args).send({ from })
+            await tx.wait()
 
             return true
           } catch (err) {
@@ -197,11 +275,9 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
         },
         callMethod: async (id, { contract, abi, method, address, args }) => {
           try {
-            const from = await getWeb3Account(web3)
+            const contractInstance = await getContractAt({ abi, node, address })
 
-            const contractInstance = new web3.eth.Contract(abi, address)
-
-            return contractInstance.methods[method](...args).call({ from })
+            return contractInstance[method](...args)
           } catch (err) {
             console.warn(err)
             ctx.errors().add(id, `Error calling ${contract}.${method}: ${err}`)
@@ -210,16 +286,13 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
         },
         deployContract: async (id, { contract, abi, bytecode, args }) => {
           try {
-            const from = await getWeb3Account(web3)
+            const deployer = await getContractDeployer({ abi, bytecode, node })
 
-            const contractInstance = new web3.eth.Contract(abi)
+            const inst = await deployer.deploy(...args)
 
-            const inst = await contractInstance.deploy({
-              data: bytecode,
-              arguments: args,
-            }).send({ from })
+            await inst.deployed()
 
-            return inst.options.address
+            return inst.address
           } catch (err) {
             console.warn(err)
             ctx.errors().add(id, `Error deploying ${contract}: ${err}`)

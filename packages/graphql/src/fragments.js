@@ -1,5 +1,9 @@
 import gql from 'graphql-tag'
 
+/**
+ * User profile.
+ * @type {Fragment}
+ */
 export const UserFragment = gql`
   fragment UserFragment on User {
     id
@@ -7,6 +11,10 @@ export const UserFragment = gql`
   }
 `
 
+/**
+ * Package version.
+ * @type {Fragment}
+ */
 export const VersionFragment = gql`
   fragment VersionFragment on Version {
     id
@@ -17,6 +25,10 @@ export const VersionFragment = gql`
   }
 `
 
+/**
+ * Package version, compact mode.
+ * @type {Fragment}
+ */
 export const VersionCompactFragment = gql`
   fragment VersionCompactFragment on VersionCompact {
     id
@@ -26,6 +38,10 @@ export const VersionCompactFragment = gql`
   }
 `
 
+/**
+ * Package search result.
+ * @type {Fragment}
+ */
 export const PackageResultFragment = gql`
   ${UserFragment}
   ${VersionCompactFragment}
@@ -42,7 +58,10 @@ export const PackageResultFragment = gql`
   }
 `
 
-export const PackageFragment = gql`
+/**
+ * Package.
+ * @type {Fragment}
+ */export const PackageFragment = gql`
   ${UserFragment}
   ${VersionCompactFragment}
 

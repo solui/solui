@@ -9,6 +9,26 @@
   },
   "plugins": [ "react", "react-hooks" ],
   "rules": {
+    "valid-jsdoc": ["error", {
+      "prefer": {
+        "arg": "param",
+        "argument": "param",
+        "class": "constructor",
+        "return": "return",
+        "virtual": "abstract",
+      },
+      "preferType": {
+        "object": "Object",
+        "array": "Array",
+        "string": "String",
+        "number": "Number",
+        "function": "Function"
+      },
+      "requireParamDescription": true,
+      "requireReturnDescription": false,
+      "requireParamType": true,
+      "requireReturnType": true
+    }],
     "semi": ["error", "never"],
     "semi-style": ["error", "first"],
     "comma-dangle": 0,

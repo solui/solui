@@ -1,61 +1,45 @@
 import gql from 'graphql-tag'
 
+/**
+ * Get GraphQL type definitions.
+ *
+ * @return {GraphQLTypeDef}
+ */
 export const getTypeDefs = () => gql`
   scalar DateTime
   scalar JSON
+  scalar EthereumAddress
 
   type User {
+    id: EthereumAddress!
+  }
+
+  type Release {
     id: ID!
-    username: String!
-  }
-
-  type Version {
-    id: String!
-    title: String!
-    description: String!
-    created: DateTime!
-    data: JSON!
-  }
-
-  type VersionCompact {
-    id: String!
+    cid: String!
     title: String!
     description: String!
     created: DateTime!
   }
 
   type Package {
-    id: String!
-    author: User!
-    created: DateTime!
-    latestVersion: VersionCompact!
-  }
-
-  type PackageResult {
-    id: String!
+    id: ID!
     name: String!
-    author: User!
+    owner: User!
     created: DateTime!
-    version: VersionCompact!
+    latestRelease: Release!
   }
 
-  type SearchResults {
-    packages: [PackageResult]!
-    page: Int!
-    totalResults: Int!
-    numPages: Int!
+  type PublishSuccess {
+    id: ID!
+    cid: String!
   }
 
-  type PublishResult {
-    versionId: String
-    error: String
+  type PublishError {
+    error: String!
   }
 
-  input SearchCritieraInput {
-    keyword: String
-    bytecodeHash: String
-    page: Int
-  }
+  union PublishResult = PublishSuccess | PublishError
 
   input PublishInput {
     spec: JSON!
@@ -68,14 +52,15 @@ export const getTypeDefs = () => gql`
   }
 
   type Query {
-    search(criteria: SearchCritieraInput!): SearchResults!
-    getPackage(id: String!): Package
-    getVersion(id: String!): Version
+    getMyEntityPackages: [Package]!
+    getMyEntityPackage(id: String!): Package
+    getMyEntityPackageReleases(id: String!): [Release]!
     getAuthToken(loginToken: String!): AuthToken
+    getProfile(address: EthereumAddress!): AuthToken
   }
 
   type Mutation {
     publish(bundle: PublishInput!): PublishResult!
-    login(email: String!, loginToken: String!): Boolean
+    login(challenge: String!, signature: String!, loginToken: String!): AuthToken
   }
 `

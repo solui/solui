@@ -1,5 +1,11 @@
 import { _ } from '@solui/utils'
 
+/**
+ * Stringify given GraphQL request error.
+ *
+ * @param  {*} err Error from GraphQL call.
+ * @return {String}
+ */
 export const stringifyGraphqlError = err => {
   if (Array.isArray(err)) {
     [ err ] = err
@@ -18,6 +24,11 @@ export const stringifyGraphqlError = err => {
   return str.join('\n')
 }
 
+/**
+ * Build auth headers for sending with GraphpQL requests.
+ * @param  {String} token Authentication token
+ * @return {Object}       Headers as key-value pairs.
+ */
 export const buildAuthHeaders = token => {
   return token ? {
     Authorization: `Bearer ${token}`

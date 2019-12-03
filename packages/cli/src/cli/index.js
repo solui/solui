@@ -56,7 +56,7 @@ function helpCommand (comm) {
   const sections = [
     {
       header: 'solui',
-      content: 'Render and publish declarative UIs for smart contracts. For more information see https://solui.dev.'
+      content: 'Develop and publish declarative UIs for smart contracts. For more information see https://solui.dev.'
     },
     {
       header: 'Usage',

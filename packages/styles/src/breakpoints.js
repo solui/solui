@@ -21,10 +21,26 @@ const getSize = (bp, type) => {
   return breakpoints[type][size]
 }
 
+/**
+ * Responsive layout utilities
+ * @type {Object}
+ */
 export const media = {
+  /**
+   * Maximum content width as a CSS dimension.
+   *
+   * @type {String}
+   * @name media.maxWidth
+   */
   maxWidth: breakpoints.width.desktop,
+  /**
+   * Generate media query.
+   * @param  {Object} m Parameters
+   * @return {String}
+   * @name media.when
+   */
   when: m => {
-    const vals = Object.entries(m).map(([k, v]) => {
+    const vals = Object.entries(m).map(([ k, v ]) => {
       let type
 
       if (k.endsWith('W')) {

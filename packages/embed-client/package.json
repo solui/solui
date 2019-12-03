@@ -1,0 +1,54 @@
+{
+  "name": "@solui/embed-client",
+  "private": true,
+  "version": "0.0.5",
+  "description": "solUI embeddable client",
+  "main": "src/ui.js",
+  "scripts": {
+    "build": "rm -rf ./build && webpack",
+    "serve": "serve ./build",
+    "publish:local": "./scripts/uploadToLocalIpfs.js"
+  },
+  "dependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/register": "^7.0.0",
+    "@emotion/core": "^10.0.5",
+    "@emotion/styled": "^10.0.5",
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@solui/processor": "^0.0.5",
+    "@solui/react": "^0.0.5",
+    "@solui/styles": "^0.0.5",
+    "@solui/utils": "^0.0.5",
+    "emotion-theming": "^10.0.19",
+    "form-data": "^3.0.0",
+    "got": "^9.6.0",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "tmp": "^0.1.0"
+  },
+  "devDependencies": {
+    "babel-loader": "^8.0.6",
+    "chalk": "^3.0.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "documentation": "^12.1.2",
+    "html-webpack-plugin": "^3.2.0",
+    "serve": "^11.2.0",
+    "webpack": "^4.28.4",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-cli": "^3.3.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solui/solui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/solui/solui/issues"
+  },
+  "engines": {
+    "node": "12.x"
+  },
+  "author": "Ramesh Nair <ram@hiddentao.com>",
+  "license": "AGPL-3.0-or-later",
+  "homepage": "https://solui.dev"
+}

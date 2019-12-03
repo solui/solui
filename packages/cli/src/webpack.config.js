@@ -3,8 +3,8 @@ import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 
-export const FRONTEND_FOLDER = path.join(__dirname, 'frontend')
-export const DIST_FOLDER = path.join(__dirname, '..', 'dist')
+const FRONTEND_FOLDER = path.join(__dirname, 'frontend')
+export const BUILD_FOLDER = path.join(__dirname, '..', 'build')
 
 export const createConfig = ({ virtualModules }) => ({
   mode: 'none',
@@ -65,6 +65,6 @@ export const createConfig = ({ virtualModules }) => ({
   output: {
     filename: 'bundle.js',
     publicPath: '/',
-    path: DIST_FOLDER
+    path: BUILD_FOLDER
   }
 })

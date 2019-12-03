@@ -6,15 +6,27 @@ import createLinks from './links'
 import AuthToken from './authToken'
 import { stringifyGraphqlError } from './utils'
 
+export * from './scalars'
 export * from './queries'
 export * from './mutations'
 export * from './fragments'
 export * from './utils'
+export * from './resolvers'
 
 export { getTypeDefs }
 
 const cache = new InMemoryCache()
 
+/**
+ * Create a new [Apollo](https://www.apollographql.com/) GraphQL client for talking to the solUI API.
+ *
+ * @param  {String} endpoint         Server graphql endpoint.
+ * @param  {Function} refreshAuthToken Callback for refreshing auth token.
+ * @param  {String} name             Client name (to identify itself to server)
+ * @param  {String} version          Client version.
+ *
+ * @return {ApolloClient}
+ */
 export const createApolloClient = ({ endpoint, refreshAuthToken, name, version }) => {
   const authToken = new AuthToken({ refreshAuthToken })
 

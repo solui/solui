@@ -11,3 +11,4 @@
 # production & contracts
 /build
 /dist
+ganache.log
