@@ -15,7 +15,7 @@ const etherscanPrefix = {
 }
 
 const getNetworkName = id => {
-  switch (`${id}`) {
+  switch (id) {
     case '1':
       return 'Mainnet'
     case '3':
@@ -31,10 +31,12 @@ const getNetworkName = id => {
   }
 }
 
+const normalizeNetworkId = i => `${i}`
+
 const _finalizeNetwork = async network => {
   const info = await network.node.getNetwork()
 
-  network.id = info.chainId
+  network.id = normalizeNetworkId(info.chainId)
   network.name = getNetworkName(network.id)
 
   network.getEtherscanLink = addr => {

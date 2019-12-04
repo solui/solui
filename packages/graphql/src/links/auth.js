@@ -37,10 +37,10 @@ export default ({ authToken }) =>
     // build handler
     return new Observable(async observer => {
       // if user is not logged in and we require auth
-      if (!authToken.get() && requireAuth) {
+      if (!authToken.getToken() && requireAuth) {
         try {
           // login
-          await authToken.refresh()
+          await authToken.refreshToken()
         } catch (err) {
           return observer.error(err)
         }
@@ -49,7 +49,7 @@ export default ({ authToken }) =>
       // add auth headers if necessary
       if (requireAuth) {
         operation.setContext({
-          headers: buildAuthHeaders(authToken.get())
+          headers: buildAuthHeaders(authToken.getToken())
         })
       }
 

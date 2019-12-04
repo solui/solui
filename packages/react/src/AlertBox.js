@@ -24,7 +24,7 @@ const StyledIcon = styled(Icon)`
 `
 
 const Details = styled.div`
-  ${({ theme }) => theme.font('header')};
+  ${({ theme }) => theme.font('body')};
   width: 90%;
   word-break: break-all;
   line-height: 1.2em;

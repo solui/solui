@@ -35,11 +35,17 @@ export const getTypeDefs = () => gql`
     cid: String!
   }
 
-  type PublishError {
-    error: String!
+  type ErrorDetails {
+    code: String
+    message: String
   }
 
-  union PublishResult = PublishSuccess | PublishError
+  type Error {
+    error: ErrorDetails
+  }
+
+  union PublishResult = PublishSuccess | Error
+  union ProfileResult = User | Error
 
   input PublishInput {
     spec: JSON!
@@ -52,15 +58,46 @@ export const getTypeDefs = () => gql`
   }
 
   type Query {
-    getMyEntityPackages: [Package]!
-    getMyEntityPackage(id: String!): Package
-    getMyEntityPackageReleases(id: String!): [Release]!
+    getMyPackages: [Package]!
+    getMyPackage(id: ID!): Package
+    getMyPackageReleases(id: ID!): [Release]!
     getAuthToken(loginToken: String!): AuthToken
-    getProfile(address: EthereumAddress!): AuthToken
+    getMyProfile: ProfileResult
   }
 
   type Mutation {
     publish(bundle: PublishInput!): PublishResult!
-    login(challenge: String!, signature: String!, loginToken: String!): AuthToken
+    login(challenge: String!, signature: String!, loginToken: String): AuthToken
   }
 `
+
+export const getFragmentMatcherConfig = () => ({
+  __schema: {
+    types: [
+      {
+        kind: 'UNION',
+        name: 'ProfileResult',
+        possibleTypes: [
+          {
+            name: 'User'
+          },
+          {
+            name: 'Error'
+          },
+        ]
+      },
+      {
+        kind: 'UNION',
+        name: 'PublishResult',
+        possibleTypes: [
+          {
+            name: 'PublishSuccess'
+          },
+          {
+            name: 'Error'
+          },
+        ]
+      }
+    ]
+  }
+})

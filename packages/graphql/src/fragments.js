@@ -1,78 +1,94 @@
 import gql from 'graphql-tag'
 
 /**
- * User profile.
+ * Error.
+ * @type {Fragment}
+ */
+export const ErrorFragment = gql`
+  fragment ErrorFragment on Error {
+    error {
+      code
+      message
+    }
+  }
+`
+
+
+/**
+ * Auth token.
+ * @type {Fragment}
+ */
+export const AuthTokenFragment = gql`
+  fragment AuthTokenFragment on AuthToken {
+    token
+    expires
+  }
+`
+
+/**
+ * User.
  * @type {Fragment}
  */
 export const UserFragment = gql`
+  ${ErrorFragment}
+
   fragment UserFragment on User {
     id
-    username
   }
 `
 
-/**
- * Package version.
- * @type {Fragment}
- */
-export const VersionFragment = gql`
-  fragment VersionFragment on Version {
-    id
-    title
-    description
-    created
-    data
-  }
-`
 
 /**
- * Package version, compact mode.
+ * User profile.
  * @type {Fragment}
  */
-export const VersionCompactFragment = gql`
-  fragment VersionCompactFragment on VersionCompact {
-    id
-    title
-    description
-    created
-  }
-`
-
-/**
- * Package search result.
- * @type {Fragment}
- */
-export const PackageResultFragment = gql`
+export const UserProfileFragment = gql`
   ${UserFragment}
-  ${VersionCompactFragment}
+  ${ErrorFragment}
 
-  fragment PackageResultFragment on PackageResult {
-    id
-    author {
+  fragment UserProfileFragment on ProfileResult {
+    ...on User {
       ...UserFragment
     }
-    created
-    version {
-      ...VersionCompactFragment
+    ...on Error {
+      ...ErrorFragment
     }
+  }
+`
+
+/**
+ * Package release.
+ * @type {Fragment}
+ */
+export const ReleaseFragment = gql`
+  fragment ReleaseFragment on Release {
+    id
+    cid
+    title
+    description
+    created
   }
 `
 
 /**
  * Package.
  * @type {Fragment}
- */export const PackageFragment = gql`
+ */
+export const PackageFragment = gql`
   ${UserFragment}
-  ${VersionCompactFragment}
+  ${ReleaseFragment}
 
   fragment PackageFragment on Package {
     id
-    author {
+    name
+    owner {
       ...UserFragment
     }
     created
-    latestVersion {
-      ...VersionCompactFragment
+    latestRelease {
+      ...ReleaseFragment
     }
   }
 `
+
+

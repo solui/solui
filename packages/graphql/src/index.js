@@ -1,7 +1,7 @@
 import { ApolloClient } from 'apollo-client'
-import { InMemoryCache } from 'apollo-cache-inmemory'
+import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory'
 
-import { getTypeDefs } from './typeDefs'
+import { getTypeDefs, getFragmentMatcherConfig } from './typeDefs'
 import createLinks from './links'
 import AuthToken from './authToken'
 import { stringifyGraphqlError } from './utils'
@@ -12,10 +12,15 @@ export * from './mutations'
 export * from './fragments'
 export * from './utils'
 export * from './resolvers'
+export * from './errors'
 
 export { getTypeDefs }
 
-const cache = new InMemoryCache()
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData: getFragmentMatcherConfig()
+})
+
+const cache = new InMemoryCache({ fragmentMatcher })
 
 /**
  * Create a new [Apollo](https://www.apollographql.com/) GraphQL client for talking to the solUI API.

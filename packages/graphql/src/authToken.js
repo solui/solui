@@ -1,18 +1,26 @@
 export default class AuthToken {
-  constructor ({ refreshAuthToken }) {
-    this._token = null
-    this._refreshAuthToken = refreshAuthToken
+  setToken (token) {
+    this._assertImplementation()
+    return this._implementation.set(token)
   }
 
-  set (token) {
-    this._token = token
+  getToken () {
+    this._assertImplementation()
+    return this._implementation.get()
   }
 
-  get () {
-    return this._token
+  refreshToken () {
+    this._assertImplementation()
+    return this._implementation.refresh()
   }
 
-  refresh () {
-    return this._refreshAuthToken()
+  setImplementation (impl) {
+    this._implementation = impl
+  }
+
+  _assertImplementation () {
+    if (!this._implementation) {
+      throw new Error(`AuthToken: implementation not yet set!`)
+    }
   }
 }

@@ -1,63 +1,91 @@
 import gql from 'graphql-tag'
 
-import { PackageFragment, PackageResultFragment, VersionFragment } from './fragments'
+import { PackageFragment, ReleaseFragment, UserProfileFragment, AuthTokenFragment } from './fragments'
 
 /**
- * Get package version.
+ * Get my packages.
  * @type {Query}
  */
-export const GetVersionQuery = gql`
-  ${VersionFragment}
-
-  query getVersion ($id: String!) {
-    result: getVersion(id: $id) @disableAuth {
-      ...VersionFragment
-    }
-  }
-`
-
-/**
- * Get package.
- * @type {Query}
- */
-export const GetPackageQuery = gql`
+export const GetMyPackagesQuery = gql`
   ${PackageFragment}
 
-  query getPackage ($id: String!) {
-    result: getPackage(id: $id) @disableAuth {
+  query getMyPackages {
+    result: getMyPackages {
       ...PackageFragment
     }
   }
 `
 
 /**
+ * Get my package.
+ * @type {Query}
+ */
+export const GetMyPackageQuery = gql`
+  ${PackageFragment}
+
+  query getMyPackage ($id: ID!) {
+    result: getMyPackage(id: $id) {
+      ...PackageFragment
+    }
+  }
+`
+
+
+/**
+ * Get my package.
+ * @type {Query}
+ */
+export const GetMyPackageReleasesQuery = gql`
+  ${ReleaseFragment}
+
+  query getMyPackageReleases ($id: ID!) {
+    result: getMyPackageReleases(id: $id) {
+      ...ReleaseFragment
+    }
+  }
+`
+
+
+/**
  * Get authentication token.
  * @type {Query}
  */
 export const GetAuthTokenQuery = gql`
+  ${AuthTokenFragment}
+
   query getAuthToken ($loginToken: String!) {
-    authToken: getAuthToken(loginToken: $loginToken) @disableAuth {
-      token
-      expires
+    authToken: getAuthToken(loginToken: $loginToken) {
+      ...AuthTokenFragment
     }
   }
 `
 
 /**
- * Search package list.
+ * Get my profile.
  * @type {Query}
  */
-export const SearchQuery = gql`
-  ${PackageResultFragment}
+export const GetMyProfile = gql`
+  ${UserProfileFragment}
 
-  query search ($criteria: SearchCritieraInput!) {
-    search(criteria: $criteria) @disableAuth {
-      packages {
-        ...PackageResultFragment
-      }
-      page
-      totalResults
-      numPages
+  query GetMyProfile {
+    me: getMyProfile @requireAuth {
+      ...UserProfileFragment
+    }
+  }
+`
+
+
+
+/**
+ * Get my profile without authentication (authentation will have to manually provided at call-time).
+ * @type {Query}
+ */
+export const GetMyProfileWithoutAuth = gql`
+  ${UserProfileFragment}
+
+  query GetMyProfile {
+    me: getMyProfile {
+      ...UserProfileFragment
     }
   }
 `
