@@ -50,7 +50,7 @@ const EmbedLabel = ({ className, embedUrl }) => {
   }, [ modalOpen ])
 
   const embedCode = useMemo(() => {
-    return `<iframe src=${embedUrl} width="640" height="480" />`
+    return `<iframe src="${embedUrl}" width="640" height="480" />`
   }, [ embedUrl ])
 
   const copyToClipboard = useCallback(({ show, hide }) => {
