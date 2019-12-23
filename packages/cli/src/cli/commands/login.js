@@ -7,5 +7,5 @@ export const getMeta = () => ({
 export const execute = async () => {
   const client = getApiClient()
 
-  await client.authToken.refresh()
+  await client.authToken.refreshToken()
 }

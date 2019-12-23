@@ -6,10 +6,12 @@ import { _, getNetworkInfoFromGlobalScope } from '@solui/utils'
 import { loadFonts, getTheme } from '@solui/styles'
 
 import Layout from './Layout'
+import Progress from './Progress'
 import ErrorBox from './ErrorBox'
 import Dapp from './Dapp'
 import GlobalStyles from './GlobalStyles'
 import { NetworkContext } from './contexts'
+import { ModalProvider } from './Modal'
 
 const RenderingError = styled(ErrorBox)`
   margin: 1rem;
@@ -66,22 +68,34 @@ export default class AppContainer extends Component {
   }
 
   _render (state, dappComponentProps) {
-    const { error, network } = state
+    const { loading, error, network } = state
+
+    let content
+
+    if (loading) {
+      content = <Progress>Loading ...</Progress>
+    } else if (error) {
+      content = <RenderingError error={error} />
+    } else {
+      content = (
+        <Layout>
+          <Dapp
+            network={network}
+            {...dappComponentProps}
+          />
+        </Layout>
+      )
+    }
+
+    const theme = _.get(dappComponentProps, 'spec.version', undefined)
 
     return (
       <NetworkContext.Provider value={{ network }}>
-        <ThemeProvider theme={getTheme()}>
+        <ThemeProvider theme={{ ...getTheme(theme), ...dappComponentProps.theme }}>
           <GlobalStyles />
-          {error ? (
-            <RenderingError error={error} />
-          ) : (
-              <Layout>
-                <Dapp
-                  network={network}
-                  {...dappComponentProps}
-                />
-              </Layout>
-            )}
+          <ModalProvider>
+            {content}
+          </ModalProvider>
         </ThemeProvider>
       </NetworkContext.Provider>
     )

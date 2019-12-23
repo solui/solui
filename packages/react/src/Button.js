@@ -30,8 +30,8 @@ const StyledLoadingIcon = styled(LoadingIcon)`
  * Render a button.
  * @return {ReactElement}
  */
-const Button = forwardRef(({ loading, children, ...props }, ref) => (
-  <StyledButton {...props} ref={ref}>
+const Button = forwardRef(({ loading, children, onClick, ...props }, ref) => (
+  <StyledButton {...props} onClick={loading ? null : onClick} ref={ref}>
     {loading ? (
       <StyledLoadingIcon />
     ) : (

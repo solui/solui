@@ -5,8 +5,7 @@ import styled from '@emotion/styled'
 const Container = styled.div`
   width: 100%;
   min-height: 100vh;
-  background: rgba(62,0,135,1);
-  background: linear-gradient(135deg, rgba(62,0,135,1) 0%, rgba(100,36,167,1) 44%, rgba(146,80,205,1) 74%, rgba(202,134,252,1) 100%);
+  background: ${({ theme }) => theme.layoutBgColor};
   background-size: 100vw 100vh;
   background-repeat: no-repeat;
   background-attachment: fixed;

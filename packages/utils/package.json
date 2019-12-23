@@ -40,9 +40,11 @@
   "dependencies": {
     "@ethersproject/address": "^5.0.0-beta.133",
     "@ethersproject/contracts": "^5.0.0-beta.142",
+    "@ethersproject/hash": "^5.0.0-beta.133",
     "@ethersproject/keccak256": "^5.0.0-beta.131",
     "@ethersproject/providers": "^5.0.0-beta.146",
-    "@ethersproject/signing-key": "^5.0.0-beta.135",
+    "@ethersproject/strings": "^5.0.0-beta.135",
+    "@ethersproject/transactions": "^5.0.0-beta.133",
     "axios": "^0.19.0",
     "date-fns": "^2.3.0",
     "ethval": "^2.0.0",

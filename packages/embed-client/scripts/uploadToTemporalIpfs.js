@@ -2,7 +2,7 @@
 const got = require('got')
 const chalk = require('chalk')
 const path = require('path')
-const { uploadFolderToIpfs } = require('@solui/utils')
+const { uploadFolderToIpfs, uploadDataToIpfs } = require('@solui/utils')
 
 const BUILD_FOLDER = path.join(__dirname, '..', 'build')
 
@@ -30,7 +30,7 @@ const init = async () => {
     }
   })
 
-  console.log(`\nView at: https://gateway.temporal.cloud/ipfs/${ret[2].hash}`)
+  console.log(`\nView at: https://gateway.temporal.cloud/ipfs/${ret[ret.length - 1].hash}`)
 
   console.log(chalk.cyan(`\n(Remember to update DNS TXT record - _dnslink.ui.solui.dev - to point to this cid)`))
 }

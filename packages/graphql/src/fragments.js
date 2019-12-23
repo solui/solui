@@ -34,6 +34,7 @@ export const UserFragment = gql`
 
   fragment UserFragment on User {
     id
+    address
   }
 `
 
@@ -55,6 +56,26 @@ export const UserProfileFragment = gql`
     }
   }
 `
+
+/**
+ * Login result.
+ * @type {Fragment}
+ */
+export const LoginResultFragment = gql`
+  ${AuthTokenFragment}
+  ${ErrorFragment}
+
+  fragment LoginResultFragment on LoginResult {
+    ...on AuthToken {
+      ...AuthTokenFragment
+    }
+    ...on Error {
+      ...ErrorFragment
+    }
+  }
+`
+
+
 
 /**
  * Package release.
@@ -90,5 +111,111 @@ export const PackageFragment = gql`
     }
   }
 `
+
+
+/**
+ * Auth token result.
+ * @type {Fragment}
+ */
+export const AuthTokenResultFragment = gql`
+  ${AuthTokenFragment}
+  ${ErrorFragment}
+
+  fragment AuthTokenResultFragment on AuthTokenResult {
+    ...on AuthToken {
+      ...AuthTokenFragment
+    }
+    ...on Error {
+      ...ErrorFragment
+    }
+  }
+`
+
+
+/**
+ * Package.
+ * @type {Fragment}
+ */
+export const PackageListFragment = gql`
+  ${PackageFragment}
+
+  fragment PackageListFragment on PackageList {
+    packages {
+      ...PackageFragment
+    }
+  }
+`
+
+
+/**
+ * Package result.
+ * @type {Fragment}
+ */
+export const PackageResultFragment = gql`
+  ${PackageFragment}
+  ${ErrorFragment}
+
+  fragment PackageResultFragment on PackageResult {
+    ...on Package {
+      ...PackageFragment
+    }
+    ...on Error {
+      ...ErrorFragment
+    }
+  }
+`
+
+/**
+ * Package result.
+ * @type {Fragment}
+ */
+export const PackageListResultFragment = gql`
+  ${PackageListFragment}
+  ${ErrorFragment}
+
+  fragment PackageListResultFragment on PackageListResult {
+    ...on PackageList {
+      ...PackageListFragment
+    }
+    ...on Error {
+      ...ErrorFragment
+    }
+  }
+`
+
+
+/**
+ * Publish success.
+ * @type {Fragment}
+ */
+export const PublishSuccessFragment = gql`
+  fragment PublishSuccessFragment on PublishSuccess {
+    id
+    cid
+    url
+  }
+`
+
+
+
+/**
+ * Publish result.
+ * @type {Fragment}
+ */
+export const PublishResultFragment = gql`
+  ${PublishSuccessFragment}
+  ${ErrorFragment}
+
+  fragment PublishResultFragment on PublishResult {
+    ...on PublishSuccess {
+      ...PublishSuccessFragment
+    }
+    ...on Error {
+      ...ErrorFragment
+    }
+  }
+`
+
+
 
 

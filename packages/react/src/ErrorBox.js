@@ -56,7 +56,7 @@ const ErrorBox = ({ className, error }) => {
         <ErrorDiv key={`${e}`}>
           <StyledIcon name='exclamation' />
           <Details>
-            <Msg>{`${e}`}</Msg>
+            <Msg>{`${e.message || e}`}</Msg>
             {e.details ? e.details.map(d => (
               <SubMsg key={`${d}`}>- {`${d}`}</SubMsg>
             )) : null}

@@ -42,7 +42,7 @@
     "@emotion/core": "^10.0.17",
     "@emotion/styled": "^10.0.17",
     "@fortawesome/fontawesome-svg-core": "^1.2.22",
-    "@fortawesome/free-solid-svg-icons": "^5.10.2",
+    "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/react-fontawesome": "^0.1.4",
     "@reach/observe-rect": "^1.0.3",
     "@solui/graphql": "^0.0.7",
@@ -54,6 +54,8 @@
     "react-svg": "^10.0.20",
     "react-tooltip": "^3.11.1",
     "react-use": "^12.9.1",
+    "styled-components": "^4.4.1",
+    "styled-react-modal": "^2.0.0",
     "uuid": "^3.3.3"
   },
   "peerDependencies": {

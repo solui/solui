@@ -117,9 +117,12 @@ export const getNetworkInfoFromGlobalScope = async () => {
       // we will manually reload page on a network change
       GLOBAL_SCOPE.ethereum.autoRefreshOnNetworkChange = false
       if (GLOBAL_SCOPE.ethereum.on) {
-        GLOBAL_SCOPE.ethereum.on('networkChanged', () => {
-          if (typeof _.get(GLOBAL_SCOPE.location, 'reload') === 'function') {
-            GLOBAL_SCOPE.location.reload()
+        GLOBAL_SCOPE.ethereum.on('networkChanged', newNetworkId => {
+          if (network.id && `${newNetworkId}` !== `${network.id}`) {
+            if (typeof _.get(GLOBAL_SCOPE.location, 'reload') === 'function') {
+              console.log(`Ethereum network changed to ${newNetworkId}, reloading ...`)
+              GLOBAL_SCOPE.location.reload()
+            }
           }
         })
       }
@@ -184,6 +187,17 @@ export const getDefaultAccount = async node => {
   }
 
   return account
+}
+
+/**
+ * Sign a message.
+ *
+ * @param  {Node}  node node.
+ * @param  {String}  msg Message to sign.
+ * @return {Promise<String>}  Signature.
+ */
+export const signMessage = async (node, msg) => {
+  return node.getSigner(0).signMessage(msg)
 }
 
 /**

@@ -1,22 +1,17 @@
 import gql from 'graphql-tag'
 
-import { AuthTokenFragment } from './fragments'
+import { PublishResultFragment, LoginResultFragment } from './fragments'
 
 /**
  * Publish package.
  * @type {Mutation}
  */
 export const PublishMutation = gql`
+  ${PublishResultFragment}
+
   mutation publish ($bundle: PublishInput!) {
-    publish(bundle: $bundle) @requireAuth {
-      __typename
-      ... on PublishSuccess {
-        id
-        cid
-      }
-      ... on PublishError {
-        error
-      }
+    result: publish(bundle: $bundle) @requireAuth {
+      ...PublishResultFragment
     }
   }
 `
@@ -26,11 +21,11 @@ export const PublishMutation = gql`
  * @type {Mutation}
  */
 export const LoginMutation = gql`
-  ${AuthTokenFragment}
+  ${LoginResultFragment}
 
-  mutation login ($challenge: String!, $signature: String!, $loginToken: String!) {
+  mutation login ($challenge: String!, $signature: String!, $loginToken: String) {
     login(challenge: $challenge, signature: $signature, loginToken: $loginToken) @disableAuth {
-      ...AuthTokenFragment
+      ...LoginResultFragment
     }
   }
 `

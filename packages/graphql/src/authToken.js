@@ -1,4 +1,8 @@
 export default class AuthToken {
+  constructor (impl) {
+    this.setImplementation(impl)
+  }
+
   setToken (token) {
     this._assertImplementation()
     return this._implementation.set(token)

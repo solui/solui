@@ -4,6 +4,7 @@ import AppContainer from './AppContainer'
 import Button from './Button'
 import Dapp from './Dapp'
 import DateTime from './DateTime'
+import EmbedLabel from './EmbedLabel'
 import ErrorBox from './ErrorBox'
 import GlobalStyles from './GlobalStyles'
 import Icon from './Icon'
@@ -12,11 +13,9 @@ import Image from './Image'
 import Layout from './Layout'
 import LoadingIcon from './LoadingIcon'
 import MaxContentWidth from './MaxContentWidth'
-import Mutation from './Mutation'
-import NetworkInfoView from './NetworkInfoView'
+import NetworkInfoLabel from './NetworkInfoLabel'
 import PanelInputs from './PanelInputs'
 import Progress from './Progress'
-import Query from './Query'
 import Result from './Result'
 import TextInput from './TextInput'
 import Tooltip from './Tooltip'
@@ -29,6 +28,7 @@ export {
   Button,
   Dapp,
   DateTime,
+  EmbedLabel,
   ErrorBox,
   GlobalStyles,
   Icon,
@@ -37,11 +37,9 @@ export {
   Layout,
   LoadingIcon,
   MaxContentWidth,
-  Mutation,
-  NetworkInfoView,
+  NetworkInfoLabel,
   PanelInputs,
   Progress,
-  Query,
   Result,
   TextInput,
   Tooltip,
@@ -54,5 +52,6 @@ export * from './utils'
 
 export * from './Interface'
 export * from './Group'
+export * from './Modal'
 export * from './Panel'
 

@@ -20,7 +20,7 @@ const Container = styled.div`
  * Render network info.
  * @return {ReactElement}
  */
-const NetworkInfoView = ({ className, network: { id, name } }) => (
+const NetworkInfoLabel = ({ className, network: { id, name } }) => (
   <Tooltip text={`Connected to network: ${name} (${id})`} position='bottom'>
     {({ tooltipElement, show, hide }) => (
       <Container
@@ -36,4 +36,4 @@ const NetworkInfoView = ({ className, network: { id, name } }) => (
   </Tooltip>
 )
 
-export default NetworkInfoView
+export default NetworkInfoLabel

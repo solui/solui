@@ -4,7 +4,7 @@ import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemo
 import { getTypeDefs, getFragmentMatcherConfig } from './typeDefs'
 import createLinks from './links'
 import AuthToken from './authToken'
-import { stringifyGraphqlError } from './utils'
+import { stringifyError, resolveError } from './errors'
 
 export * from './scalars'
 export * from './queries'
@@ -26,14 +26,14 @@ const cache = new InMemoryCache({ fragmentMatcher })
  * Create a new [Apollo](https://www.apollographql.com/) GraphQL client for talking to the solUI API.
  *
  * @param  {String} endpoint         Server graphql endpoint.
- * @param  {Function} refreshAuthToken Callback for refreshing auth token.
+ * @param  {Object} authTokenImplementation Auth token manager implementation.
  * @param  {String} name             Client name (to identify itself to server)
  * @param  {String} version          Client version.
  *
  * @return {ApolloClient}
  */
-export const createApolloClient = ({ endpoint, refreshAuthToken, name, version }) => {
-  const authToken = new AuthToken({ refreshAuthToken })
+export const createApolloClient = ({ endpoint, authTokenImplementation, name, version }) => {
+  const authToken = new AuthToken(authTokenImplementation)
 
   const client = new ApolloClient({
     cache,
@@ -43,36 +43,34 @@ export const createApolloClient = ({ endpoint, refreshAuthToken, name, version }
     version,
   })
 
-  authToken.s = client
-
   client.authToken = authToken
 
   client.safeQuery = async (...args) => {
-    try {
-      const ret = await client.query(...args)
+    const ret = await client.query(...args)
 
-      if (ret.errors) {
-        throw ret.errors
-      }
+    const error = resolveError(ret)
 
-      return ret
-    } catch (err) {
-      throw new Error(stringifyGraphqlError(err))
+    if (error) {
+      const e = new Error(stringifyError(error))
+      e.code = error.code
+      throw e
     }
+
+    return ret
   }
 
   client.safeMutate = async (...args) => {
-    try {
-      const ret = await client.mutate(...args)
+    const ret = await client.mutate(...args)
 
-      if (ret.errors) {
-        throw ret.errors
-      }
+    const error = resolveError(ret)
 
-      return ret
-    } catch (err) {
-      throw new Error(stringifyGraphqlError(err))
+    if (error) {
+      const e = new Error(stringifyError(error))
+      e.code = error.code
+      throw e
     }
+
+    return ret
   }
 
   return client

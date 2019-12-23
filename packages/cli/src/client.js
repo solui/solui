@@ -1,6 +1,6 @@
 import open from 'open'
 import uuid from 'uuid/v4'
-import { createApolloClient, GetAuthTokenQuery } from '@solui/graphql'
+import { createApolloClient, GetAuthTokenQuery, ERROR_CODES } from '@solui/graphql'
 import { _ } from '@solui/utils'
 
 import config, { saveUserConfig } from './config'
@@ -31,11 +31,13 @@ Please login using the following URL: ${url}`)
             fetchPolicy: 'network-only',
           }))
         } catch (err) {
-          reject(err)
-          return
+          if (err.code !== ERROR_CODES.NOT_FOUND) {
+            reject(err)
+            return
+          }
         }
 
-        const { token } = _.get(data, 'authToken') || {}
+        const { token } = _.get(data, 'result', {})
 
         if (!token) {
           setTimeout(__checkForAuthToken, 5000)
@@ -61,14 +63,13 @@ export const getApiClient = () => {
   if (!client) {
     client = createApolloClient({
       endpoint: `${config.SOLUI_REPO_HOST}/api/graphql`,
-      refreshAuthToken,
+      authTokenImplementation: {
+        get: () => config.SOLUI_TOKEN,
+        refresh: refreshAuthToken,
+      },
       name: '@solui/cli',
       version,
     })
-  }
-
-  if (config.SOLUI_TOKEN) {
-    client.authToken.set(config.SOLUI_TOKEN)
   }
 
   return client

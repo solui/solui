@@ -39,14 +39,18 @@ export default {
   secondary,
   tertiary,
   transparent,
-  // body
-  bodyTextColor: white,
+  // layout
+  layoutBgColor: 'rgba(62,0,135,1) linear-gradient(135deg, rgba(62, 0, 135, 1) 0%, rgba(100, 36, 167, 1) 44%, rgba(146, 80, 205, 1) 74%, rgba(202, 134, 252, 1) 100%)',
   // shadows
   boxShadowColor: opacify(black, 0.2),
   // interface
   interfaceBgColor: white,
   interfaceTextColor: black,
   interfaceShadowColor: darkGrey,
+  // modal
+  modalOverlayBgColor: 'rgba(0, 0, 0, 0.8)',
+  modalBgColor: white,
+  modalTextColor: black,
   // network info component
   networkInfoIconColor: grey,
   networkInfoTextColor: darkGrey,

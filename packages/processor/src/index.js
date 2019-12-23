@@ -186,7 +186,7 @@ export const validateGroupInputs = async ({ artifacts, spec, groupId, inputs, no
  * @param  {String}  params.groupId      Id of group within spec.
  * @param  {String}  params.panelId      Id of panel within group.
  * @param  {Object}  params.inputs      The user input values.
- * @param  {Node}    [params.node]      Node connection. If set then on-chain validation is possible.
+ * @param  {Node}    [params.node]      Node connection. Makes on-chain validation possible.
  *
  * @throw {Error} If validation errors occur. The `details` property will
  * contain the individual errors.

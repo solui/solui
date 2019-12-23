@@ -11,7 +11,8 @@ export const getTypeDefs = () => gql`
   scalar EthereumAddress
 
   type User {
-    id: EthereumAddress!
+    id: ID!
+    address: EthereumAddress!
   }
 
   type Release {
@@ -30,9 +31,14 @@ export const getTypeDefs = () => gql`
     latestRelease: Release!
   }
 
+  type PackageList {
+    packages: [Package]!
+  }
+
   type PublishSuccess {
     id: ID!
     cid: String!
+    url: String!
   }
 
   type ErrorDetails {
@@ -44,9 +50,6 @@ export const getTypeDefs = () => gql`
     error: ErrorDetails
   }
 
-  union PublishResult = PublishSuccess | Error
-  union ProfileResult = User | Error
-
   input PublishInput {
     spec: JSON!
     artifacts: JSON!
@@ -57,17 +60,23 @@ export const getTypeDefs = () => gql`
     expires: DateTime!
   }
 
+  union PublishResult = PublishSuccess | Error
+  union ProfileResult = User | Error
+  union LoginResult = AuthToken | Error
+  union PackageResult = Package | Error
+  union PackageListResult = PackageList | Error
+  union AuthTokenResult = AuthToken | Error
+
   type Query {
-    getMyPackages: [Package]!
-    getMyPackage(id: ID!): Package
-    getMyPackageReleases(id: ID!): [Release]!
-    getAuthToken(loginToken: String!): AuthToken
-    getMyProfile: ProfileResult
+    getMyPackages: PackageListResult!
+    getPackage(id: ID!): PackageResult!
+    getAuthToken(loginToken: String!): AuthTokenResult!
+    getMyProfile: ProfileResult!
   }
 
   type Mutation {
     publish(bundle: PublishInput!): PublishResult!
-    login(challenge: String!, signature: String!, loginToken: String): AuthToken
+    login(challenge: String!, signature: String!, loginToken: String): LoginResult!
   }
 `
 
@@ -97,7 +106,55 @@ export const getFragmentMatcherConfig = () => ({
             name: 'Error'
           },
         ]
-      }
+      },
+      {
+        kind: 'UNION',
+        name: 'LoginResult',
+        possibleTypes: [
+          {
+            name: 'AuthToken'
+          },
+          {
+            name: 'Error'
+          },
+        ]
+      },
+      {
+        kind: 'UNION',
+        name: 'PackageResult',
+        possibleTypes: [
+          {
+            name: 'Package'
+          },
+          {
+            name: 'Error'
+          },
+        ]
+      },
+      {
+        kind: 'UNION',
+        name: 'PackageListResult',
+        possibleTypes: [
+          {
+            name: 'PackageList'
+          },
+          {
+            name: 'Error'
+          },
+        ]
+      },
+      {
+        kind: 'UNION',
+        name: 'AuthTokenResult',
+        possibleTypes: [
+          {
+            name: 'AuthToken'
+          },
+          {
+            name: 'Error'
+          },
+        ]
+      },
     ]
   }
 })

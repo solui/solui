@@ -7,7 +7,8 @@
   "scripts": {
     "build": "rm -rf ./build && webpack",
     "serve": "serve ./build",
-    "publish:local": "./scripts/uploadToLocalIpfs.js"
+    "publish:local": "./scripts/uploadToLocalIpfs.js",
+    "publish:cloud": "./scripts/uploadToTemporalIpfs.js"
   },
   "dependencies": {
     "@babel/core": "^7.3.4",
@@ -23,7 +24,9 @@
     "emotion-theming": "^10.0.19",
     "form-data": "^3.0.0",
     "got": "^9.6.0",
+    "query-string": "^6.9.0",
     "react": "^16.8.4",
+    "react-async-hook": "^3.6.1",
     "react-dom": "^16.8.4",
     "tmp": "^0.1.0"
   },

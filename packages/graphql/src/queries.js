@@ -1,46 +1,31 @@
 import gql from 'graphql-tag'
 
-import { PackageFragment, ReleaseFragment, UserProfileFragment, AuthTokenFragment } from './fragments'
+import { PackageResultFragment, PackageListResultFragment, UserProfileFragment, AuthTokenResultFragment } from './fragments'
 
 /**
  * Get my packages.
  * @type {Query}
  */
 export const GetMyPackagesQuery = gql`
-  ${PackageFragment}
+  ${PackageListResultFragment}
 
   query getMyPackages {
-    result: getMyPackages {
-      ...PackageFragment
+    result: getMyPackages @requireAuth {
+      ...PackageListResultFragment
     }
   }
 `
 
 /**
- * Get my package.
+ * Get a package.
  * @type {Query}
  */
-export const GetMyPackageQuery = gql`
-  ${PackageFragment}
+export const GetPackageQuery = gql`
+  ${PackageResultFragment}
 
-  query getMyPackage ($id: ID!) {
-    result: getMyPackage(id: $id) {
-      ...PackageFragment
-    }
-  }
-`
-
-
-/**
- * Get my package.
- * @type {Query}
- */
-export const GetMyPackageReleasesQuery = gql`
-  ${ReleaseFragment}
-
-  query getMyPackageReleases ($id: ID!) {
-    result: getMyPackageReleases(id: $id) {
-      ...ReleaseFragment
+  query getPackage ($id: ID!) {
+    result: getPackage(id: $id) {
+      ...PackageResultFragment
     }
   }
 `
@@ -51,11 +36,11 @@ export const GetMyPackageReleasesQuery = gql`
  * @type {Query}
  */
 export const GetAuthTokenQuery = gql`
-  ${AuthTokenFragment}
+  ${AuthTokenResultFragment}
 
   query getAuthToken ($loginToken: String!) {
-    authToken: getAuthToken(loginToken: $loginToken) {
-      ...AuthTokenFragment
+    result: getAuthToken(loginToken: $loginToken) {
+      ...AuthTokenResultFragment
     }
   }
 `

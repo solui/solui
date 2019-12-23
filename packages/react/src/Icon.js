@@ -11,6 +11,7 @@ import {
   faCopy,
   faNetworkWired,
   faLink,
+  faShareAltSquare,
 } from '@fortawesome/free-solid-svg-icons'
 
 config.autoAddCss = false
@@ -22,6 +23,7 @@ library.add(
   faExclamation,
   faCopy,
   faLink,
+  faShareAltSquare,
 )
 
 const MAP = {
@@ -32,6 +34,7 @@ const MAP = {
     'network-wired',
     'copy',
     'link',
+    'share-alt-square',
   ],
 }
 

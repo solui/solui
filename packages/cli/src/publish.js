@@ -1,4 +1,4 @@
-import { PublishMutation } from '@solui/graphql'
+import { PublishMutation, resolveError, stringifyError } from '@solui/graphql'
 import { _, hash, uploadDataToIpfs } from '@solui/utils'
 import { getUsedContracts, assertSpecValid } from '@solui/processor'
 
@@ -53,8 +53,10 @@ export const publish = async ({ spec, artifacts, customIpfs }) => {
       customIpfs
     )
 
+    logTrace('Published successfully!')
+
     logInfo(`CID:`, cid)
-    logInfo(`View:`, `https://gateway.temporal.cloud/ipns/ui.solui.dev#<YOUR_IPFS_GATEWAY>/${cid}`)
+    logInfo(`View:`, `https://gateway.temporal.cloud/ipns/ui.solui.dev#l=<YOUR_IPFS_GATEWAY>/${cid}`)
   } else {
     logTrace(`Publishing spec ${spec.id} to solUI cloud ...`)
 
@@ -67,15 +69,11 @@ export const publish = async ({ spec, artifacts, customIpfs }) => {
       }
     })
 
-    const versionId = _.get(ret, 'data.publish.versionId')
-    const error = _.get(ret, 'data.publish.error')
+    const { cid, url } = _.get(ret, 'data.result', {})
 
-    if (error) {
-      throw new Error(error)
-    }
+    logTrace('Published successfully!')
 
-    logTrace(`CID:`, versionId)
+    logInfo(`CID:`, cid)
+    logInfo(`View:`, url)
   }
-
-  logTrace('Published successfully!')
 }

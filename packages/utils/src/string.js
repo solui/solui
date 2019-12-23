@@ -1,5 +1,4 @@
 import slug from 'slugify'
-import { keccak256 } from '@ethersproject/keccak256'
 import validator from 'validator'
 
 /**
@@ -43,10 +42,3 @@ export const obfuscate = str => {
  */
 export const slugify = str => slug(`${str} ${Math.random().toString(36).substr(2, 6)}`)
 
-/**
- * Calculate Keccak256 hash of given data.
- *
- * @param  {*} data Input data. If not a `String` it will transform it via `JSON.stringify()` first.
- * @return {String} Hex hash without `0x` prefix.
- */
-export const hash = data => keccak256(typeof data !== 'string' ? JSON.stringify(data) : data).substr(2)

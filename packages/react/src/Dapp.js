@@ -7,7 +7,8 @@ import { flex, boxShadow } from '@solui/styles'
 import { InterfaceBuilder } from './Interface'
 import ErrorBox from './ErrorBox'
 import Progress from './Progress'
-import NetworkInfoView from './NetworkInfoView'
+import NetworkInfoLabel from './NetworkInfoLabel'
+import EmbedLabel from './EmbedLabel'
 
 const Container = styled.div`
   ${flex({ justify: 'center', align: 'center' })}
@@ -29,9 +30,14 @@ const StyledError = styled(ErrorBox)`
   margin: 1rem;
 `
 
-const StyledNetworkInfoView = styled(NetworkInfoView)`
+const TopBar = styled.div`
+  ${flex({ direction: 'row', justify: 'flex-end', align: 'center' })};
   padding: 0.5rem;
   text-align: right;
+`
+
+const StyledEmbedLabel = styled(EmbedLabel)`
+  margin-left: 2rem;
 `
 
 /**
@@ -47,6 +53,7 @@ const Dapp = ({
   validateGroupInputs,
   validatePanel,
   executePanel,
+  embedUrl,
 }) => {
   const [ buildResult, setBuildResult ] = useState()
 
@@ -114,7 +121,12 @@ const Dapp = ({
       <InnerContainer>
         {(!network) ? <StyledProgress>Waiting for Ethereum network connection</StyledProgress> : (
           <div>
-            <StyledNetworkInfoView network={network} />
+            <TopBar>
+              <NetworkInfoLabel network={network} />
+              {embedUrl ? (
+                <StyledEmbedLabel embedUrl={embedUrl} />
+              ) : null}
+            </TopBar>
             {/* eslint-disable-next-line no-nested-ternary */}
             {(!buildResult) ? <StyledProgress>Rendering...</StyledProgress> : (
               buildResult.error ? <StyledError error={buildResult.error} /> : (

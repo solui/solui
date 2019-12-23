@@ -43,3 +43,9 @@ To publish the code to local IPFS:
 ```
 yarn publish:local
 ```
+
+To publish to Temporal IPFS:
+
+```
+TEMPORAL_PASSWORD='...password...' yarn publish:cloud
+```
