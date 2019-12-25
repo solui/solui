@@ -4,6 +4,8 @@ import {
   toEthVal,
 } from '@solui/utils'
 
+import { deriveRealNumber } from './utils'
+
 export const checkIdIsValid = (ctx, id) => {
   if (!id) {
     ctx.errors().add(ctx.id, 'id must be set')
@@ -44,13 +46,9 @@ export const checkImageIsValid = (ctx, img) => {
 
 export const checkAddressIsValid = async (ctx, value, { allowedTypes } = {}) => {
   try {
-    if ((!allowedTypes) || !Array.isArray(allowedTypes)) {
-      throw new Error(`allowedTypes config: must be an array`)
-    }
-
     await assertEthAddressIsValidOnChain(value, ctx.node(), {
-      allowContract: allowedTypes.includes('contract'),
-      allowEoa: allowedTypes.includes('eoa')
+      allowContract: !!allowedTypes.contract,
+      allowEoa: !!allowedTypes.eoa
     })
   } catch (err) {
     ctx.errors().add(ctx.id, err.message)
@@ -82,13 +80,13 @@ export const checkStringIsValid = async (ctx, value, { length } = {}) => {
   }
 }
 
-export const deriveRealNumberAndCheckValidity = async (
+export const checkNumberIsValid = async (
   ctx,
   value,
-  { unit, range, unsigned } = {}
+  { unit, unsigned, range } = {},
 ) => {
   try {
-    const val = toEthVal(value, unit)
+    const val = deriveRealNumber(ctx, value, { unit })
 
     if (!val) {
       throw new Error('invalid input')
@@ -117,11 +115,33 @@ export const deriveRealNumberAndCheckValidity = async (
     if (minVal.gt(val) || maxVal.lt(val)) {
       throw new Error(`input must be between ${minVal.toString(10)} and ${maxVal.toString(10)}`)
     }
-
-    return val
   } catch (err) {
     ctx.errors().add(ctx.id, err.message)
   }
+}
 
-  return null
+
+export const validateInputValue = async (ctx, value, config) => {
+  if (!_.get(config.validation, 'length')) {
+    return
+  }
+
+  const promises = config.validation.map(({ type, ...vConfig }) => {
+    switch (type) {
+      case 'allowedTypes':
+        return checkAddressIsValid(ctx, value, { allowedTypes: vConfig })
+      case 'length':
+        return checkStringIsValid(ctx, value, { length: vConfig })
+      case 'range':
+        return checkNumberIsValid(ctx, value, {
+          unit: config.unit,
+          unsigned: config.unsigned,
+          range: vConfig,
+        })
+      default:
+        return null
+    }
+  })
+
+  await Promise.all(promises)
 }

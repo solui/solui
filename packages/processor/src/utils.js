@@ -1,3 +1,7 @@
+import {
+  toEthVal,
+} from '@solui/utils'
+
 export const extractChildById = (array, needle) => (array || []).find(({ id }) => id === needle)
 
 export const inputIsPresent = (ctx, key) => (
@@ -25,4 +29,12 @@ export const getMethod = (ctx, contractId, methodName) => {
       ? (def.type === 'constructor')
       : (def.name === methodName && def.type === 'function')
   ))
+}
+
+export const deriveRealNumber = (
+  ctx,
+  value,
+  { unit } = {},
+) => {
+  return toEthVal(value, unit)
 }
