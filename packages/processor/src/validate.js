@@ -120,6 +120,26 @@ export const checkNumberIsValid = async (
   }
 }
 
+export const checkValueIsRelatedToOtherFieldValue = async (ctx, value, { field } = {}) => {
+  const otherVal = ctx.inputs()[field.field]
+
+  if (otherVal) {
+    try {
+      switch (field.operation) {
+        case 'notEqual':
+          if (value === otherVal) {
+            throw new Error(`must be different to ${field.field}`)
+          }
+          break
+        default:
+          throw new Error(`invalid operation in config: ${field.operation}`)
+      }
+    } catch (err) {
+      ctx.errors().add(ctx.id, err.message)
+    }
+  }
+}
+
 
 export const validateInputValue = async (ctx, value, config) => {
   if (!_.get(config.validation, 'length')) {
@@ -138,6 +158,8 @@ export const validateInputValue = async (ctx, value, config) => {
           unsigned: config.unsigned,
           range: vConfig,
         })
+      case 'compareToField':
+        return checkValueIsRelatedToOtherFieldValue(ctx, value, { field: vConfig })
       default:
         return null
     }
