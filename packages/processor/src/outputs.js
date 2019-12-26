@@ -36,7 +36,7 @@ const process = (ctx, config) => {
 
 export const processList = async (parentCtx, outputs) => {
   return Promise.all((outputs || []).map(async (outputConfig, ouputIndex) => {
-    const ctx = parentCtx.createChildContext(`@output[${ouputIndex}]`)
+    const ctx = parentCtx.createChildContext(`output[${ouputIndex}]`)
     return process(ctx, outputConfig)
   }))
 }

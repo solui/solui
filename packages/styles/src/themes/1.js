@@ -79,15 +79,11 @@ export default {
   // result component
   resultBgColor: opacify(tertiary, 0.3),
   // group component
-  groupBorderColor: lightGrey,
-  groupBgColor: white,
-  groupActiveBgColor: white,
-  groupActiveBorderColor: transparent,
-  groupActiveShadowColor: opacify(black, 0.4),
-  // panels
   panelBorderColor: lightGrey,
-  panelActiveBorderColor: grey,
-  panelBgColor: transparent,
+  panelBgColor: white,
+  panelActiveBgColor: white,
+  panelActiveBorderColor: transparent,
+  panelActiveShadowColor: opacify(black, 0.4),
   // generic input component
   inputLabelTextColor: black,
   inputBorderColor: lightGrey,

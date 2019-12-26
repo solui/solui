@@ -9,7 +9,7 @@ import {
 } from './validate'
 
 export const process = async (parentCtx, id, config) => {
-  const ctx = parentCtx.createChildContext(`@panel[${id}]`)
+  const ctx = parentCtx.createPanelContext(`panel[${id}]`)
 
   checkIdIsValid(ctx, id)
 

@@ -1,6 +1,4 @@
-import {
-  toEthVal,
-} from '@solui/utils'
+import { toEthVal } from '@solui/utils'
 
 export const extractChildById = (array, needle) => (array || []).find(({ id }) => id === needle)
 

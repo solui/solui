@@ -87,7 +87,7 @@ class Context {
   }
 }
 
-class GroupContext extends Context {
+class PanelContext extends Context {
   constructor (id, parentContext) {
     super(id, parentContext)
     this._inputs = {}
@@ -115,7 +115,7 @@ export class RootContext extends Context {
     this._outputs = {}
   }
 
-  createGroupContext (id) {
-    return new GroupContext(id, this)
+  createPanelContext (id) {
+    return new PanelContext(id, this)
   }
 }

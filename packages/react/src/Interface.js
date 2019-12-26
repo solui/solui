@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 import { flex, media } from '@solui/styles'
 
-import { GroupBuilder } from './Group'
+import { PanelBuilder } from './Panel'
 import Image from './Image'
 
 const Container = styled.div`
@@ -49,7 +49,7 @@ const Groups = styled.div`
   }
 `
 
-const GroupContainer = styled.li`
+const PanelContainer = styled.li`
   display: block;
   margin: 3rem 0 1rem;
 `
@@ -61,19 +61,18 @@ const GroupContainer = styled.li`
  * @return {ReactElement}
  */
 export const Interface = ({
-  onValidateGroupInputs,
   onExecutePanel,
   onValidatePanel,
   title,
   description,
   image,
-  groups
+  panels
 }) => {
-  const [ selectedGroup, setSelectedGroup ] = useState()
+  const [ selectedPanel, setSelectedPanel ] = useState()
 
-  const onSelectGroup = useCallback(gid => {
-    setSelectedGroup(selectedGroup === gid ? null : gid)
-  }, [ selectedGroup ])
+  const onSelectPanel = useCallback(gid => {
+    setSelectedPanel(selectedPanel === gid ? null : gid)
+  }, [ selectedPanel ])
 
   return (
     <Container>
@@ -83,29 +82,25 @@ export const Interface = ({
         <Description>{description}</Description>
       </Info>
       <Groups>
-        {groups.map(group => (
-          <GroupContainer key={group.id}>
-            {group.buildContent({
-              onValidateGroupInputs,
-              onValidatePanel,
-              onExecutePanel,
-              onClick: onSelectGroup,
-              expanded: selectedGroup === group.id
+        {panels.map(panel => (
+          <PanelContainer key={panel.id}>
+            {panel.buildContent({
+              onValidate: onValidatePanel,
+              onExecute: onExecutePanel,
+              onClick: onSelectPanel,
+              expanded: selectedPanel === panel.id
             })}
-          </GroupContainer>
+          </PanelContainer>
         ))}
       </Groups>
     </Container>
   )
 }
 
-/**
- * An `Interface` builder.
- */
 export class InterfaceBuilder {
   constructor () {
-    this.groups = []
-    this.currentGroup = null
+    this.panels = []
+    this.currentPanel = null
   }
 
   startUi = (id, attrs) => {
@@ -114,43 +109,27 @@ export class InterfaceBuilder {
 
   endUi = () => {}
 
-  startGroup = async (id, attrs) => {
-    this.currentGroup = new GroupBuilder({ id, attrs })
+  startPanel = async (id, attrs) => {
+    this.currentPanel = new PanelBuilder({ id, attrs })
   }
 
-  endGroup = async () => {
-    this.groups.push(this.currentGroup)
-    this.currentGroup = null
+  endPanel = async () => {
+    this.panels.push(this.currentPanel)
+    this.currentPanel = null
   }
 
   processInput = async (...args) => {
-    if (!this.currentGroup) {
+    if (!this.currentPanel) {
       throw new Error('Not in a group')
     }
 
-    return this.currentGroup.processInput(...args)
-  }
-
-  startPanel = async (...args) => {
-    if (!this.currentGroup) {
-      throw new Error('Not in a group')
-    }
-
-    await this.currentGroup.startPanel(...args)
-  }
-
-  endPanel = async (...args) => {
-    if (!this.currentGroup) {
-      throw new Error('Not in a group')
-    }
-
-    await this.currentGroup.endPanel(...args)
+    return this.currentPanel.processInput(...args)
   }
 
   buildContent (props) {
     return (
       <Interface
-        groups={this.groups}
+        panels={this.panels}
         {...this.attrs}
         {...props}
       />

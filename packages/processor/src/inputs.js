@@ -63,7 +63,7 @@ export const processList = async (parentCtx, inputs) => (
       return
     }
 
-    const ctx = parentCtx.createChildContext(`@input[${name}]`)
+    const ctx = parentCtx.createChildContext(`input[${name}]`)
 
     const { title, type } = inputConfig
 

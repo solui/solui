@@ -50,30 +50,17 @@ const Dapp = ({
   artifacts,
   className,
   processSpec,
-  validateGroupInputs,
   validatePanel,
   executePanel,
   embedUrl,
 }) => {
   const [ buildResult, setBuildResult ] = useState()
 
-  // validate group inputs
-  const onValidateGroupInputs = useCallback(async ({ groupId, inputs }) => {
-    return validateGroupInputs({
-      artifacts,
-      spec,
-      groupId,
-      inputs,
-      node: _.get(network, 'node'),
-    })
-  }, [ spec, artifacts, network, validateGroupInputs ])
-
   // validate a panel's inputs
-  const onValidatePanel = useCallback(async ({ groupId, panelId, inputs }) => {
+  const onValidatePanel = useCallback(async ({ panelId, inputs }) => {
     return validatePanel({
       artifacts,
       spec,
-      groupId,
       panelId,
       inputs,
       node: _.get(network, 'node'),
@@ -81,7 +68,7 @@ const Dapp = ({
   }, [ spec, artifacts, network, validatePanel ])
 
   // execute a panel
-  const onExecutePanel = useCallback(async ({ groupId, panelId, inputs }) => {
+  const onExecutePanel = useCallback(async ({ panelId, inputs }) => {
     if (!network) {
       throw new Error('Network not available')
     }
@@ -89,7 +76,6 @@ const Dapp = ({
     return executePanel({
       artifacts,
       spec,
-      groupId,
       panelId,
       inputs,
       node: network.node,
@@ -114,7 +100,7 @@ const Dapp = ({
         setBuildResult({ error: err })
       }
     })()
-  }, [ onValidatePanel, onValidateGroupInputs, onExecutePanel, spec, artifacts, processSpec ])
+  }, [ onValidatePanel, onExecutePanel, spec, artifacts, processSpec ])
 
   return (
     <Container className={className}>
@@ -131,7 +117,6 @@ const Dapp = ({
             {(!buildResult) ? <StyledProgress>Rendering...</StyledProgress> : (
               buildResult.error ? <StyledError error={buildResult.error} /> : (
                 buildResult.interface.buildContent({
-                  onValidateGroupInputs,
                   onValidatePanel,
                   onExecutePanel,
                 })

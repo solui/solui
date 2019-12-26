@@ -173,7 +173,7 @@ const EXECS = {
 
 export const processList = async (parentCtx, execs) => (
   promiseSerial(execs || [], async (execConfig, execIndex) => {
-    const ctx = parentCtx.createChildContext(`@exec[${execIndex}]`)
+    const ctx = parentCtx.createChildContext(`exec[${execIndex}]`)
 
     if (_.isEmpty(execConfig)) {
       ctx.errors().add(ctx.id, `must not be empty`)

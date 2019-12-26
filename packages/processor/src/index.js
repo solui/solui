@@ -11,7 +11,7 @@ import {
 } from './validate'
 
 import { RootContext } from './context'
-import { processGroup, processGroupInputs, processGroupPanel } from './group'
+import { process as processPanel } from './panel'
 
 export { RootContext }
 
@@ -29,7 +29,7 @@ export { RootContext }
  * @return {Promise<RootContext>}
  */
 export const process = async ({ spec, artifacts }, callbacks = {}) => {
-  const { id, version, title, description, image, groups } = (spec || {})
+  const { id, version, title, description, image, panels } = (spec || {})
 
   const ctx = new RootContext('<root>', { artifacts, callbacks })
 
@@ -47,25 +47,25 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
     await checkImageIsValid(ctx, image)
   }
 
-  if (_.isEmpty(groups)) {
-    ctx.errors().add(ctx.id, 'must have at least one group')
+  if (_.isEmpty(panels)) {
+    ctx.errors().add(ctx.id, 'must have at least one panel')
   }
 
   if (!ctx.errors().notEmpty) {
     await ctx.callbacks().startUi(id, { title, description, image })
 
-    const existingGroups = {}
+    const existingPanels = {}
 
-    await promiseSerial(spec.groups, async groupConfig => {
-      const groupId = _.get(groupConfig, 'id')
+    await promiseSerial(panels, async panelConfig => {
+      const panelId = _.get(panelConfig, 'id')
 
-      if (!groupId) {
-        ctx.errors().add(ctx.id, `group missing id`)
-      } else if (existingGroups[groupId]) {
-        ctx.errors().add(ctx.id, `duplicate group id: ${groupId}`)
+      if (!panelId) {
+        ctx.errors().add(ctx.id, `panel missing id`)
+      } else if (existingPanels[panelId]) {
+        ctx.errors().add(ctx.id, `duplicate panel id: ${panelId}`)
       } else {
-        existingGroups[groupId] = true
-        await processGroup(ctx, groupId, groupConfig)
+        existingPanels[panelId] = true
+        await processPanel(ctx, panelId, panelConfig)
       }
     })
 
@@ -131,60 +131,12 @@ export const getUsedContracts = ({ spec }) => {
 }
 
 /**
- * Validate [group](https://solui.dev/docs/specification/groups) inputs.
- *
- * @param  {Object}  params                Parameters.
- * @param  {Object}  params.spec           The UI specification.
- * @param  {Object}  params.artifacts      Contract artifacts.
- * @param  {String}  params.groupId      Id of group within spec.
- * @param  {Object}  params.inputs      The user input values.
- * @param  {Node}  [params.node]      Node connection for on-chain validation.
- *
- * @throw {Error} If validation errors occur. The `details` property will
- * contain the individual errors.
- *
- * @return {Promise}
- */
-export const validateGroupInputs = async ({ artifacts, spec, groupId, inputs, node }) => (
-  new Promise(async (resolve, reject) => {
-    const groupConfig = extractChildById(_.get(spec, `groups`), groupId)
-    if (!groupConfig) {
-      reject(new Error(`group not found: ${groupId}`))
-      return
-    }
-
-    const ctx = new RootContext(spec.id, {
-      artifacts,
-      node,
-      callbacks: {
-        processInput: id => inputs[id],
-      }
-    })
-
-    try {
-      await processGroupInputs(ctx, groupId, groupConfig)
-    } catch (err) {
-      ctx.errors().add(ctx.id, `error validating group inputs: ${err}`)
-    }
-
-    if (ctx.errors().notEmpty) {
-      reject(
-        createErrorWithDetails('There were one or more validation errors. See details.', ctx.errors().toObject())
-      )
-    } else {
-      resolve()
-    }
-  })
-)
-
-/**
  * Validate [panel](https://solui.dev/docs/specification/panels) inputs.
  *
  * @param  {Object}  params                Parameters.
  * @param  {Object}  params.spec           The UI specification.
  * @param  {Object}  params.artifacts      Contract artifacts.
- * @param  {String}  params.groupId      Id of group within spec.
- * @param  {String}  params.panelId      Id of panel within group.
+ * @param  {String}  params.panelId      Id of panel.
  * @param  {Object}  params.inputs      The user input values.
  * @param  {Node}    [params.node]      Node connection. Makes on-chain validation possible.
  *
@@ -193,11 +145,11 @@ export const validateGroupInputs = async ({ artifacts, spec, groupId, inputs, no
  *
  * @return {Promise}
  */
-export const validatePanel = async ({ artifacts, spec, groupId, panelId, inputs, node }) => (
+export const validatePanel = async ({ artifacts, spec, panelId, inputs, node }) => (
   new Promise(async (resolve, reject) => {
-    const groupConfig = extractChildById(_.get(spec, `groups`), groupId)
-    if (!groupConfig) {
-      reject(new Error(`group not found: ${groupId}`))
+    const panelConfig = extractChildById(_.get(spec, `panels`), panelId)
+    if (!panelConfig) {
+      reject(new Error(`panel not found: ${panelId}`))
       return
     }
 
@@ -210,7 +162,7 @@ export const validatePanel = async ({ artifacts, spec, groupId, panelId, inputs,
     })
 
     try {
-      await processGroupPanel(ctx, groupId, groupConfig, panelId)
+      await processPanel(ctx, panelId, panelConfig)
     } catch (err) {
       ctx.errors().add(ctx.id, `error validating panel: ${err}`)
     }
@@ -234,8 +186,7 @@ export const validatePanel = async ({ artifacts, spec, groupId, panelId, inputs,
  * @param  {Object}  params               Parameters.
  * @param  {Object}  params.spec          The UI specification.
  * @param  {Object}  params.artifacts     Contract artifacts.
- * @param  {String}  params.groupId       Id of group within spec.
- * @param  {String}  params.panelId       Id of panel within group.
+ * @param  {String}  params.panelId       Id of panel.
  * @param  {Object}  params.inputs        The user input values.
  * @param  {Node}    params.node          Node connection.
  *
@@ -245,11 +196,11 @@ export const validatePanel = async ({ artifacts, spec, groupId, panelId, inputs,
  * @return {Promise<Object>} Key-value pair of output values according to the
  * [outputs](https://solui.dev/docs/specification/outputs) configured for the panel.
  */
-export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, node }) => (
+export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) => (
   new Promise(async (resolve, reject) => {
-    const groupConfig = extractChildById(_.get(spec, `groups`), groupId)
-    if (!groupConfig) {
-      reject(new Error(`group not found: ${groupId}`))
+    const panelConfig = extractChildById(_.get(spec, `panels`), panelId)
+    if (!panelConfig) {
+      reject(new Error(`panel not found: ${panelId}`))
       return
     }
 
@@ -303,7 +254,7 @@ export const executePanel = async ({ artifacts, spec, groupId, panelId, inputs, 
     })
 
     try {
-      await processGroupPanel(ctx, groupId, groupConfig, panelId)
+      await processPanel(ctx, panelId, panelConfig)
     } catch (err) {
       ctx.errors().add(ctx.id, `error executing panel: ${err}`)
     }

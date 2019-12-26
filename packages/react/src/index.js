@@ -51,7 +51,6 @@ export * from './contexts'
 export * from './utils'
 
 export * from './Interface'
-export * from './Group'
 export * from './Modal'
 export * from './Panel'
 
