@@ -49,6 +49,7 @@ const Dapp = ({
   spec,
   artifacts,
   className,
+  validateSpec,
   processSpec,
   validatePanel,
   executePanel,
@@ -85,9 +86,17 @@ const Dapp = ({
   // build interface
   useEffect(() => {
     (async () => {
-      const int = new InterfaceBuilder()
+      // assert validity
+      try {
+        await validateSpec({ spec, artifacts })
+      } catch (err) {
+        console.error(err)
+        setBuildResult({ error: err })
+        return
+      }
 
       try {
+        const int = new InterfaceBuilder()
         const { errors } = await processSpec({ spec, artifacts }, int)
 
         if (errors.notEmpty) {
@@ -100,7 +109,7 @@ const Dapp = ({
         setBuildResult({ error: err })
       }
     })()
-  }, [ onValidatePanel, onExecutePanel, spec, artifacts, processSpec ])
+  }, [ onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec ])
 
   return (
     <Container className={className}>

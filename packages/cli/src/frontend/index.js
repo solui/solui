@@ -12,7 +12,12 @@ import artifacts from 'artifacts.json'
 /* eslint-enable import/no-extraneous-dependencies */
 
 import { AppContainer } from '@solui/react'
-import { process as processSpec, validateGroupInputs, validatePanel, executePanel } from '@solui/processor'
+import {
+  process as processSpec,
+  assertSpecValid as validateSpec,
+  validatePanel,
+  executePanel,
+} from '@solui/processor'
 
 class App extends AppContainer {
   render () {
@@ -23,7 +28,7 @@ class App extends AppContainer {
       spec,
       artifacts,
       processSpec,
-      validateGroupInputs,
+      validateSpec,
       validatePanel,
       executePanel,
     })

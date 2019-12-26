@@ -1,6 +1,6 @@
 import { _, promiseSerial } from '@solui/utils'
 
-import { inputIsPresent, methodArgExists, getBytecode, getAbi, getMethod } from './utils'
+import { resolveValue, methodArgExists, getBytecode, getAbi, getMethod } from './utils'
 
 const validateContract = (ctx, config) => {
   // check contract
@@ -42,9 +42,11 @@ const validateContractMethod = (ctx, config) => {
             ctx.errors().add(ctx.id, `method ${method} does not have arg: ${argId}`)
           }
 
-          if (!inputIsPresent(ctx, inputId)) {
+          try {
+            resolveValue(ctx, inputId)
+          } catch (err) {
             foundError = true
-            ctx.errors().add(ctx.id, `method argument ${argId} maps from an invalid input: ${inputId}`)
+            ctx.errors().add(ctx.id, `method argument ${argId} maps from an invalid reference: ${inputId}`)
           }
         })
 
@@ -54,9 +56,11 @@ const validateContractMethod = (ctx, config) => {
             foundError = true
             ctx.errors().add(ctx.id, `must specify contract address mapping`)
           } else {
-            if (!inputIsPresent(ctx, address)) {
+            try {
+              resolveValue(ctx, address)
+            } catch (err) {
               foundError = true
-              ctx.errors().add(ctx.id, `contract address maps from an invalid input: ${address}`)
+              ctx.errors().add(ctx.id, `contract address maps from an invalid reference: ${address}`)
             }
           }
         }
@@ -68,15 +72,15 @@ const validateContractMethod = (ctx, config) => {
 }
 
 
-const buildMethodArgs = (methodAbi, args, inputs) => (
-  (methodAbi.inputs || []).map(({ name }) => inputs[args[name]])
+const buildMethodArgs = (ctx, methodAbi, args) => (
+  (methodAbi.inputs || []).map(({ name }) => resolveValue(ctx, args[name]))
 )
 
 const prepareContractCall = (ctx, config) => {
   const { contract, method, args } = config
   const abi = getAbi(ctx, contract)
   const methodAbi = getMethod(ctx, contract, method)
-  const methodArgs = buildMethodArgs(methodAbi, args, ctx.inputs())
+  const methodArgs = buildMethodArgs(ctx, methodAbi, args)
 
   return { abi, args: methodArgs }
 }
@@ -91,7 +95,7 @@ const EXECS = {
         return
       }
 
-      const { contract, saveResultAs } = config
+      const { contract, saveResultAsInput } = config
 
       const bytecode = getBytecode(ctx, contract)
 
@@ -105,8 +109,8 @@ const EXECS = {
           ctx.id, { contract, abi, bytecode, args }
         )
         // further execs may need this output as input!
-        if (saveResultAs) {
-          ctx.inputs()[saveResultAs] = result
+        if (saveResultAsInput) {
+          ctx.inputs()[saveResultAsInput] = result
         }
       }
     }
@@ -119,23 +123,30 @@ const EXECS = {
         return
       }
 
-      const { contract, saveResultAs, method, address } = config
+      const { contract, saveResultAsInput, method, address } = config
 
-      if (!saveResultAs) {
+      if (!saveResultAsInput) {
         ctx.errors().add(ctx.id, `must save its result into a param`)
       }
 
       // prep
       const { abi, args } = prepareContractCall(ctx, config)
 
+      let contractAddress
+      try {
+        contractAddress = resolveValue(ctx, address)
+      } catch (err) {
+        ctx.errors().add(ctx.id, `contract address reference is invalid: ${address}`)
+      }
+
       // do it!
-      ctx.inputs()[saveResultAs] = await ctx.callbacks().callMethod(
+      ctx.inputs()[saveResultAsInput] = await ctx.callbacks().callMethod(
         ctx.id, {
           contract,
           abi,
           method,
           args,
-          address: ctx.inputs()[address],
+          address: contractAddress,
         }
       )
     }
@@ -148,14 +159,21 @@ const EXECS = {
         return
       }
 
-      const { contract, method, address, saveResultAs } = config
+      const { contract, method, address, saveResultAsInput } = config
 
-      if (saveResultAs) {
+      if (saveResultAsInput) {
         ctx.errors().add(ctx.id, `must not save its result into a param`)
       }
 
       // prep
       const { abi, args } = prepareContractCall(ctx, config)
+
+      let contractAddress
+      try {
+        contractAddress = resolveValue(ctx, address)
+      } catch (err) {
+        ctx.errors().add(ctx.id, `contract address reference is invalid: ${address}`)
+      }
 
       // do it!
       await ctx.callbacks().sendTransaction(
@@ -164,7 +182,7 @@ const EXECS = {
           abi,
           method,
           args,
-          address: ctx.inputs()[address],
+          address: contractAddress,
         }
       )
     }

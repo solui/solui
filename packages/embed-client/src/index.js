@@ -4,7 +4,12 @@ import qs from 'query-string'
 import { useAsync } from 'react-async-hook'
 import { AppContainer } from '@solui/react'
 import { _ } from '@solui/utils'
-import { process as processSpec, validateGroupInputs, validatePanel, executePanel } from '@solui/processor'
+import {
+  process as processSpec,
+  assertSpecValid as validateSpec,
+  validatePanel,
+  executePanel,
+} from '@solui/processor'
 
 const fetchSpec = async url => {
   if (!url) {
@@ -27,7 +32,7 @@ class App extends AppContainer {
       artifacts,
       theme,
       processSpec,
-      validateGroupInputs,
+      validateSpec,
       validatePanel,
       executePanel,
       embedUrl,

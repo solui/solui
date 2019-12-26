@@ -219,8 +219,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) =
 
             return true
           } catch (err) {
-            console.warn(err)
-            ctx.errors().add(id, `Error calling ${contract}.${method}: ${err}`)
+            ctx.errors().add(id, `error calling ${contract}.${method}: ${err.message}`)
             return null
           }
         },
@@ -230,8 +229,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) =
 
             return contractInstance[method](...args)
           } catch (err) {
-            console.warn(err)
-            ctx.errors().add(id, `Error calling ${contract}.${method}: ${err}`)
+            ctx.errors().add(id, `error calling ${contract}.${method}: ${err.message}`)
             return null
           }
         },
@@ -246,7 +244,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) =
             return inst.address
           } catch (err) {
             console.warn(err)
-            ctx.errors().add(id, `Error deploying ${contract}: ${err}`)
+            ctx.errors().add(id, `error deploying ${contract}: ${err.message}`)
             return null
           }
         }
@@ -256,7 +254,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) =
     try {
       await processPanel(ctx, panelId, panelConfig)
     } catch (err) {
-      ctx.errors().add(ctx.id, `error executing panel: ${err}`)
+      ctx.errors().add(ctx.id, `error executing panel: ${err.message}`)
     }
 
     if (ctx.errors().notEmpty) {

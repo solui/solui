@@ -1,4 +1,4 @@
-import { inputIsPresent } from './utils'
+import { resolveValue } from './utils'
 
 const OUTPUT_TYPES = {
   address: true,
@@ -14,22 +14,26 @@ const process = (ctx, config) => {
     return
   }
 
-  const { type, param, title } = config
+  const { type, value, title } = config
 
-  if (!type || !param || !title) {
-    ctx.errors().add(ctx.id, `output type, param and title must be specified`)
+  if (!type || !value || !title) {
+    ctx.errors().add(ctx.id, `output type, value and title must be specified`)
   } else {
     if (!OUTPUT_TYPES[type]) {
       ctx.errors().add(ctx.id, `output type is not valid: ${type}`)
     }
 
-    if (!inputIsPresent(ctx, param)) {
-      ctx.errors().add(ctx.id, `output param is not a valid input or result: ${param}`)
+    let resolvedValue
+
+    try {
+      resolvedValue = resolveValue(ctx, value)
+    } catch (err) {
+      ctx.errors().add(ctx.id, `output value is not a valid reference or value: ${value}`)
     }
 
     ctx.outputs()[ctx.id] = {
       ...config,
-      result: ctx.inputs()[param],
+      result: resolvedValue,
     }
   }
 }
