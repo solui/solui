@@ -8,7 +8,7 @@ import { InterfaceBuilder } from './Interface'
 import ErrorBox from './ErrorBox'
 import Progress from './Progress'
 import NetworkInfoLabel from './NetworkInfoLabel'
-import EmbedLabel from './EmbedLabel'
+import Menu from './Menu'
 
 const Container = styled.div`
   ${flex({ justify: 'center', align: 'center' })}
@@ -36,7 +36,8 @@ const TopBar = styled.div`
   text-align: right;
 `
 
-const StyledEmbedLabel = styled(EmbedLabel)`
+
+const StyledMenu = styled(Menu)`
   margin-left: 2rem;
 `
 
@@ -54,6 +55,7 @@ const Dapp = ({
   validatePanel,
   executePanel,
   embedUrl,
+  sourceUrl,
 }) => {
   const [ buildResult, setBuildResult ] = useState()
 
@@ -118,8 +120,8 @@ const Dapp = ({
           <div>
             <TopBar>
               <NetworkInfoLabel network={network} />
-              {embedUrl ? (
-                <StyledEmbedLabel embedUrl={embedUrl} />
+              {(embedUrl && sourceUrl) ? (
+                <StyledMenu embedUrl={embedUrl} sourceUrl={sourceUrl} />
               ) : null}
             </TopBar>
             {/* eslint-disable-next-line no-nested-ternary */}

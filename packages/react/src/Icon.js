@@ -5,6 +5,7 @@ import { config, library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import {
+  faCogs,
   faInfo,
   faLaughSquint,
   faExclamation,
@@ -17,6 +18,7 @@ import {
 config.autoAddCss = false
 
 library.add(
+  faCogs,
   faInfo,
   faNetworkWired,
   faLaughSquint,
@@ -28,6 +30,7 @@ library.add(
 
 const MAP = {
   fas: [
+    'cogs',
     'info',
     'laugh-squint',
     'exclamation',

@@ -54,6 +54,12 @@ export default {
   // network info component
   networkInfoIconColor: grey,
   networkInfoTextColor: darkGrey,
+  // menu component
+  menuIconColor: darkGrey,
+  menuBgColor: white,
+  menuShadowColor: grey,
+  menuItemHoverTextColor: white,
+  menuItemHoverBgColor: primary,
   // button component
   buttonBorderColor: transparent,
   buttonBgColor: primary,

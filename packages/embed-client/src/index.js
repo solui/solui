@@ -21,7 +21,7 @@ const fetchSpec = async url => {
 class App extends AppContainer {
   render () {
     const { network, renderingError } = this.state
-    const { spec, artifacts, theme, error, loading, embedUrl } = this.props
+    const { spec, artifacts, theme, error, loading, embedUrl, sourceUrl } = this.props
 
     return this._render({
       network,
@@ -36,6 +36,7 @@ class App extends AppContainer {
       validatePanel,
       executePanel,
       embedUrl,
+      sourceUrl,
     })
   }
 }
@@ -85,6 +86,7 @@ const Bootstrap = ({ hash }) => {
       loading={loading}
       error={asyncSpec ? fetchError : 'No UI specified'}
       embedUrl={window.location.href}
+      sourceUrl={loc}
     />
   )
 }

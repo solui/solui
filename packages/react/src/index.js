@@ -4,7 +4,6 @@ import AppContainer from './AppContainer'
 import Button from './Button'
 import Dapp from './Dapp'
 import DateTime from './DateTime'
-import EmbedLabel from './EmbedLabel'
 import ErrorBox from './ErrorBox'
 import GlobalStyles from './GlobalStyles'
 import Icon from './Icon'
@@ -13,6 +12,7 @@ import Image from './Image'
 import Layout from './Layout'
 import LoadingIcon from './LoadingIcon'
 import MaxContentWidth from './MaxContentWidth'
+import Menu from './Menu'
 import NetworkInfoLabel from './NetworkInfoLabel'
 import PanelInputs from './PanelInputs'
 import Progress from './Progress'
@@ -28,7 +28,6 @@ export {
   Button,
   Dapp,
   DateTime,
-  EmbedLabel,
   ErrorBox,
   GlobalStyles,
   Icon,
@@ -37,6 +36,7 @@ export {
   Layout,
   LoadingIcon,
   MaxContentWidth,
+  Menu,
   NetworkInfoLabel,
   PanelInputs,
   Progress,
