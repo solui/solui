@@ -89,7 +89,7 @@ updated without a page reload!
 If you any mistakes in your spec then solUI will display a friendly error
 pointing out the specific issue.
 
-## Next steps
+## Next steps
 
 You are now ready to write and view your own UI specs. Check out the
 [full specification documentation](../Specification) to learn more.

@@ -1,10 +1,10 @@
-Use the `view` command to interact with a UI rendered from a spec:
+Use the `view` command to interact with a UI:
 
 ```shell
 solui view --spec /path/to/json --artifacts /path/to/contract/artifacts
 ```
 
-* `/path/to/jon` - path to your solUI spec `.json` file
+* `/path/to/jon` - path to your UI spec `.json` file
 * `/path/to/contract/artifacts` - path to the Solidity compiler JSON build
 artifacts folder containing ABIs and bytecodes for your contracts.
 
@@ -38,7 +38,7 @@ and use the ERC20 token UI:
 
 ## Spec validation
 
-When you view a spec, solUI will first validate the spec and immediately
+When you view a UI, solUI will first validate the spec and immediately
 display an error if there are any problems.
 
 (img)
