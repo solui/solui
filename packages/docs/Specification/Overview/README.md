@@ -21,7 +21,7 @@ The general structure of a spec is as follows:
   "title": "...",
   "description": "...",
   "image": { ... },
-  "groups": [ ... ]
+  "panels": [ ... ]
 }
 ```
 
@@ -99,13 +99,13 @@ Base-64 `data:` URLs are also supported:
 }
 ```
 
-**groups**
+**panels**
 
-Interface [groups](../Groups) which define the actual layout.
+Interface [panels](../Panels) which define the actual layout.
 
 ```js
 {
-  "groups": [
+  "panels": [
     { ... },
     { ... },
     ...

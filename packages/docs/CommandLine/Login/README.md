@@ -6,11 +6,8 @@ _Note: This is only required if you wish to publish a UI to the solUI cloud._
 solui login
 ```
 
-This will trigger a browser window to open to the https://solui.dev/login, asking you to
-login. Logging into the solUI backend requires signing a message with your private Ethereum key.
-We recommend having Metamask setup in your browser.
-
-![Login block](../../images/LoginBlock.png)
+This will trigger a browser window to open to the solUI website, asking you to
+login (see [Authentication](../../Publishing/Authentication)).
 
 Once you have logged in the terminal command (above) will finish, and
 an authentication token will be written to `<user home directory>/.solui`.

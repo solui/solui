@@ -5,7 +5,8 @@ A context keeps track of inputs, execution task outputs, validation and
 execution errors, and the current point in the spec being processed so that
 more useful error messages can be returned to the caller.
 
-The `process()` method will return a [RootContext instance](https://github.com/solui/solui/blob/master/packages/processor/src/context.js) once processing is complete. This instance holds both the errors and outputs from the processing flow:
+The `process()` method will return a [RootContext instance](https://github.com/solui/solui/blob/master/packages/processor/src/context.js) once
+processing is complete. This instance holds both the errors and outputs from the processing flow:
 
 ```js
 ctx = await process(...)
@@ -27,49 +28,42 @@ For example, ids for the following spec will be:
   "version": 1,
   "id": "erc20",
   "title": "ERC-20",
-  "groups": [
+  "panels": [
     {
-      /* context id: erc20.create */
-      "id": "create",
-      "title": "Create token",
-      "panels": [
+      /* context id: erc20.panel[createInstance] */
+      "id": "createInstance",
+      "title": "Create new token",
+      "inputs": [
         {
-          /* context id: erc20.create.panel[createInstance] */
-          "id": "createInstance",
-          "title": "Create new token",
-          "inputs": [
-            {
-              /* context id: erc20.create.panel[createInstance].input[name] */
-              "name": "name",
-              "title": "Name",
-              "type": "string",
-              "length": {
-                "min": "5",
-                "max": "100"
-              }
-            },
-          ],
-          "execs": [
-            {
-              /* context id: erc20.create.panel[createInstance].exec[0] */
-              "type": "deploy",
-              "contract": "ERC20",
-              "args": {
-                "_name": "name",
-                "_symbol": "symbol",
-                "_initialSupply": "initialSupply"
-              },
-              "saveResultAs": "contractAddress"
-            }
-          ],
-          "outputs": [
-            {
-              /* context id: erc20.create.panel[createInstance].output[0] */
-              "title": "New contract address",
-              "type": "address",
-              "param": "contractAddress"
-            }
-          ]
+          /* context id: erc20.panel[createInstance].input[name] */
+          "name": "name",
+          "title": "Name",
+          "type": "string",
+          "length": {
+            "min": "5",
+            "max": "100"
+          }
+        },
+      ],
+      "execs": [
+        {
+          /* context id: erc20.panel[createInstance].exec[0] */
+          "type": "deploy",
+          "contract": "ERC20",
+          "args": {
+            "_name": "name",
+            "_symbol": "symbol",
+            "_initialSupply": "initialSupply"
+          },
+          "saveResultAs": "contractAddress"
+        }
+      ],
+      "outputs": [
+        {
+          /* context id: erc20.panel[createInstance].output[0] */
+          "title": "New contract address",
+          "type": "address",
+          "param": "contractAddress"
         }
       ]
     }

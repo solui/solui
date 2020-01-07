@@ -29,14 +29,6 @@ async startUi ()
  */
 async endUi ()
 /**
- * Processing of a UI group has started.
- */
-async startGroup ()
-/**
- * Processing of a UI group has ended.
- */
-async endGroup ()
-/**
  * Processing of a panel has started.
  */
 async startPanel ()
@@ -75,44 +67,38 @@ Take the following spec as an example:
   "version": 1,
   "id": "erc20",
   "title": "ERC-20",
-  "groups": [
+  "panels": [
     {
-      "id": "create",
-      "title": "Create token",
-      "panels": [
+      "id": "createInstance",
+      "title": "Create new token",
+      "inputs": [
         {
-          "id": "createInstance",
-          "title": "Create new token",
-          "inputs": [
-            {
-              "name": "name",
-              "title": "Name",
-              "type": "string",
-              "length": {
-                "min": "5",
-                "max": "100"
-              }
-            },
-          ],
-          "execs": [
-            {
-              "type": "deploy",
-              "contract": "ERC20",
-              "args": {
-                "_name": "name",
-                "_symbol": "symbol",
-                "_initialSupply": "initialSupply"
-              },
-              "saveResultAs": "contractAddress"
-            }
-          ],
-          "outputs": [
-            {
-              "title": "New contract address",
-              "type": "address",
-              "param": "contractAddress"
-            }
-          ]
+          "name": "name",
+          "title": "Name",
+          "type": "string",
+          "length": {
+            "min": "5",
+            "max": "100"
+          }
+        },
+      ],
+      "execs": [
+        {
+          "type": "deploy",
+          "contract": "ERC20",
+          "args": {
+            "_name": "name",
+            "_symbol": "symbol",
+            "_initialSupply": "initialSupply"
+          },
+          "saveResultAs": "contractAddress"
+        }
+      ],
+      "outputs": [
+        {
+          "title": "New contract address",
+          "type": "address",
+          "param": "contractAddress"
         }
       ]
     }
@@ -125,19 +111,15 @@ The processor will invoke the callbacks as such:
 ```js
 startUi('erc20', { ... })
 
-startGroup('create' { ... })
-
 startPanel('createInstance', { ... })
 
-processInput('erc20.create.panel[createInstance]', 'name', { ... })
+processInput('erc20.panel[createInstance]', 'name', { ... })
 
 if (/* inputs are valid and can be mapped to contract methods */) {
-  deployContract('erc20.create.panel[createInstance].exec[0]', { ... })
+  deployContract('erc20.panel[createInstance].exec[0]', { ... })
 }
 
 endPanel('createInstance')
-
-endGroup('create')
 
 endUi('erc20')
 ```
@@ -159,7 +141,7 @@ This includes checking:
 * contract names match what's in the list of artifacts.
 * contract method names and arguments list match what's in the contract ABIs.
 * referenced inputs are valid.
-* panel and group ids are unique.
+* panel ids are unique.
 * textual content (e.g. title) is within minimum and maximum character limits.
 * ...etc
 
@@ -175,9 +157,9 @@ example, the following spec is missing properties:
   "version": 1,
   "id": "bad-spec",
   "title": "bad spec",
-  "groups": [
+  "panels": [
     {
-      "id": "group1"
+      "id": "panel1"
     }
   ]
 }
@@ -186,8 +168,7 @@ example, the following spec is missing properties:
 The validation result will be:
 
 ```
-bad-spec.group1: must have a title
-bad-spec.group1: must have at least 1 panel
+bad-spec.panel[panel1]: title must be set
 ```
 
 ## Input validation
@@ -202,21 +183,20 @@ Input validation includes checking:
 * numbers are within a valid range.
 * ...etc
 
-There are two validation methods provided:
+The validation method is:
 
-* `validateGroupInputs()` - validate [group-level](../../Specification/Groups) inputs.
 * `validatePanel()` - validate a [panel](../../Specification/Panels) inputs.
 
 If an input field is expecting an Ethereum address then its configuration
 usually also specifies one or more of the type of addresses allowed (see [inputs](../../Specification/Inputs)).
 
-If a `web3` instance is passed in to the validation methods (above) then the
+If a `node` instance (see [utils package](https://www.npmjs.com/package/@solui/utils)) is passed in to the validation methods then the
 processor will check on-chain to ensure that any input address values match
 their corresponding allowed types. For example, if the user inputs a contract
 address but the field does not allow contract addresses as input then validation will fail for
 that field.
 
-## Rendering
+## Rendering
 
 The default rendering engine builds a [React](https://reactjs.org) component tree. React was
 chosen due to speed of development and because its component hierarchy maps
@@ -227,12 +207,12 @@ system is platform-agnostic such that any frontend UI library can
 be used. In fact, any platform that supports Javascript execution (e.g. React Native)
 can easily render a spec.
 
-## Execution
+## Execution
 
 Panels are executed by calling the `executePanel()` function:
 
 ```js
-async executePanel ({ artifacts, spec, groupId, panelId, inputs, web3 })
+async executePanel ({ artifacts, spec, panelId, inputs, node })
 ```
 
 The processor first validates the spec and inputs before running through the
@@ -247,3 +227,6 @@ async deployContract ()
 async callMethod ()
 async sendTransaction ()
 ```
+
+Indeed, the `executePanel()` method (above) does exactly this - it internaly calls `process()` and overrides
+the callbacks.

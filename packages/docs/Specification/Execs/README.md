@@ -9,22 +9,17 @@ This allows for the output of an earlier task to be re-used as the input argumen
 ```js
 {
   ...,
-  "groups": [
+  "panels": [
     {
       ...,
-      "panels": [
+      "execs": [
         {
-          ...,
-          "execs": [
-            {
-              "type": "...",
-              "contract": "...",
-              "address": "...",
-              "method": "...",
-              "args": { ... },
-              "saveResultAs": "..."
-            }
-          ]
+          "type": "...",
+          "contract": "...",
+          "address": "...",
+          "method": "...",
+          "args": { ... },
+          "saveResultAs": "..."
         }
       ]
     }
@@ -70,7 +65,6 @@ Example:
 The on-chain address of the contract, specified as one of:
 
 * Name of a panel [input field](../Inputs.md)
-* Name of a group-level [input field](../Inputs.md)
 * The named result of a previous execution task (see `saveResultAs` below).
 
 Example (address is specified as a user input field):
@@ -131,7 +125,6 @@ This is specified as key-value pairs, where the key is the name of contract
 method argument and corresponding value is one of:
 
   * Name of a panel [input field](../Inputs.md)
-  * Name of a group-level [input field](../Inputs.md)
   * The named result of a previous execution task (see `saveResultAs` below).
 
 Example mapping from user inputs:

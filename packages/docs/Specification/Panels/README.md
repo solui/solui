@@ -11,18 +11,13 @@ It may also have user [input fields](../Inputs) to pass input arguments to the
 ```js
 {
   ...,
-  "groups": [
+  "panels": [
     {
-      ...,
-      "panels": [
-        {
-          "id": "...",
-          "title": "...",
-          "inputs": [ ... ],
-          "execs": [ ... ],
-          "outputs": [ ... ]
-        }
-      ]
+      "id": "...",
+      "title": "...",
+      "inputs": [ ... ],
+      "execs": [ ... ],
+      "outputs": [ ... ]
     }
   ]
 }
@@ -34,7 +29,7 @@ It may also have user [input fields](../Inputs) to pass input arguments to the
 
 This should be a human-readable and identifier for the panel, e.g. `deploy-token`. The supported characters are: `A-Z`, `a-z`, `0-9` and `-`. It must be between 3 and 32 characters in length.
 
-This id must be unique amongst all the other panels in the parent group.
+This id must be unique amongst all the other panels in the spec.
 
 Example:
 

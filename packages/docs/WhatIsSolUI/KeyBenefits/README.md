@@ -21,4 +21,3 @@ Here are the key benefits that are realized as a result of this:
   * Users can search for and immediately use UIs within their Dapp browsers.
   * Client API to allow other tools in the wider ecosystem to fetch UI specs and render them locally.
 
-And further improvements are on the way, as outlined in the [roadmap](../Roadmap).

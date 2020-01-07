@@ -46,4 +46,3 @@ Even if you already have a Dapp UI, it might be worth giving your users a solUI
 interface as an fallback in case your hosted Dapp becomes inaccessible at
 any point in time.
 
-Read more about the [key benefits](../KeyBenefits).

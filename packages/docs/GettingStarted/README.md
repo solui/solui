@@ -89,7 +89,26 @@ updated without a page reload!
 If you any mistakes in your spec then solUI will display a friendly error
 pointing out the specific issue.
 
-## Next steps
+Check out the [full specification documentation](../Specification) to learn about
+what else you can diisplay in your new UI.
 
-You are now ready to write and view your own UI specs. Check out the
-[full specification documentation](../Specification) to learn more.
+
+## Publish
+
+Once your UI is ready you can publish it to the solUI cloud so that everyone can
+use it!
+
+First, login:
+
+```shell
+solui login
+```
+
+One logged in, do:
+
+```shell
+solui publish --spec contracts/erc20/ui.json --artifacts build/contracts
+```
+
+The console should output a URL where you can view your IPFS-hosted UI. Read the
+[publishing docs](../../Publishing/Overview) for more information.
