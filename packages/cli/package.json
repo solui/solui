@@ -1,7 +1,7 @@
 {
   "name": "@solui/cli",
   "description": "Declarative UI generation for smart contracts",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "AGPL-3.0-or-later",
   "bin": {
     "solui": "./dist/solui"
@@ -18,11 +18,11 @@
     "@emotion/styled": "^10.0.15",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@hot-loader/react-dom": "^16.9.0",
-    "@solui/graphql": "^0.1.1",
-    "@solui/processor": "^0.1.1",
-    "@solui/react": "^0.1.1",
+    "@solui/graphql": "^0.1.2",
+    "@solui/processor": "^0.1.2",
+    "@solui/react": "^0.1.2",
     "@solui/styles": "^0.1.0",
-    "@solui/utils": "^0.1.1",
+    "@solui/utils": "^0.1.2",
     "axios": "^0.19.0",
     "babel-loader": "^8.0.6",
     "chalk": "^2.4.2",
