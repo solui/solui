@@ -64,7 +64,7 @@ Example:
 
 The on-chain address of the contract, specified as one of:
 
-* Name of a panel [input field](../Inputs.md)
+* Name of a panel [input field](../Inputs.md).
 * The named result of a previous execution task (see `saveResultAs` below).
 
 Example (address is specified as a user input field):
@@ -78,7 +78,7 @@ Example (address is specified as a user input field):
   "execs": [
     {
       ...,
-      "address": "contractAddress"
+      "address": "@input[contractAddress]"
     }
   ]
 }
@@ -97,7 +97,7 @@ Example (address is specified as result of earlier task):
     /* this gets executed second */
     {
       ...,
-      "address": "contractAddress"
+      "address": "@input[contractAddress]"
     }
   ]
 }
@@ -124,10 +124,11 @@ The arguments to pass to the contract method.
 This is specified as key-value pairs, where the key is the name of contract
 method argument and corresponding value is one of:
 
-  * Name of a panel [input field](../Inputs.md)
+  * Name of a panel [input field](../Inputs.md).
   * The named result of a previous execution task (see `saveResultAs` below).
+  * A fixed value.
 
-Example mapping from user inputs:
+Example mapping from user inputs as well as setting a fixed value:
 
 ```js
 {
@@ -141,9 +142,9 @@ Example mapping from user inputs:
      "type": "deploy",
      "contract": "ERC20",
      "args": {
-       "_name": "name",
-       "_symbol": "symbol",
-       "_initialSupply": "initialSupply"
+       "_name": "@input[name]",
+       "_symbol": "@input[symbol]",
+       "_initialSupply": "1000000"
      }
    }
   ]
@@ -164,7 +165,7 @@ Example mapping from result of previous execution:
       "type": "send",
       "method": "setTokenContract",
       "args": {
-        "_address": "newContractAddress",
+        "_address": "@input[newContractAddress]",
       }
       ...,
     }
@@ -191,7 +192,7 @@ Example:
       "type": "send",
       "method": "transfer",
       "args": {
-        "_amount": "currentBalance",
+        "_amount": "@input[currentBalance]",
       }
       ...,
     }

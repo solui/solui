@@ -14,6 +14,7 @@
   * [Overview](Specification/Overview)
   * [Panels](Specification/Panels)
   * [Inputs](Specification/Inputs)
+  * [Input validation](Specification/InputValidation)
   * [Execs](Specification/Execs)
   * [Outputs](Specification/Outputs)
 * [Publishing](Publishing)

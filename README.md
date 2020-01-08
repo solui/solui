@@ -1,8 +1,8 @@
 # solUI
 
-_"Declarative UIs for smart contracts"_
+_"Generate UIs for smart contracts"_
 
-solUI allows you to quickly and easily define, build and deploy user-friendly interfaces for your smart contracts on any chain.
+solUI allows you to quickly and easily define, build and deploy user-friendly interfaces for your smart contracts on any Ethereum chain.
 
 ## Getting started
 
