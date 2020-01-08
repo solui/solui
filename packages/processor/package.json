@@ -1,6 +1,6 @@
 {
   "name": "@solui/processor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Parser and processor for UI specifications",
   "publishConfig": {
     "access": "public"
@@ -34,7 +34,7 @@
   },
   "homepage": "https://solui.dev",
   "dependencies": {
-    "@solui/utils": "^0.1.0"
+    "@solui/utils": "^0.1.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.6.0",
