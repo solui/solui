@@ -11,7 +11,8 @@ npm install @solui/utils
 ```shell
 yarn add @solui/utils
 ```
-## Example usage
+
+## Example usage
 
 ```js
 const { isEthereumAddress } = require('@solui/utils')
@@ -21,7 +22,7 @@ console.log( isEthereumAddress('0x0000000000000000000000000000000000000001') )
 
 [Read full documentation](https://solui.dev/docs/packages/utils).
 
-## License
+## License
 
 Copyright 2019 solUI Contributors
 
