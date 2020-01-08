@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.9](https://github.com/solui/solui/compare/v0.0.8...v0.0.9) (2020-01-08)
+
+
+### Features
+
+* enable validation that refers to other fields ([055f5ff](https://github.com/solui/solui/commit/055f5ff))
+* use better input referencing system ([e2f8fbf](https://github.com/solui/solui/commit/e2f8fbf))
+* validation config is now an array ([8724146](https://github.com/solui/solui/commit/8724146))
+
+
+
+
+
 ## [0.0.8](https://github.com/solui/solui/compare/v0.0.7...v0.0.8) (2019-12-23)
 
 **Note:** Version bump only for package @solui/processor
