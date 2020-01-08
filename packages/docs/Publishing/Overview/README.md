@@ -1,4 +1,4 @@
-All UIs is published to and served from [IPFS](https://ipfs.io), a peer-to-peer decentralized network.
+All UIs are published to and served from [IPFS](https://ipfs.io), a peer-to-peer decentralized network.
 This ensures that your UI will be available as long as at least one IPFS node has a copy of it.
 
 ## Cloud IPFS
