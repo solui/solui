@@ -166,28 +166,6 @@ export const getNetworkInfo = async node => {
   return network
 }
 
-/**
- * Get default account for given node.
- *
- * If the user's permission is required to fetch account addresses then it will
- * be requested first.
- *
- * @param  {Node}  node node.
- * @return {Promise<String>}  Account address.
- */
-export const getDefaultAccount = async node => {
-  if (node.askWalletOwnerForPermissionToViewAccounts) {
-    await node.askWalletOwnerForPermissionToViewAccounts()
-  }
-
-  const [ account ] = await node.listAccounts()
-
-  if (!account) {
-    throw new Error('Unable to get Ethereum address. Ensure your Ethereum wallet is properly initialized.')
-  }
-
-  return account
-}
 
 /**
  * Sign a message.
@@ -197,6 +175,10 @@ export const getDefaultAccount = async node => {
  * @return {Promise<String>}  Signature.
  */
 export const signMessage = async (node, msg) => {
+  if (node.askWalletOwnerForPermissionToViewAccounts) {
+    await node.askWalletOwnerForPermissionToViewAccounts()
+  }
+
   return node.getSigner(0).signMessage(msg)
 }
 
