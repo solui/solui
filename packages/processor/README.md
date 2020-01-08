@@ -32,8 +32,6 @@ const artifacts = {
 
 const web3 = new Web3('https://mainnet.infura.io?token=MYTOKEN')
 
-const groupId = 'id-of-a-group-in-the-spec'
-
 const panelId - 'id-of-a-panel-in-the-group'
 
 const inputs = {
@@ -46,7 +44,6 @@ const outputs = await executePanel({
   spec,
   artifacts,
   web3,
-  groupId,
   panelId,
   inputs,
 })
