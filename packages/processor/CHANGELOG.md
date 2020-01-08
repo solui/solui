@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0](https://github.com/solui/solui/compare/v0.0.9...v0.1.0) (2020-01-08)
+
+**Note:** Version bump only for package @solui/processor
+
+
+
+
+
 ## [0.0.9](https://github.com/solui/solui/compare/v0.0.8...v0.0.9) (2020-01-08)
 
 
