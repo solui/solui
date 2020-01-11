@@ -4333,10 +4333,9 @@ ci-info@^2.0.0:
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"
   integrity sha512-5tK7EtrZ0N+OLFMthtqOj4fI2Jeb88C4CAZPu25LDVUgXJ0A3Js4PMGqrn0JU1W0Mh1/Z8wZzYPxqUrXeBboCQ==
 
-cids@~0.7.0, cids@~0.7.1:
+"cids@https://github.com/rvagg/js-cid.git#8b7f257106167d2ca1340e70e4fde9b6b3a1fbaf", cids@~0.7.0, cids@~0.7.1:
   version "0.7.1"
-  resolved "https://registry.yarnpkg.com/cids/-/cids-0.7.1.tgz#d8bba49a35a0e82110879b5001abf1039c62347f"
-  integrity sha512-qEM4j2GKE/BiT6WdUi6cfW8dairhSLTUE8tIdxJG6SvY33Mp/UPjw+xcO0n1zsllgo72BupzKF/44v+Bg8YPPg==
+  resolved "https://github.com/rvagg/js-cid.git#8b7f257106167d2ca1340e70e4fde9b6b3a1fbaf"
   dependencies:
     class-is "^1.1.0"
     multibase "~0.6.0"
