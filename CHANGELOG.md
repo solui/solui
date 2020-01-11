@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4](https://github.com/solui/solui/compare/v0.2.3...v0.2.4) (2020-01-11)
+
+
+### Bug Fixes
+
+* ipfs http client cids dep ([87f555b](https://github.com/solui/solui/commit/87f555b))
+
+
+
+
+
 ## [0.2.3](https://github.com/solui/solui/compare/v0.2.2...v0.2.3) (2020-01-11)
 
 
