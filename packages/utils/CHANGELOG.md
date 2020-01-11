@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.3](https://github.com/solui/solui/compare/v0.2.2...v0.2.3) (2020-01-11)
+
+
+### Bug Fixes
+
+* use forked version of cids that has import fix ([64257bf](https://github.com/solui/solui/commit/64257bf))
+
+
+
+
+
 ## [0.2.2](https://github.com/solui/solui/compare/v0.2.1...v0.2.2) (2020-01-11)
 
 **Note:** Version bump only for package @solui/utils
