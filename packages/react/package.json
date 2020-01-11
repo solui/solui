@@ -1,6 +1,6 @@
 {
   "name": "@solui/react",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "React UI components for solUI",
   "publishConfig": {
     "access": "public"
