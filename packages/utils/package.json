@@ -48,7 +48,7 @@
     "axios": "^0.19.0",
     "date-fns": "^2.3.0",
     "ethval": "^2.0.0",
-    "ipfs-http-client": "^40.0.0",
+    "ipfs-http-client": "^40.2.1",
     "lodash.camelcase": "^4.3.0",
     "lodash.foreach": "^4.5.0",
     "lodash.get": "^4.4.2",
