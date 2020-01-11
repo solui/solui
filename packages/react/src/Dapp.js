@@ -116,7 +116,7 @@ const Dapp = ({
   return (
     <Container className={className}>
       <InnerContainer>
-        {(!network) ? <StyledProgress>Waiting for Ethereum network connection</StyledProgress> : (
+        {(!network) ? <StyledProgress>Waiting for Ethereum network connection (please check your browser/Metamask!)</StyledProgress> : (
           <div>
             <TopBar>
               <NetworkInfoLabel network={network} />
