@@ -1,11 +1,10 @@
 import path from 'path'
 import webpack from 'webpack'
-import findNodeModules from 'find-node-modules'
 import WebpackDevServer from 'webpack-dev-server'
 import VirtualModulesPlugin from 'webpack-virtual-modules'
 import { assertSpecValid } from '@solui/processor'
 
-import { BUILD_FOLDER, createConfig } from './webpack.config'
+import { FRONTEND_FOLDER, BUILD_FOLDER, createConfig } from './webpack.config'
 
 class Viewer {
   constructor ({ port, artifacts, spec, verbose }) {
@@ -16,11 +15,9 @@ class Viewer {
   }
 
   async start () {
-    const [ nodeModulesPath ] = findNodeModules()
-
     this.virtualModules = new VirtualModulesPlugin({
-      [ path.join(nodeModulesPath, 'artifacts.json') ]: JSON.stringify(this.artifacts),
-      [ path.join(nodeModulesPath, 'spec.json') ]: JSON.stringify(this.spec),
+      [ this._getArtifactsModulePath() ]: JSON.stringify(this.artifacts),
+      [ this._getSpecModulePath() ]: JSON.stringify(this.spec),
     })
 
     const config = createConfig({ virtualModules: this.virtualModules })
@@ -70,12 +67,12 @@ class Viewer {
 
   updateSpec (newSpec) {
     this.spec = newSpec
-    this.virtualModules.writeModule('node_modules/spec.json', JSON.stringify(this.spec))
+    this.virtualModules.writeModule(this._getSpecModulePath(), JSON.stringify(this.spec))
   }
 
   updateArtifacts (newArtifacts) {
     this.artifacts = newArtifacts
-    this.virtualModules.writeModule('node_modules/artifacts.json', JSON.stringify(this.artifacts))
+    this.virtualModules.writeModule(this._getArtifactsModulePath(), JSON.stringify(this.artifacts))
   }
 
   getLocalEndpoint () {
@@ -84,6 +81,14 @@ class Viewer {
 
   getEndpoint () {
     return `http://0.0.0.0:${this.port}`
+  }
+
+  _getArtifactsModulePath () {
+    return path.join(FRONTEND_FOLDER, 'artifacts.json')
+  }
+
+  _getSpecModulePath() {
+    return path.join(FRONTEND_FOLDER, 'spec.json')
   }
 }
 
