@@ -4,7 +4,7 @@ import WebpackDevServer from 'webpack-dev-server'
 import VirtualModulesPlugin from 'webpack-virtual-modules'
 import { assertSpecValid } from '@solui/processor'
 
-import { BUILD_FOLDER, createConfig } from './webpack.config'
+import { FRONTEND_FOLDER, BUILD_FOLDER, createConfig } from './webpack.config'
 
 class Viewer {
   constructor ({ port, artifacts, spec, verbose }) {
@@ -15,11 +15,9 @@ class Viewer {
   }
 
   async start () {
-    const nodeModulesPath = path.join(process.cwd(), 'node_modules')
-
     this.virtualModules = new VirtualModulesPlugin({
-      [ path.join(nodeModulesPath, 'artifacts.json') ]: JSON.stringify(this.artifacts),
-      [ path.join(nodeModulesPath, 'spec.json') ]: JSON.stringify(this.spec),
+      [ path.join(FRONTEND_FOLDER, 'artifacts.json') ]: JSON.stringify(this.artifacts),
+      [ path.join(FRONTEND_FOLDER, 'spec.json') ]: JSON.stringify(this.spec),
     })
 
     const config = createConfig({ virtualModules: this.virtualModules })

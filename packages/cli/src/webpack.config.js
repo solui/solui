@@ -4,7 +4,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 
 const BASE_FOLDER = path.join(__dirname, '..')
-const FRONTEND_FOLDER = path.join(__dirname, 'frontend')
+export const FRONTEND_FOLDER = path.join(__dirname, 'frontend')
 export const BUILD_FOLDER = path.join(__dirname, '..', 'build')
 
 export const createConfig = ({ virtualModules }) => ({
