@@ -1,7 +1,7 @@
 {
 	"name": "@solui/cli",
 	"description": "Declarative UI generation for smart contracts",
-	"version": "0.2.8",
+	"version": "0.2.9",
 	"license": "AGPL-3.0-or-later",
 	"bin": {
 		"solui": "./dist/solui"
