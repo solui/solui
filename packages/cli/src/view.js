@@ -1,3 +1,4 @@
+import path from 'path'
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
 import VirtualModulesPlugin from 'webpack-virtual-modules'
@@ -14,9 +15,11 @@ class Viewer {
   }
 
   async start () {
+    const nodeModulesPath = path.join(process.cwd(), 'node_modules')
+
     this.virtualModules = new VirtualModulesPlugin({
-      'node_modules/artifacts.json': JSON.stringify(this.artifacts),
-      'node_modules/spec.json': JSON.stringify(this.spec),
+      [ path.join(nodeModulesPath, 'artifacts.json') ]: JSON.stringify(this.artifacts),
+      [ path.join(nodeModulesPath, 'spec.json') ]: JSON.stringify(this.spec),
     })
 
     const config = createConfig({ virtualModules: this.virtualModules })
