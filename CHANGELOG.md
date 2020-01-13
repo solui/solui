@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.8](https://github.com/solui/solui/compare/v0.2.7...v0.2.8) (2020-01-13)
+
+
+### Bug Fixes
+
+* try and fix path to virtual modules (2) ([51a6b26](https://github.com/solui/solui/commit/51a6b269b03d63519d35d2a5563fca337a185ca9))
+
+
+
+
+
 ## [0.2.7](https://github.com/solui/solui/compare/v0.2.6...v0.2.7) (2020-01-13)
 
 
