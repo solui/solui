@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.5](https://github.com/solui/solui/compare/v0.2.4...v0.2.5) (2020-01-13)
+
+
+### Bug Fixes
+
+* add package lock for cli to see if that enables npm install to work ([5770ffd](https://github.com/solui/solui/commit/5770ffd))
+
+
+
+
+
 ## [0.2.4](https://github.com/solui/solui/compare/v0.2.3...v0.2.4) (2020-01-11)
 
 
