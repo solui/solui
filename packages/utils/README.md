@@ -10,10 +10,6 @@ _Note: This relies on a forked version of the [IPFS HTTP Client](https://github.
 npm install @solui/utils
 ```
 
-```shell
-yarn add @solui/utils
-```
-
 ## Example usage
 
 ```js

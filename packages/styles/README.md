@@ -13,10 +13,6 @@ Styling utilities for [solUI](https://solui.dev):
 npm install @solui/styles
 ```
 
-```shell
-yarn add @solui/styles
-```
-
 ## Example usage
 
 Asynchronously loading and using fonts, along with theming system:

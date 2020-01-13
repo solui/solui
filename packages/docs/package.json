@@ -30,5 +30,22 @@
   },
   "bugs": {
     "url": "https://github.com/solui/solui/issues"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.0",
+    "@babel/node": "^7.8.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.0",
+    "@babel/plugin-proposal-export-default-from": "^7.8.0",
+    "@babel/preset-env": "^7.8.2",
+    "babel-eslint": "^10.0.3",
+    "core-js": "^3.6.3",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
+    "eslint-plugin-standard": "^4.0.1"
   }
 }

@@ -5,12 +5,6 @@ To start using solUI first install the command-line interface, which is a
 npm install -g @solui/cli
 ```
 
-Or if you're using Yarn:
-
-```shell
-yarn global add @solui/cli
-```
-
 ## Setup local network
 
 You can use solUI on the Ethereum mainnet or any of the test networks, but for
@@ -46,14 +40,14 @@ Clone the demo repository and set it up:
 ```shell
 git clone https://github.com/solui/demo.git
 cd demo
-yarn
+npm install
 ```
 
 Compile and deploy the demo contracts to build the contract JSON artifacts:
 
 ```shell
-yarn truffle compile
-yarn truffle migrate
+npm run truffle compile
+npm run truffle migrate
 ```
 
 Now view the ERC-20 UI:

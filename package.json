@@ -30,11 +30,8 @@
     "standard-version": "^7.0.0"
   },
   "license": "AGPL-3.0-or-later",
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "bootstrap": "lerna bootstrap --use-workspaces",
+    "bootstrap": "lerna bootstrap",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "prepare-release": "./scripts/prepare-release.sh",
     "release": "./scripts/release.sh"

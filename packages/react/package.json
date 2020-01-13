@@ -7,8 +7,9 @@
   },
   "scripts": {
     "clean": "rm -rf ./dist && mkdir ./dist",
-    "build": "yarn clean && babel ./src --out-dir ./dist",
-    "watch": "yarn build --watch"
+    "compile": "babel ./src --out-dir ./dist",
+    "build": "npm run clean && npm run compile",
+    "watch": "npm run clean && npm run compile -- --watch"
   },
   "keywords": [
     "parser",
@@ -34,9 +35,22 @@
   },
   "homepage": "https://solui.dev",
   "devDependencies": {
+    "@babel/cli": "^7.8.0",
+    "@babel/node": "^7.8.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.0",
+    "@babel/plugin-proposal-export-default-from": "^7.8.0",
     "@babel/preset-env": "^7.6.0",
     "@babel/preset-react": "^7.0.0",
-    "core-js": "^3.2.1"
+    "babel-eslint": "^10.0.3",
+    "core-js": "^3.2.1",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
+    "eslint-plugin-standard": "^4.0.1"
   },
   "dependencies": {
     "@emotion/core": "^10.0.17",
@@ -49,7 +63,7 @@
     "@solui/styles": "^0.2.0",
     "@solui/utils": "^0.2.4",
     "clipboard-polyfill": "^2.8.6",
-    "emotion-theming": "^10.0.19",
+    "emotion-theming": "^10.0.27",
     "prop-types": "^15.7.2",
     "react-svg": "^10.0.20",
     "react-tooltip": "^3.11.1",
@@ -60,7 +74,6 @@
   },
   "peerDependencies": {
     "react": "^16.9.0",
-    "react-apollo": "^3.1.1",
     "react-dom": "^16.9.0"
   }
 }

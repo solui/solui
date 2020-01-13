@@ -15,14 +15,14 @@ Clone the demo repository and set it up:
 ```shell
 git clone https://github.com/solui/demo.git
 cd demo
-yarn
+npm install
 ```
 
 Compile and deploy the demo contracts:
 
 ```shell
-yarn truffle compile
-yarn truffle migrate
+npm run truffle compile
+npm run truffle migrate
 ```
 
 Now view the interface:

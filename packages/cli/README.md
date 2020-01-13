@@ -10,10 +10,6 @@ Use this to both develop and publish UI specs.
 npm install -g @solui/cli
 ```
 
-```shell
-yarn global add @solui/cli
-```
-
 ## Example usage
 
 Render a local UI spec:

@@ -7,8 +7,9 @@
   },
   "scripts": {
     "clean": "rm -rf ./dist && mkdir ./dist",
-    "build": "yarn clean && babel ./src --out-dir ./dist",
-    "watch": "yarn build --watch"
+    "compile": "babel ./src --out-dir ./dist",
+    "build": "npm run clean && npm run compile",
+    "watch": "npm run clean && npm run compile -- --watch"
   },
   "keywords": [
     "graphql",
@@ -35,8 +36,21 @@
   },
   "homepage": "https://solui.dev",
   "devDependencies": {
+    "@babel/cli": "^7.8.0",
+    "@babel/node": "^7.8.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.0",
+    "@babel/plugin-proposal-export-default-from": "^7.8.0",
     "@babel/preset-env": "^7.6.0",
-    "core-js": "^3.2.1"
+    "babel-eslint": "^10.0.3",
+    "core-js": "^3.2.1",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
+    "eslint-plugin-standard": "^4.0.1"
   },
   "dependencies": {
     "@solui/utils": "^0.2.4",

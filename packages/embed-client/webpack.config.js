@@ -3,9 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
-const SRC_FOLDER = path.join(__dirname, 'src')
-const BUILD_FOLDER = path.join(__dirname, 'build')
-const STATS_FOLDER = path.join(__dirname, 'build-stats')
+const BASE_FOLDER = __dirname
+const SRC_FOLDER = path.join(BASE_FOLDER, 'src')
+const BUILD_FOLDER = path.join(BASE_FOLDER, 'build')
+const STATS_FOLDER = path.join(BASE_FOLDER, 'build-stats')
 
 module.exports = {
   mode: 'production',
@@ -50,6 +51,9 @@ module.exports = {
   },
   resolve: {
     extensions: [ '*', '.js', '.jsx' ],
+    alias: {
+      react: path.resolve(path.join(BASE_FOLDER, 'node_modules/react')),
+    }
   },
   devtool: 'false',
   plugins: [

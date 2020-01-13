@@ -1,72 +1,90 @@
 {
-  "name": "@solui/cli",
-  "description": "Declarative UI generation for smart contracts",
-  "version": "0.2.5",
-  "license": "AGPL-3.0-or-later",
-  "bin": {
-    "solui": "./dist/solui"
-  },
-  "files": [
-    "dist"
-  ],
-  "dependencies": {
-    "@babel/core": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/register": "^7.4.4",
-    "@emotion/core": "^10.0.16",
-    "@emotion/styled": "^10.0.15",
-    "@fortawesome/fontawesome-svg-core": "^1.2.25",
-    "@hot-loader/react-dom": "^16.9.0",
-    "@solui/graphql": "^0.2.4",
-    "@solui/processor": "^0.2.4",
-    "@solui/react": "^0.2.4",
-    "@solui/styles": "^0.2.0",
-    "@solui/utils": "^0.2.4",
-    "axios": "^0.19.0",
-    "babel-loader": "^8.0.6",
-    "chalk": "^2.4.2",
-    "chokidar": "^3.0.2",
-    "clean-webpack-plugin": "^3.0.0",
-    "clipboard-polyfill": "^2.8.6",
-    "color": "^3.1.2",
-    "command-line-args": "^5.1.1",
-    "command-line-usage": "^6.0.2",
-    "core-js": "^3.2.1",
-    "css-loader": "^3.2.0",
-    "dotenv": "^8.1.0",
-    "dotenv-stringify": "^2.0.1",
-    "emotion-theming": "^10.0.18",
-    "envalid": "^5.0.0",
-    "glob": "^7.1.4",
-    "home": "^2.0.0",
-    "html-webpack-plugin": "^3.2.0",
-    "open": "^6.4.0",
-    "react": "^16.8.6",
-    "react-hot-loader": "^4.12.12",
-    "style-loader": "^1.0.0",
-    "uuid": "^3.3.3",
-    "webpack": "^4.39.3",
-    "webpack-dev-server": "^3.8.0",
-    "webpack-virtual-modules": "^0.1.11"
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "clean": "rm -rf ./dist && mkdir -p ./dist/frontend",
-    "prebuild": "cp ./src/solui ./dist && cp ./src/frontend/index.html ./dist/frontend",
-    "build": "yarn clean && yarn prebuild && babel ./src --out-dir ./dist",
-    "watch": "yarn build --watch"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/solui/solui.git"
-  },
-  "bugs": {
-    "url": "https://github.com/solui/solui/issues"
-  },
-  "author": "Ramesh Nair <ram@hiddentao.com>",
-  "homepage": "https://solui.dev"
+	"name": "@solui/cli",
+	"description": "Declarative UI generation for smart contracts",
+	"version": "0.2.5",
+	"license": "AGPL-3.0-or-later",
+	"bin": {
+		"solui": "./dist/solui"
+	},
+	"files": [
+		"dist"
+	],
+	"dependencies": {
+		"@babel/core": "^7.4.4",
+		"@babel/preset-env": "^7.4.4",
+		"@babel/preset-react": "^7.0.0",
+		"@babel/register": "^7.4.4",
+		"@emotion/core": "^10.0.16",
+		"@emotion/styled": "^10.0.15",
+		"@fortawesome/fontawesome-svg-core": "^1.2.25",
+		"@hot-loader/react-dom": "^16.9.0",
+		"@solui/graphql": "^0.2.4",
+		"@solui/processor": "^0.2.4",
+		"@solui/react": "^0.2.4",
+		"@solui/utils": "^0.2.4",
+		"axios": "^0.19.0",
+		"babel-loader": "^8.0.6",
+		"chalk": "^2.4.2",
+		"chokidar": "^3.0.2",
+		"clean-webpack-plugin": "^3.0.0",
+		"clipboard-polyfill": "^2.8.6",
+		"color": "^3.1.2",
+		"command-line-args": "^5.1.1",
+		"command-line-usage": "^6.0.2",
+		"core-js": "^3.2.1",
+		"css-loader": "^3.2.0",
+		"dotenv": "^8.1.0",
+		"dotenv-stringify": "^2.0.1",
+		"emotion-theming": "^10.0.18",
+		"envalid": "^5.0.0",
+		"glob": "^7.1.4",
+		"home": "^2.0.0",
+		"html-webpack-plugin": "^3.2.0",
+		"open": "^6.4.0",
+		"react": "^16.12.0",
+		"react-dom": "^16.12.0",
+		"react-hot-loader": "^4.12.12",
+		"style-loader": "^1.0.0",
+		"uuid": "^3.3.3",
+		"webpack": "^4.39.3",
+		"webpack-dev-server": "^3.8.0",
+		"webpack-virtual-modules": "^0.1.11"
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"clean": "rm -rf ./dist && mkdir -p ./dist/frontend",
+		"prebuild": "cp ./src/solui ./dist && cp ./src/frontend/index.html ./dist/frontend",
+		"compile": "babel ./src --out-dir ./dist",
+		"build": "npm run clean && npm run prebuild && npm run compile",
+		"watch": "npm run compile -- --watch"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/solui/solui.git"
+	},
+	"bugs": {
+		"url": "https://github.com/solui/solui/issues"
+	},
+	"author": "Ramesh Nair <ram@hiddentao.com>",
+	"homepage": "https://solui.dev",
+	"devDependencies": {
+		"@babel/cli": "^7.8.0",
+		"@babel/node": "^7.8.0",
+		"@babel/plugin-proposal-class-properties": "^7.8.0",
+		"@babel/plugin-proposal-export-default-from": "^7.8.0",
+		"@babel/preset-env": "^7.8.2",
+		"babel-eslint": "^10.0.3",
+		"core-js": "^3.6.3",
+		"eslint": "^6.8.0",
+		"eslint-config-airbnb-base": "^14.0.0",
+		"eslint-plugin-import": "^2.20.0",
+		"eslint-plugin-node": "^11.0.0",
+		"eslint-plugin-promise": "^4.2.1",
+		"eslint-plugin-react": "^7.17.0",
+		"eslint-plugin-react-hooks": "^2.3.0",
+		"eslint-plugin-standard": "^4.0.1"
+	}
 }

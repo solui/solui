@@ -14,7 +14,7 @@ _Note: This package does not get published to NPM_.
 To build the production code into the `build/` folder:
 
 ```shell
-yarn build
+npm run build
 ```
 
 ### Testing
@@ -23,7 +23,7 @@ To test out the UI generator with a UI spec first let's serve up the built code
 via a local static HTTP webserver at http://localhost:5000:
 
 ```shell
-yarn serve
+npm run serve
 ```
 
 Now ensure you have previously published a UI spec. You will need its IPFS
@@ -41,11 +41,11 @@ http://localhost:5000#https://ipfs.infura.io/ipfs/QmbbNiqTrymoCo4n6PttvMRh3q6RQ1
 To publish the code to local IPFS:
 
 ```
-yarn publish:local
+npm run publish:local
 ```
 
 To publish to Temporal IPFS:
 
 ```
-TEMPORAL_PASSWORD='...password...' yarn publish:cloud
+TEMPORAL_PASSWORD='...password...' npm run publish:cloud
 ```

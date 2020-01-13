@@ -3,6 +3,7 @@ import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 
+const BASE_FOLDER = path.join(__dirname, '..')
 const FRONTEND_FOLDER = path.join(__dirname, 'frontend')
 export const BUILD_FOLDER = path.join(__dirname, '..', 'build')
 
@@ -50,6 +51,7 @@ export const createConfig = ({ virtualModules }) => ({
   resolve: {
     extensions: [ '*', '.js', '.jsx' ],
     alias: {
+      react: path.resolve(path.join(BASE_FOLDER, 'node_modules/react')),
       'react-dom': '@hot-loader/react-dom',
     },
   },
