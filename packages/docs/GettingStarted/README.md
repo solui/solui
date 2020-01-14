@@ -59,7 +59,7 @@ solui view --spec contracts/erc20/ui.json --artifacts build/contracts
 Open up the browser to http://localhost:3001 and you will now be able to view
 and use the ERC20 token UI:
 
-(img)
+![Demo UI](../images/DemoUi.png)
 
 ## Make some changes
 
@@ -77,8 +77,9 @@ property:
 }
 ```
 
-Switch to the browser window and notice that the UI title has now been instantly
-updated without a page reload!
+Switch to the browser window and notice that the UI title has automatically been updated without a
+page reload! Changes to the contract build artifacts also get picked up automatically, so you can
+compile new versions of your contracts and the UI will auto-reload them in.
 
 If you any mistakes in your spec then solUI will display a friendly error
 pointing out the specific issue.
