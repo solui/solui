@@ -1,6 +1,6 @@
 {
   "name": "@solui/styles",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "Styling helpers for solUI frontend rendering",
   "publishConfig": {
     "access": "public"
