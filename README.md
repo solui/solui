@@ -17,7 +17,7 @@ codebase itself and contribute improvements**
 Bootstrap the [monorepo](https://lerna.js.org/):
 
 ```shell
-$ yarn bootstrap
+$ npm run bootstrap
 ```
 
 At this point you can go into [individual packages](./packages) and test them out.
