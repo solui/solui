@@ -14,7 +14,7 @@ Here are the key benefits that are realized as a result of this:
   * Output from earlier method calls can be automatically be re-used as inputs to later calls.
 * **Platform-agnostic rendering, validation and testing**
   * Platform-agnostic (can render to web, mobile, desktop, ...).
-  * Headless execution is also supported, making [UI testing](../../Processor/HeadlessExecution) a breeze.
+  * Headless execution is also supported, making [UI testing](../../AdvancedUsage/HeadlessTesting) a breeze.
   * Validate user input (e.g. contract addresses) with on-chain data checking.
 * **Online repository for easy publishing and hosting**
   * [Publishing system](../../Publishing) to enable developers to share their UIs with a wider audience.
