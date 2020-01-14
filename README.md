@@ -37,7 +37,7 @@ README.md.
 Update version:
 
 ```
-$ npm run prepare-release -- <x.y.z>
+$ npm run prepare-release
 ```
 
 Publish NPM packages:
