@@ -11,5 +11,5 @@ cd ../cli && yarn build
 
 cd ../..
 
-lerna version --conventional-commits
+lerna version --conventional-commits $1
 
