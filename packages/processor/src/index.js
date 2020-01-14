@@ -211,6 +211,8 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) =
         processInput: id => inputs[id],
         sendTransaction: async (id, { contract, abi, method, address, args }) => {
           try {
+            await node.askWalletOwnerForPermissionToViewAccounts()
+
             const contractInstance = await getContractAt({ abi, node, address })
 
             const tx = await (contractInstance[method](...args))
@@ -225,6 +227,8 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) =
         },
         callMethod: async (id, { contract, abi, method, address, args }) => {
           try {
+            await node.askWalletOwnerForPermissionToViewAccounts()
+
             const contractInstance = await getContractAt({ abi, node, address })
 
             return contractInstance[method](...args)
@@ -235,6 +239,8 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) =
         },
         deployContract: async (id, { contract, abi, bytecode, args }) => {
           try {
+            await node.askWalletOwnerForPermissionToViewAccounts()
+
             const deployer = await getContractDeployer({ abi, bytecode, node })
 
             const inst = await deployer.deploy(...args)

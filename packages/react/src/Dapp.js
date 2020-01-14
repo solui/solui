@@ -55,7 +55,6 @@ const Dapp = ({
   validatePanel,
   executePanel,
   embedUrl,
-  sourceUrl,
 }) => {
   const [ buildResult, setBuildResult ] = useState()
 
@@ -116,13 +115,15 @@ const Dapp = ({
   return (
     <Container className={className}>
       <InnerContainer>
-        {(!network) ? <StyledProgress>Waiting for Ethereum network connection</StyledProgress> : (
+        {(!network) ? <StyledProgress>Waiting for Ethereum network connection (please check your browser/Metamask!)</StyledProgress> : (
           <div>
             <TopBar>
               <NetworkInfoLabel network={network} />
-              {(embedUrl && sourceUrl) ? (
-                <StyledMenu embedUrl={embedUrl} sourceUrl={sourceUrl} />
-              ) : null}
+              <StyledMenu
+                embedUrl={embedUrl}
+                spec={spec}
+                artifacts={artifacts}
+              />
             </TopBar>
             {/* eslint-disable-next-line no-nested-ternary */}
             {(!buildResult) ? <StyledProgress>Rendering...</StyledProgress> : (

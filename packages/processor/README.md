@@ -12,10 +12,6 @@ Parser and processor for [solUI](https://solui.dev):
 npm install @solui/processor
 ```
 
-```shell
-yarn add @solui/processor
-```
-
 ## Example usage
 
 Execute a panel programmatically:

@@ -2,14 +2,12 @@
 
 This is a utility belt library for [solUI](https://solui.dev).
 
+_Note: This relies on a forked version of the [IPFS HTTP Client](https://github.com/solui/js-ipfs-http-client/tree/fix_cids_import)_.
+
 ## Installation
 
 ```shell
 npm install @solui/utils
-```
-
-```shell
-yarn add @solui/utils
 ```
 
 ## Example usage

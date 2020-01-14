@@ -1,6 +1,6 @@
 {
   "name": "@solui/utils",
-  "version": "0.1.2",
+  "version": "0.3.0",
   "description": "Utilities package for solUI",
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "homepage": "https://solui.dev",
@@ -23,8 +23,9 @@
   },
   "scripts": {
     "clean": "rm -rf ./dist && mkdir ./dist",
-    "build": "yarn clean && babel ./src --out-dir ./dist",
-    "watch": "yarn build --watch"
+    "compile": "babel ./src --out-dir ./dist",
+    "build": "npm run clean && npm run compile",
+    "watch": "npm run clean && npm run compile -- --watch"
   },
   "repository": {
     "type": "git",
@@ -34,8 +35,21 @@
     "url": "https://github.com/solui/solui/issues"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.6.0",
-    "core-js": "^3.2.1"
+    "@babel/cli": "^7.8.0",
+    "@babel/node": "^7.8.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.0",
+    "@babel/plugin-proposal-export-default-from": "^7.8.0",
+    "@babel/preset-env": "^7.8.2",
+    "babel-eslint": "^10.0.3",
+    "core-js": "^3.6.3",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
+    "eslint-plugin-standard": "^4.0.1"
   },
   "dependencies": {
     "@ethersproject/address": "^5.0.0-beta.133",
@@ -48,7 +62,7 @@
     "axios": "^0.19.0",
     "date-fns": "^2.3.0",
     "ethval": "^2.0.0",
-    "ipfs-http-client": "^40.0.0",
+    "ipfs-http-client": "https://github.com/solui/js-ipfs-http-client.git#a95b376e58416701fce3eb0c8715652d78ef1e54",
     "lodash.camelcase": "^4.3.0",
     "lodash.foreach": "^4.5.0",
     "lodash.get": "^4.4.2",

@@ -3,6 +3,60 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/solui/solui/compare/v0.2.11...v0.3.0) (2020-01-14)
+
+**Note:** Version bump only for package @solui/utils
+
+
+
+
+
+## [0.2.6](https://github.com/solui/solui/compare/v0.2.5...v0.2.6) (2020-01-13)
+
+**Note:** Version bump only for package @solui/utils
+
+
+
+
+
+## [0.2.4](https://github.com/solui/solui/compare/v0.2.3...v0.2.4) (2020-01-11)
+
+
+### Bug Fixes
+
+* ipfs http client cids dep ([87f555b](https://github.com/solui/solui/commit/87f555b))
+
+
+
+
+
+## [0.2.3](https://github.com/solui/solui/compare/v0.2.2...v0.2.3) (2020-01-11)
+
+
+### Bug Fixes
+
+* use forked version of cids that has import fix ([64257bf](https://github.com/solui/solui/commit/64257bf))
+
+
+
+
+
+## [0.2.2](https://github.com/solui/solui/compare/v0.2.1...v0.2.2) (2020-01-11)
+
+**Note:** Version bump only for package @solui/utils
+
+
+
+
+
+# [0.2.0](https://github.com/solui/solui/compare/v0.1.2...v0.2.0) (2020-01-11)
+
+**Note:** Version bump only for package @solui/utils
+
+
+
+
+
 ## [0.1.2](https://github.com/solui/solui/compare/v0.1.1...v0.1.2) (2020-01-08)
 
 

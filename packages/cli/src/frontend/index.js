@@ -6,8 +6,8 @@ import React from 'react'
 // wepback will alias this to @hot-loader/react-dom
 import ReactDOM from 'react-dom'
 // these modules will be dynamically generated using webpack
-import spec from 'spec.json'
-import artifacts from 'artifacts.json'
+import spec from './spec.json'
+import artifacts from './artifacts.json'
 /* eslint-enable import/no-unresolved */
 /* eslint-enable import/no-extraneous-dependencies */
 

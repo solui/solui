@@ -1,13 +1,7 @@
-You can install the command-line interface using `npm` or `yarn`:
+You can install the command-line interface:
 
 ```shell
 npm install -g @solui/cli
-```
-
-Or if you're using Yarn:
-
-```shell
-yarn global add @solui/cli
 ```
 
 To check that it's working run:

@@ -7,11 +7,7 @@
 _(Note: peer dependencies must also be installed)_
 
 ```shell
-npm install @solui/react react react-apollo react-dom
-```
-
-```shell
-yarn add @solui/react react react-apollo react-dom
+npm install @solui/react react react-dom
 ```
 
 ## Example usage

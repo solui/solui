@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/solui/solui/compare/v0.2.11...v0.3.0) (2020-01-14)
+
+
+### Features
+
+* 'about this app' link in embed menu ([ebb2385](https://github.com/solui/solui/commit/ebb2385d2e60dfab049637911ad7691cef4a600b))
+
+
+
+
+
+## [0.2.6](https://github.com/solui/solui/compare/v0.2.5...v0.2.6) (2020-01-13)
+
+**Note:** Version bump only for package @solui/docs
+
+
+
+
+
+# [0.2.0](https://github.com/solui/solui/compare/v0.1.2...v0.2.0) (2020-01-11)
+
+**Note:** Version bump only for package @solui/docs
+
+
+
+
+
 ## [0.1.1](https://github.com/solui/solui/compare/v0.1.0...v0.1.1) (2020-01-08)
 
 **Note:** Version bump only for package @solui/docs

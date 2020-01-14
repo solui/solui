@@ -14,10 +14,6 @@ GraphQL utilities for [solUI](https://solui.dev):
 npm install @solui/graphql
 ```
 
-```shell
-yarn add @solui/graphql
-```
-
 ## Example usage
 
 Search for packages by keyword:
