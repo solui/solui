@@ -55,7 +55,6 @@ const Dapp = ({
   validatePanel,
   executePanel,
   embedUrl,
-  sourceUrl,
 }) => {
   const [ buildResult, setBuildResult ] = useState()
 
@@ -120,9 +119,11 @@ const Dapp = ({
           <div>
             <TopBar>
               <NetworkInfoLabel network={network} />
-              {(embedUrl && sourceUrl) ? (
-                <StyledMenu embedUrl={embedUrl} sourceUrl={sourceUrl} />
-              ) : null}
+              <StyledMenu
+                embedUrl={embedUrl}
+                spec={spec}
+                artifacts={artifacts}
+              />
             </TopBar>
             {/* eslint-disable-next-line no-nested-ternary */}
             {(!buildResult) ? <StyledProgress>Rendering...</StyledProgress> : (

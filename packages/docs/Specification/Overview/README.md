@@ -21,6 +21,7 @@ The general structure of a spec is as follows:
   "title": "...",
   "description": "...",
   "image": { ... },
+  "aboutUrl": "...",
   "panels": [ ... ]
 }
 ```
@@ -81,6 +82,8 @@ Example:
 
 An image which appears to display alongside the UI title.
 
+Example:
+
 ```js
 {
   "image": {
@@ -99,9 +102,27 @@ Base-64 `data:` URLs are also supported:
 }
 ```
 
+
+**aboutUrl** _(optional)_
+
+If set then the _About this app_ item will show in the menu, linking to this URL:
+
+![About app](../../images/AboutApp.png)
+
+Example:
+
+```js
+{
+  "aboutUrl": "https://github.com/solui/demo"
+}
+```
+
+
 **panels**
 
 Interface [panels](../Panels) which define the actual layout.
+
+Example:
 
 ```js
 {

@@ -1,5 +1,5 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
 import * as clipboard from 'clipboard-polyfill'
 import styled from '@emotion/styled'
 import { flex, boxShadow } from '@solui/styles'
@@ -36,7 +36,7 @@ const MenuDiv = styled.ul`
   }
 `
 
-const EmbedContainer = styled.div`
+const ModalContainer = styled.div`
   ${flex({ direction: 'column', justify: 'flex-start', align: 'center' })};
 
   p {
@@ -57,22 +57,37 @@ const EmbedContainer = styled.div`
  * Render embed label.
  * @return {ReactElement}
  */
-const Menu = ({ className, embedUrl, sourceUrl }) => {
-  const [ modalOpen, setModalOpen ] = useState(false)
+const Menu = ({ className, embedUrl, spec, artifacts }) => {
+  const [ embedModalOpen, setEmbedModalOpen ] = useState(false)
+  const [ sourceModalOpen, setSourceModalOpen ] = useState(false)
   const [ menuOpen, setMenuOpen ] = useState(false)
 
-  const viewSourceCode = useCallback(() => {
-    window.open(sourceUrl, '_blank')
-  }, [ sourceUrl ])
+  const rawSource = useMemo(() => JSON.stringify({ spec, artifacts }, null, 2), [ spec, artifacts ])
+  const aboutUrl = useMemo(() => (spec ? spec.aboutUrl : null), [ spec ])
 
-  const showEmbedModal = useCallback(() => {
-    setModalOpen(true)
+  const viewAboutThisApp = useCallback(() => {
+    if (aboutUrl) {
+      window.open(aboutUrl, '_blank')
+    }
+  }, [ aboutUrl ])
+
+  const viewEmbedUrl = useCallback(() => {
+    setEmbedModalOpen(true)
   }, [])
 
-  const copyToClipboard = useCallback(() => {
+  const viewRawSource = useCallback(() => {
+    setSourceModalOpen(true)
+  }, [])
+
+  const copyEmbedUrlToClipboard = useCallback(() => {
     clipboard.writeText(embedUrl)
-    setModalOpen(false)
+    setEmbedModalOpen(false)
   }, [ embedUrl ])
+
+  const copySourceToClipboard = useCallback(() => {
+    clipboard.writeText(rawSource)
+    setSourceModalOpen(false)
+  }, [ rawSource ])
 
   const toggleMenu = useCallback(() => setMenuOpen(!menuOpen), [ menuOpen ])
 
@@ -87,19 +102,23 @@ const Menu = ({ className, embedUrl, sourceUrl }) => {
           {tooltipElement}
           {menuOpen ? (
             <MenuDiv>
-              <li onClick={showEmbedModal}>Share and embed</li>
-              <li onClick={viewSourceCode}>View source</li>
+              {embedUrl ? <li onClick={viewEmbedUrl}>Share and embed</li> : null}
+              <li onClick={viewRawSource}>View raw source</li>
+              {aboutUrl ? <li onClick={viewAboutThisApp}>About this app</li> : null}
             </MenuDiv>
           ) : null}
-          <Modal
-            isOpen={modalOpen}
-            onBackgroundClick={() => { }}
-          >
-            <EmbedContainer>
+          <Modal isOpen={embedModalOpen} onBackgroundClick={() => { }}>
+            <ModalContainer>
               <p>Use the following URL to view/embed this UI elsewhere:</p>
               <textarea cols="4" rows="4" defaultValue={embedUrl}></textarea>
-              <Button onClick={copyToClipboard}>Copy to clipboard</Button>
-            </EmbedContainer>
+              <Button onClick={copyEmbedUrlToClipboard}>Copy to clipboard</Button>
+            </ModalContainer>
+          </Modal>
+          <Modal isOpen={sourceModalOpen} onBackgroundClick={() => { }} >
+            <ModalContainer>
+              <textarea cols="4" rows="7" defaultValue={rawSource}></textarea>
+              <Button onClick={copySourceToClipboard}>Copy to clipboard</Button>
+            </ModalContainer>
           </Modal>
         </Container>
       )}
