@@ -105,7 +105,7 @@ Base-64 `data:` URLs are also supported:
 
 **aboutUrl** _(optional)_
 
-If set then the _About this app_ item will show in the menu, linking to this URL:
+If set then the _About this app_ item will show in the bottom nav bar, linking to this URL:
 
 ![About app](../../images/AboutApp.png)
 
