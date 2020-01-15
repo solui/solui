@@ -6,9 +6,9 @@ Published UIs can be embedded in any webpage as using an `iframe` HTML tag. For 
 
 Note that the `width` and `height` parameters can be set however you see fit. The solUI renderer will auto-fit the content as best as it can. All other normal `iframe` HTML attributes can also be customized you wish.
 
-When viewing an embedded solUI interface you can grab it embedding URL via the menu on the top-right:
+When viewing an embedded solUI interface you can grab it embedding URL via share and embed button:
 
-![Share and embed](../../images/EmbedMenu.png)
+![Share and embed](../../images/EmbedButton.png)
 
 The _View source_ link will allow you to view the full JSON for both the spec and the contract artifacts.
 
