@@ -42,6 +42,7 @@ export default class Tooltip extends Component {
     return (
       <Fragment>
         {children({
+          flash: this.flash,
           show: this.show,
           hide: this.hide,
           tooltipElement: (
@@ -65,5 +66,10 @@ export default class Tooltip extends Component {
 
   hide = () => {
     this.setState({ show: false })
+  }
+
+  flash = (timeMs = 2000) => {
+    this.show()
+    setTimeout(() => this.hide(), timeMs)
   }
 }

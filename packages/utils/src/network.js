@@ -105,12 +105,15 @@ export const getNodeConnectionFromWeb3 = async web3 => {
 export const getNetworkInfoFromGlobalScope = async () => {
   try {
     const network = {}
+    const extraProps = {
+      askWalletOwnerForPermissionToViewAccounts: () => {}
+    }
 
     if (GLOBAL_SCOPE.ethereum) {
       network.node = new Web3Provider(GLOBAL_SCOPE.ethereum)
       // See https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
       if (typeof _.get(GLOBAL_SCOPE.ethereum, 'enable') === 'function') {
-        network.node.askWalletOwnerForPermissionToViewAccounts =
+        extraProps.askWalletOwnerForPermissionToViewAccounts =
           () => GLOBAL_SCOPE.ethereum.enable()
       }
       // From https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.on(eventname%2C-callback
@@ -143,6 +146,8 @@ export const getNetworkInfoFromGlobalScope = async () => {
     }
 
     await _finalizeNetwork(network)
+
+    Object.assign(network.node, extraProps)
 
     return network
   } catch (err) {

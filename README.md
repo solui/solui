@@ -29,6 +29,12 @@ To create new package (note: if `folder_name` = `pkg1` then `name`
 $ npm run lerna create <folder_name>
 ```
 
+To add a new dependency to one of the packages:
+
+```shell
+node_modules/.bin/lerna add <npm pkg name> --scope=@solui/<pkg>
+```
+
 Ensure you set the license to `MIT` and include a corresponding section in the
 README.md.
 

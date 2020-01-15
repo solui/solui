@@ -16,6 +16,8 @@ inputs are rendered in the order in which they're defined in a panel.
           "name": "...",
           "title": "...",
           "type": "...",
+          "unit": "...",
+          "scale": "...",
           "validation": [ ... ]
         },
         ...
@@ -66,6 +68,41 @@ Example:
 ```js
 {
   "type": "bytes32"
+}
+```
+
+**unit** _(optional)_
+
+Applies to `type`: `int`
+
+This is user-friendly text that gets shown in the tooltip
+popup next to the input label:
+
+![Field unit](../../images/FieldUnit.png)
+
+Example:
+
+```js
+{
+  "unit": "TOKEN"
+}
+```
+
+**scale** _(optional)_
+
+Applies to `type`: `int`
+
+This is how to much to scale the input value by to obtain the real integer value. This
+means multiplying the input value by `10^scale` to obtain the real value.
+
+For example, if inputting an ETH value then the scale should be set to 18 to
+ensure that the real value sent to the contract is measured in WEI.
+
+Example:
+
+```js
+{
+  "scale": 18
 }
 ```
 

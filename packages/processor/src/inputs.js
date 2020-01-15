@@ -1,10 +1,10 @@
 import {
   _,
   promiseSerial,
+  deriveRealNumber,
 } from '@solui/utils'
 
 import { validateInputValue } from './validate'
-import { deriveRealNumber } from './utils'
 
 const _process = async (ctx, name, config) => ctx.callbacks().processInput(ctx.id, name, config)
 
@@ -24,14 +24,14 @@ const INPUTS = {
     process: async (ctx, name, config) => {
       const result = await ctx.callbacks().processInput(ctx.id, name, config)
 
-      let resultEthVal
+      let realVal
 
       if (result) {
         await validateInputValue(ctx, result, config)
-        resultEthVal = deriveRealNumber(ctx, result, config)
+        realVal = deriveRealNumber(result, config)
       }
 
-      return resultEthVal ? resultEthVal.toWei().toString(10) : undefined
+      return realVal ? realVal.toString(10) : undefined
     },
   },
   bool: {
@@ -52,7 +52,6 @@ const INPUTS = {
     process: _process
   },
 }
-INPUTS.uint = INPUTS.int
 
 export const processList = async (parentCtx, inputs) => (
   promiseSerial(inputs || [], async inputConfig => {

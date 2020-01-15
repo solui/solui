@@ -8,6 +8,8 @@ const SRC_FOLDER = path.join(BASE_FOLDER, 'src')
 const BUILD_FOLDER = path.join(BASE_FOLDER, 'build')
 const STATS_FOLDER = path.join(BASE_FOLDER, 'build-stats')
 
+const NPM_FOLDER = path.dirname(path.dirname(require.resolve('react')))
+
 module.exports = {
   mode: 'production',
   entry: [
@@ -41,8 +43,7 @@ module.exports = {
             ],
             plugins: [
               '@babel/plugin-proposal-export-default-from',
-              '@babel/plugin-proposal-class-properties',
-              'react-hot-loader/babel',
+              '@babel/plugin-proposal-class-properties'
             ]
           }
         }
@@ -52,7 +53,8 @@ module.exports = {
   resolve: {
     extensions: [ '*', '.js', '.jsx' ],
     alias: {
-      react: path.resolve(path.join(BASE_FOLDER, 'node_modules/react')),
+      react: path.join(NPM_FOLDER, 'react'),
+      'react-dom': path.join(NPM_FOLDER, 'react-dom'),
     }
   },
   devtool: 'false',

@@ -21,10 +21,8 @@ const PanelInputs = ({ inputs, onInputChange, inputValue, inputValidation }) => 
           name={name}
           onChange={onInputChange[id]}
           value={inputValue[id]}
-          title={config.title}
-          type={config.type}
+          config={config}
           validationStatus={{ ...inputValidation[id] }}
-          validationConfig={{ ...config }}
         />
       ))}
     </Fragment>

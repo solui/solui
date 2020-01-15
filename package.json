@@ -32,7 +32,7 @@
   },
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap --hoist",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "prepare-release": "./scripts/prepare-release.sh",
     "release": "./scripts/release.sh"

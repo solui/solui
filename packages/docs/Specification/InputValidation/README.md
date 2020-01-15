@@ -50,7 +50,7 @@ Additional attributes depend on the validation `type`.
 The `length` validation checks the length of the input string to ensure its
 within the range specified by `min` and `max`.
 
-Example :
+Example:
 
 ```js
 {
@@ -58,6 +58,26 @@ Example :
   "type": "length",
   "min": "1",
   "max": "23"
+}
+```
+
+Example with just `min`:
+
+```js
+{
+  /* string must atleast 5 characters in length */
+  "type": "length",
+  "min": "5"
+}
+```
+
+Example with just `max`:
+
+```js
+{
+  /* string must no more than 17 characters in length */
+  "type": "length",
+  "max": "17"
 }
 ```
 
@@ -74,6 +94,26 @@ Example :
   "type": "range",
   "min": "-10",
   "max": "23"
+}
+```
+
+Example with just `min`:
+
+```js
+{
+  /* string must represent a number greater than or equal to 2 in value */
+  "type": "range",
+  "min": "2"
+}
+```
+
+Example with just `max`:
+
+```js
+{
+  /* string must represent a number less than or equal to -20 in value */
+  "type": "range",
+  "max": "-20"
 }
 ```
 

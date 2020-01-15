@@ -1,10 +1,9 @@
 import {
   _,
   assertEthAddressIsValidOnChain,
-  toEthVal,
+  toDecimalVal,
+  deriveRealNumber,
 } from '@solui/utils'
-
-import { deriveRealNumber } from './utils'
 
 export const checkIdIsValid = (ctx, id) => {
   if (!id) {
@@ -60,20 +59,31 @@ export const checkStringIsValid = async (ctx, value, { length } = {}) => {
     const minLen = parseInt(_.get(length, 'min'), 10)
     const maxLen = parseInt(_.get(length, 'max'), 10)
 
-    if (Number.isNaN(minLen) || Number.isNaN(maxLen)) {
-      throw new Error(`length config: min and max must be numbers`)
+    const minLenValid = !Number.isNaN(minLen)
+    const maxLenValid = !Number.isNaN(maxLen)
+
+    if (!minLenValid && !maxLenValid) {
+      throw new Error(`length config: either one of min and max must be numbers`)
     }
 
-    if (0 > minLen || 0 > maxLen) {
-      throw new Error(`length config: min and max must be greater than or equal to 0`)
+    if (minLenValid && 0 > minLen) {
+      throw new Error(`length config: min must be greater than or equal to 0`)
     }
 
-    if (minLen > maxLen) {
+    if (maxLenValid && 0 > maxLen) {
+      throw new Error(`length config: max must be greater than or equal to 0`)
+    }
+
+    if (minLenValid && maxLenValid && minLen > maxLen) {
       throw new Error(`length config: max must be greater than or equal to min`)
     }
 
-    if (minLen > value.length || maxLen < value.length) {
-      throw new Error(`input must be between ${minLen} and ${maxLen} characters long`)
+    if (minLenValid && minLen > value.length) {
+      throw new Error(`input must be atleast ${minLen} characters long`)
+    }
+
+    if (maxLenValid && maxLen < value.length) {
+      throw new Error(`input must be no more than ${maxLen} characters long`)
     }
   } catch (err) {
     ctx.errors().add(ctx.id, err.message)
@@ -83,37 +93,30 @@ export const checkStringIsValid = async (ctx, value, { length } = {}) => {
 export const checkNumberIsValid = async (
   ctx,
   value,
-  { unit, unsigned, range } = {},
+  { scale, range } = {},
 ) => {
   try {
-    const val = deriveRealNumber(ctx, value, { unit })
+    const val = deriveRealNumber(value, { scale })
 
     if (!val) {
       throw new Error('invalid input')
     }
+    const min = _.get(range, 'min')
+    const max = _.get(range, 'max')
 
-    const minVal = toEthVal(_.get(range, 'min'), unit)
+    const minVal = toDecimalVal(min, scale)
+    const maxVal = toDecimalVal(max, scale)
 
-    if (!minVal) {
-      throw new Error('range config: invalid min value')
-    }
-
-    const maxVal = toEthVal(_.get(range, 'max'), unit)
-
-    if (!maxVal) {
-      throw new Error('range config: invalid max value')
-    }
-
-    if (unsigned && (minVal.lt(0) || maxVal.lt(0))) {
-      throw new Error(`range config: min and max must be greater than or equal to 0`)
-    }
-
-    if (minVal.gt(maxVal)) {
+    if (minVal && maxVal && minVal.gt(maxVal)) {
       throw new Error(`range config: max must be greater than or equal to min`)
     }
 
-    if (minVal.gt(val) || maxVal.lt(val)) {
-      throw new Error(`input must be between ${minVal.toString(10)} and ${maxVal.toString(10)}`)
+    if (minVal && minVal.gt(val)) {
+      throw new Error(`input must be greater than or equal to ${min}`)
+    }
+
+    if (maxVal && maxVal.lt(val)) {
+      throw new Error(`input must be less than or equal to ${max}`)
     }
   } catch (err) {
     ctx.errors().add(ctx.id, err.message)
@@ -154,8 +157,7 @@ export const validateInputValue = async (ctx, value, config) => {
         return checkStringIsValid(ctx, value, { length: vConfig })
       case 'range':
         return checkNumberIsValid(ctx, value, {
-          unit: config.unit,
-          unsigned: config.unsigned,
+          scale: config.scale,
           range: vConfig,
         })
       case 'compareToField':

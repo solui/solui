@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import styled from '@emotion/styled'
 import { _, createErrorWithDetails } from '@solui/utils'
-import { flex, boxShadow } from '@solui/styles'
+import { flex, boxShadow, childAnchors } from '@solui/styles'
 
 import { InterfaceBuilder } from './Interface'
 import ErrorBox from './ErrorBox'
@@ -36,9 +36,27 @@ const TopBar = styled.div`
   text-align: right;
 `
 
+const BottomBar = styled.div`
+  border-top: 1px dashed ${({ theme }) => theme.interfaceMenuBorderColor};
+  margin-top: 3rem;
+  padding: 2rem 0;
+`
 
 const StyledMenu = styled(Menu)`
-  margin-left: 2rem;
+  padding: 0 1.5rem;
+  margin-bottom: 3rem;
+`
+
+const Credit = styled.p`
+  ${({ theme }) => theme.font('body', 'thin')};
+  text-align: center;
+  color: ${({ theme }) => theme.creditTextColor};
+  ${({ theme }) => childAnchors({
+    textColor: theme.creditAnchorTextColor,
+    hoverTextColor: theme.creditAnchorHoverTextColor,
+    hoverBgColor: theme.creditAnchorHoverBgColor,
+    borderBottomColor: theme.creditAnchorBorderBottomColor,
+  })};
 `
 
 /**
@@ -56,7 +74,7 @@ const Dapp = ({
   executePanel,
   embedUrl,
 }) => {
-  const [ buildResult, setBuildResult ] = useState()
+  const [buildResult, setBuildResult] = useState()
 
   // validate a panel's inputs
   const onValidatePanel = useCallback(async ({ panelId, inputs }) => {
@@ -67,7 +85,7 @@ const Dapp = ({
       inputs,
       node: _.get(network, 'node'),
     })
-  }, [ spec, artifacts, network, validatePanel ])
+  }, [spec, artifacts, network, validatePanel])
 
   // execute a panel
   const onExecutePanel = useCallback(async ({ panelId, inputs }) => {
@@ -82,7 +100,7 @@ const Dapp = ({
       inputs,
       node: network.node,
     })
-  }, [ spec, artifacts, network, executePanel ])
+  }, [spec, artifacts, network, executePanel])
 
   // build interface
   useEffect(() => {
@@ -110,7 +128,7 @@ const Dapp = ({
         setBuildResult({ error: err })
       }
     })()
-  }, [ onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec ])
+  }, [onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec])
 
   return (
     <Container className={className}>
@@ -119,11 +137,6 @@ const Dapp = ({
           <div>
             <TopBar>
               <NetworkInfoLabel network={network} />
-              <StyledMenu
-                embedUrl={embedUrl}
-                spec={spec}
-                artifacts={artifacts}
-              />
             </TopBar>
             {/* eslint-disable-next-line no-nested-ternary */}
             {(!buildResult) ? <StyledProgress>Rendering...</StyledProgress> : (
@@ -134,6 +147,14 @@ const Dapp = ({
                 })
               )
             )}
+            <BottomBar>
+              <StyledMenu
+                embedUrl={embedUrl}
+                spec={spec}
+                artifacts={artifacts}
+              />
+              <Credit>Powered by <a href="https://solui.dev">solUI</a></Credit>
+            </BottomBar>
           </div>
         )}
       </InnerContainer>

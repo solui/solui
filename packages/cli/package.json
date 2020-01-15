@@ -53,9 +53,9 @@
 	"scripts": {
 		"lint": "eslint .",
 		"clean": "rm -rf ./dist && mkdir -p ./dist/frontend",
-		"prebuild": "cp ./src/solui ./dist && cp ./src/frontend/index.html ./dist/frontend",
+		"pre-build": "cp ./src/solui ./dist && cp ./src/frontend/index.html ./dist/frontend",
 		"compile": "babel ./src --out-dir ./dist",
-		"build": "npm run clean && npm run prebuild && npm run compile",
+		"build": "npm run clean && npm run pre-build && npm run compile",
 		"watch": "npm run compile -- --watch"
 	},
 	"publishConfig": {

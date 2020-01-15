@@ -1,24 +1,25 @@
-import EthVal from 'ethval'
+import { Decimal } from 'decimal.js'
 
-/**
- * Convert input to  [EthVal](https://www.npmjs.com/package/ethval) representation
- *
- * @param  {String|Number|BN.js|EthVal} v Input value
- * @param  {String} [unit='wei'] Unit for input value.
- * @return {EthVal}
- */
-export const toEthVal = (v, unit) => {
+const PreciseDecimal = Decimal.clone({ defaults: true, toExpPos: 33 })
+
+export const toDecimalVal = (a, scale = 0) => {
   try {
-    switch ((unit || '').toLowerCase()) {
-      case 'eth':
-        return new EthVal(v, 'eth')
-      case 'gwei':
-        return new EthVal(v, 'gwei')
-      case 'wei':
-      default:
-        return new EthVal(v, 'wei')
+    if (a) {
+      if (a._hex) {
+        a = a._hex
+      } else if (a._isBigNumber) {
+        a = a.toString(10)
+      }
     }
+
+    const d = new PreciseDecimal(`${a}`)
+
+    return scale ? d.mul(Decimal.pow(10, scale)) : d
   } catch (err) {
     return null
   }
+}
+
+export const deriveRealNumber = (value, { scale } = {}) => {
+  return toDecimalVal(value, scale)
 }

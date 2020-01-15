@@ -47,6 +47,13 @@ export default {
   interfaceBgColor: white,
   interfaceTextColor: black,
   interfaceShadowColor: darkGrey,
+  interfaceMenuBorderColor: lightGrey,
+  // credit
+  creditTextColor: grey,
+  creditAnchorTextColor: grey,
+  creditAnchorHoverTextColor: white,
+  creditAnchorHoverBgColor: primary,
+  creditAnchorBorderBottomColor: grey,
   // modal
   modalOverlayBgColor: 'rgba(0, 0, 0, 0.8)',
   modalBgColor: white,
@@ -55,7 +62,8 @@ export default {
   networkInfoIconColor: grey,
   networkInfoTextColor: darkGrey,
   // menu component
-  menuIconColor: darkGrey,
+  menuButtonTextColor: black,
+  menuButtonBgColor: 'transparent',
   menuBgColor: white,
   menuShadowColor: grey,
   menuItemHoverTextColor: white,

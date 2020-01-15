@@ -45,21 +45,19 @@ const HelpText = styled.p`
 const Field = ({
   className,
   name,
-  title,
   value,
   onChange,
-  type,
-  validationConfig,
+  config: { title, type, ...config },
   validationStatus,
 }) => {
   const { helpText, tooltip } = useMemo(() => {
-    const { helpStr, tips } = getInputHelpBasedOnInputConfig({ type, value, validationConfig })
+    const { helpStr, tips } = getInputHelpBasedOnInputConfig({ type, value, config })
 
     return {
       helpText: helpStr,
       tooltip: tips.length ? tips.join('\n') : '',
     }
-  }, [ type, value, validationConfig ])
+  }, [ type, value, config ])
 
   return (
     <Container className={className}>

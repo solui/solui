@@ -3,7 +3,7 @@ import React, { Fragment, useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 import ReactTooltip from 'react-tooltip'
 import * as clipboard from 'clipboard-polyfill'
-import { toEthVal } from '@solui/utils'
+import { toDecimalVal } from '@solui/utils'
 
 import { openUrl } from './utils'
 import IconButton from './IconButton'
@@ -70,7 +70,7 @@ const Value = ({ value, type }) => {
   }
 
   if (value && value._hex) {
-    value = toEthVal(value).toString(10)
+    value = toDecimalVal(value).toString(10)
   }
 
   return (

@@ -243,6 +243,9 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) =
 
             const deployer = await getContractDeployer({ abi, bytecode, node })
 
+            // args = [ "abc", "abc", 10 ]
+            // console.warn(abi, args)
+
             const inst = await deployer.deploy(...args)
 
             await inst.deployed()
