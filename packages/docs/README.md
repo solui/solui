@@ -20,7 +20,7 @@
 * [Publishing](Publishing)
   * [Overview](Publishing/Overview)
   * [Authentication](Publishing/Authentication)
-  * [Embedding](Publishing/ShareAndEmbedding)
+  * [Sharing and embedding](Publishing/ShareAndEmbedding)
 * [Processor](Processor)
   * [Overview](Processor/Overview)
   * [Context](Processor/Context)
