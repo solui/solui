@@ -46,8 +46,8 @@ npm install
 Compile and deploy the demo contracts to build the contract JSON artifacts:
 
 ```shell
-npm run truffle compile
-npm run truffle migrate
+npm run compile
+npm run migrate
 ```
 
 Now view the ERC-20 UI:
