@@ -3,6 +3,60 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.3](https://github.com/solui/solui/compare/v1.2.2...v1.2.3) (2020-01-27)
+
+**Note:** Version bump only for package @solui/embed-client
+
+
+
+
+
+## [1.2.2](https://github.com/solui/solui/compare/v1.2.1...v1.2.2) (2020-01-27)
+
+
+### Bug Fixes
+
+* remove emotion-theming and use @emotion/core ThemeContext directly ([2876273](https://github.com/solui/solui/commit/28762731bebd84a44834cc3bf2525e7f3a01ea0a))
+
+
+
+
+
+## [1.2.1](https://github.com/solui/solui/compare/v1.2.0...v1.2.1) (2020-01-27)
+
+**Note:** Version bump only for package @solui/embed-client
+
+
+
+
+
+# [1.2.0](https://github.com/solui/solui/compare/v1.1.1...v1.2.0) (2020-01-27)
+
+**Note:** Version bump only for package @solui/embed-client
+
+
+
+
+
+## [1.1.1](https://github.com/solui/solui/compare/v1.1.0...v1.1.1) (2020-01-23)
+
+**Note:** Version bump only for package @solui/embed-client
+
+
+
+
+
+# [1.1.0](https://github.com/solui/solui/compare/v1.0.0...v1.1.0) (2020-01-16)
+
+
+### Features
+
+* implement various feedback ([773d0ee](https://github.com/solui/solui/commit/773d0ee3f50e40b92d1634356b8023ecf518f149))
+
+
+
+
+
 # [1.0.0](https://github.com/solui/solui/compare/v0.3.0...v1.0.0) (2020-01-14)
 
 **Note:** Version bump only for package @solui/embed-client

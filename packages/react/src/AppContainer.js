@@ -87,11 +87,12 @@ export default class AppContainer extends Component {
       )
     }
 
-    const theme = _.get(dappComponentProps, 'spec.version', undefined)
+    const themeId = _.get(dappComponentProps, 'spec.version', undefined)
+    const theme = { ...getTheme(themeId), ...dappComponentProps.theme }
 
     return (
       <NetworkContext.Provider value={{ network }}>
-        <ThemeProvider theme={{ ...getTheme(theme), ...dappComponentProps.theme }}>
+        <ThemeProvider theme={theme}>
           <GlobalStyles />
           <ModalProvider>
             {content}
