@@ -1,6 +1,6 @@
 {
   "name": "@solui/react",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "React UI components for solUI",
   "publishConfig": {
     "access": "public"
@@ -60,7 +60,7 @@
     "@fortawesome/react-fontawesome": "^0.1.4",
     "@reach/observe-rect": "^1.0.3",
     "@solui/graphql": "^1.1.1",
-    "@solui/styles": "^1.2.2",
+    "@solui/styles": "^1.2.3",
     "@solui/utils": "^1.1.1",
     "clipboard-polyfill": "^2.8.6",
     "emotion-theming": "^10.0.27",

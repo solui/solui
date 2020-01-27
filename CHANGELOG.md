@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.3](https://github.com/solui/solui/compare/v1.2.2...v1.2.3) (2020-01-27)
+
+
+### Bug Fixes
+
+* add emotion-theming back in ([17e051a](https://github.com/solui/solui/commit/17e051a0757c0093ca083c92f13d0f188f332b78))
+
+
+
+
+
 ## [1.2.2](https://github.com/solui/solui/compare/v1.2.1...v1.2.2) (2020-01-27)
 
 
