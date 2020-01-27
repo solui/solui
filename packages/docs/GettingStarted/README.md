@@ -1,3 +1,10 @@
+## Installation
+
+We recommend the following versions of [Node](https://nodejs.org/) and [NPM](https://www.npmjs.com/):
+
+* Node.js 12.13.0 or above
+* NPM 6.12.0 or above
+
 To start using solUI first install the command-line interface, which is a
 [Node.js package](https://www.npmjs.com/package/@solui/cli). We recommend that you install it globally:
 
