@@ -1,7 +1,7 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
 import React, { Component } from 'react'
 import styled from '@emotion/styled'
-import { ThemeProvider } from 'emotion-theming'
+import { ThemeContext } from '@emotion/core'
 import { _, getNetworkInfoFromGlobalScope } from '@solui/utils'
 import { loadFonts, getTheme } from '@solui/styles'
 
@@ -87,16 +87,17 @@ export default class AppContainer extends Component {
       )
     }
 
-    const theme = _.get(dappComponentProps, 'spec.version', undefined)
+    const themeId = _.get(dappComponentProps, 'spec.version', undefined)
+    const theme = { ...getTheme(themeId), ...dappComponentProps.theme }
 
     return (
       <NetworkContext.Provider value={{ network }}>
-        <ThemeProvider theme={{ ...getTheme(theme), ...dappComponentProps.theme }}>
+        <ThemeContext.Provider theme={theme}>
           <GlobalStyles />
           <ModalProvider>
             {content}
           </ModalProvider>
-        </ThemeProvider>
+        </ThemeContext.Provider>
       </NetworkContext.Provider>
     )
   }

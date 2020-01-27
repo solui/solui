@@ -1,9 +1,10 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
 import React from 'react'
 import styled from '@emotion/styled'
-import { useTheme } from 'emotion-theming'
 import { flex } from '@solui/styles'
 import DefaultModal, { ModalProvider as DefaultModalProvider } from 'styled-react-modal'
+
+import { useTheme } from './hooks'
 
 const ModalBackground = styled.div`
   position: fixed;

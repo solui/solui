@@ -35,7 +35,6 @@
 		"css-loader": "^3.2.0",
 		"dotenv": "^8.1.0",
 		"dotenv-stringify": "^2.0.1",
-		"emotion-theming": "^10.0.18",
 		"envalid": "^5.0.0",
 		"glob": "^7.1.4",
 		"home": "^2.0.0",

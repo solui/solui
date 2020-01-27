@@ -21,7 +21,6 @@
     "@solui/react": "^1.2.1",
     "@solui/styles": "^1.1.0",
     "@solui/utils": "^1.1.1",
-    "emotion-theming": "^10.0.19",
     "form-data": "^3.0.0",
     "got": "^9.6.0",
     "query-string": "^6.9.0",
