@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/solui/solui/compare/v1.2.0...v1.2.1) (2020-01-27)
+
+
+### Bug Fixes
+
+* stop using brand icons ([fa561c2](https://github.com/solui/solui/commit/fa561c27b2c8ecb39176a99a98f1a0dd6a2eba5c))
+
+
+
+
+
 # [1.2.0](https://github.com/solui/solui/compare/v1.1.1...v1.2.0) (2020-01-27)
 
 
