@@ -20,7 +20,7 @@ Asynchronously loading and using fonts, along with theming system:
 ```js
 const React = require('react')
 const styled = require('@emotion/styled')
-import { ThemeContext } from '@emotion/core'
+import { ThemeProvider } from 'emotion-theming'
 const { loadFonts, getTheme } = require('@solui/styles')
 
 const CustomDiv = styled.div`
@@ -48,9 +48,9 @@ export default class MyApp extends React.Component {
 
   render () {
     return (
-      <ThemeContext.Provider theme={getTheme()}>
+      <ThemProvider theme={getTheme()}>
         <CustomDiv>hello world!</CustomDiv>
-      </ThemeContext.Provider>
+      </ThemeProvider>
     )
   }
 }

@@ -1,9 +1,8 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
 import React, { Fragment } from 'react'
 import { css, Global } from '@emotion/core'
+import { useTheme } from 'emotion-theming'
 import { resetStyles } from '@solui/styles'
-
-import { useTheme } from './hooks'
 
 /**
  * Render global styles.

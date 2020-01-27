@@ -1,7 +1,7 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
 import React, { Component } from 'react'
 import styled from '@emotion/styled'
-import { ThemeContext } from '@emotion/core'
+import { ThemeProvider } from 'emotion-theming'
 import { _, getNetworkInfoFromGlobalScope } from '@solui/utils'
 import { loadFonts, getTheme } from '@solui/styles'
 
@@ -92,12 +92,12 @@ export default class AppContainer extends Component {
 
     return (
       <NetworkContext.Provider value={{ network }}>
-        <ThemeContext.Provider theme={theme}>
+        <ThemeProvider theme={theme}>
           <GlobalStyles />
           <ModalProvider>
             {content}
           </ModalProvider>
-        </ThemeContext.Provider>
+        </ThemeProvider>
       </NetworkContext.Provider>
     )
   }
