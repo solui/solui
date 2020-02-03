@@ -1,7 +1,7 @@
 {
 	"name": "@solui/cli",
 	"description": "Generate Dapps for smart contracts",
-	"version": "1.3.1",
+	"version": "1.3.2",
 	"license": "AGPL-3.0-or-later",
 	"bin": {
 		"solui": "./dist/solui"
