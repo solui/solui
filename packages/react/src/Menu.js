@@ -27,10 +27,10 @@ const ModalContainer = styled.div`
 `
 
 const EmbedModalBlock = styled.div`
-  margin-bottom: 1rem;
+  margin-top: 1rem;
 
-  &:last-child {
-    margin-bottom: 0;
+  &:first-child {
+    margin-top: 0;
   }
 `
 
@@ -131,7 +131,7 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
         <AbouButton onClick={viewAboutThisApp}><ButtonIcon name='home' />About this app</AbouButton>
       ) : null}
 
-      <Modal isOpen={embedModalOpen} onBackgroundClick={closeModals} height='50%' >
+      <Modal isOpen={embedModalOpen} onBackgroundClick={closeModals} height={shortEmbedUrl ? '400px' : '250px'}>
         <ModalContainer>
           <EmbedModalBlock>
             <p>Use the following URL to view/embed this UI elsewhere:</p>
