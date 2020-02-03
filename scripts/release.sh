@@ -2,4 +2,6 @@
 
 set -e
 
+echo "publishing ..."
+
 lerna publish from-git
