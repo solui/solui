@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.3](https://github.com/solui/solui/compare/v1.3.2...v1.3.3) (2020-02-03)
+
+**Note:** Version bump only for package @solui/styles
+
+
+
+
+
 ## [1.2.3](https://github.com/solui/solui/compare/v1.2.2...v1.2.3) (2020-01-27)
 
 
