@@ -193,6 +193,7 @@ export const PublishSuccessFragment = gql`
     id
     cid
     url
+    shortUrl
   }
 `
 

@@ -3,6 +3,7 @@ import React, { useCallback, useState, useMemo } from 'react'
 import * as clipboard from 'clipboard-polyfill'
 import styled from '@emotion/styled'
 import { flex } from '@solui/styles'
+import { parseQueryString, parseUrl } from '@solui/utils'
 
 import { Modal } from './Modal'
 import Tooltip from './Tooltip'
@@ -22,6 +23,14 @@ const ModalContainer = styled.div`
     ${({ theme }) => theme.font('body')};
     margin-bottom: 1rem;
     text-align: left;
+  }
+`
+
+const EmbedModalBlock = styled.div`
+  margin-bottom: 1rem;
+
+  &:last-child {
+    margin-bottom: 0;
   }
 `
 
@@ -64,6 +73,27 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
 
   const rawSource = useMemo(() => JSON.stringify({ spec, artifacts }, null, 2), [ spec, artifacts ])
   const aboutUrl = useMemo(() => (spec ? spec.aboutUrl : null), [ spec ])
+  const shortEmbedUrl = useMemo(() => {
+    if (!embedUrl) {
+      return null
+    }
+
+    try {
+      const { hash } = parseUrl(embedUrl)
+
+      if (hash) {
+        const qry = parseQueryString(hash.substr(1))
+
+        if (qry.shortEmbedUrl) {
+          return qry.shortEmbedUrl
+        }
+      }
+    } catch (err) {
+      console.error(`Short embed URL parsing error`, err)
+    }
+
+    return null
+  })
 
   const viewAboutThisApp = useCallback(() => {
     if (aboutUrl) {
@@ -79,15 +109,10 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
     setSourceModalOpen(true)
   }, [])
 
-  const copyEmbedUrlToClipboard = useCallback(tooltip => {
-    clipboard.writeText(embedUrl)
-    tooltip.flash()
-  }, [ embedUrl ])
-
-  const copySourceToClipboard = useCallback(tooltip => {
-    clipboard.writeText(rawSource)
-    tooltip.flash()
-  }, [ rawSource ])
+  const copyToClipboard = useCallback((txt, showTooltip) => {
+    clipboard.writeText(txt)
+    showTooltip()
+  }, [])
 
   const closeModals = useCallback(() => {
     setEmbedModalOpen(false)
@@ -106,20 +131,38 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
         <AbouButton onClick={viewAboutThisApp}><ButtonIcon name='home' />About this app</AbouButton>
       ) : null}
 
-      <Modal isOpen={embedModalOpen} onBackgroundClick={closeModals}>
+      <Modal isOpen={embedModalOpen} onBackgroundClick={closeModals} height='50%' >
         <ModalContainer>
-          <p>Use the following URL to view/embed this UI elsewhere:</p>
-          <Textarea defaultValue={embedUrl}></Textarea>
-          <Tooltip text={`Copied to clipboard`} position='bottom'>
-            {({ tooltipElement, flash }) => (
-              <TooltipContainer>
-                <Button onClick={() => copyEmbedUrlToClipboard({ flash })}>
-                  Copy to clipboard
+          <EmbedModalBlock>
+            <p>Use the following URL to view/embed this UI elsewhere:</p>
+            <Textarea defaultValue={embedUrl}></Textarea>
+            <Tooltip text={`Copied to clipboard`} position='bottom'>
+              {({ tooltipElement, flash }) => (
+                <TooltipContainer>
+                  <Button onClick={() => copyToClipboard(embedUrl, flash)}>
+                    Copy to clipboard
                 </Button>
-                {tooltipElement}
-              </TooltipContainer>
-            )}
-          </Tooltip>
+                  {tooltipElement}
+                </TooltipContainer>
+              )}
+            </Tooltip>
+          </EmbedModalBlock>
+          {shortEmbedUrl ? (
+            <EmbedModalBlock>
+              <p>A shorter version that redirects to the above:</p>
+              <Textarea defaultValue={shortEmbedUrl}></Textarea>
+              <Tooltip text={`Copied to clipboard`} position='bottom'>
+                {({ tooltipElement, flash }) => (
+                  <TooltipContainer>
+                    <Button onClick={() => copyToClipboard(shortEmbedUrl, flash)}>
+                      Copy to clipboard
+                </Button>
+                    {tooltipElement}
+                  </TooltipContainer>
+                )}
+              </Tooltip>
+            </EmbedModalBlock>
+          ) : null}
         </ModalContainer>
       </Modal>
 
@@ -129,7 +172,7 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
           <Tooltip text={`Copied to clipboard`} position='bottom'>
             {({ tooltipElement, flash }) => (
               <TooltipContainer>
-                <Button onClick={() => copySourceToClipboard({ flash })}>
+                <Button onClick={() => copyToClipboard(rawSource, flash)}>
                   Copy to clipboard
                 </Button>
                 {tooltipElement}

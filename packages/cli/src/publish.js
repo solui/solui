@@ -1,4 +1,4 @@
-import { PublishMutation, resolveError, stringifyError } from '@solui/graphql'
+import { PublishMutation } from '@solui/graphql'
 import { _, hash, uploadDataToIpfs } from '@solui/utils'
 import { getUsedContracts, assertSpecValid } from '@solui/processor'
 
@@ -69,11 +69,12 @@ export const publish = async ({ spec, artifacts, customIpfs }) => {
       }
     })
 
-    const { cid, url } = _.get(ret, 'data.result', {})
+    const { cid, url, shortUrl } = _.get(ret, 'data.result', {})
 
     logTrace('Published successfully!')
 
     logInfo(`CID:`, cid)
-    logInfo(`View:`, url)
+    logInfo(`URL (IPFS link):`, url)
+    logInfo(`Short URL (redirects to IPFS link):`, shortUrl)
   }
 }
