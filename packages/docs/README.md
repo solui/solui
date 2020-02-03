@@ -1,7 +1,7 @@
 * [What is solUI?](WhatIsSolUI)
   * [Introduction](WhatIsSolUI/Introduction)
   * [Key benefits](WhatIsSolUI/KeyBenefits)
-  * [Roadmap](WhatIsSolUI/Roadmap)
+  * [Contributing](WhatIsSolUI/Contributing)
 * [Getting started](GettingStarted)
 * [Command-line](CommandLine)
   * [Overview](CommandLine/Overview)
