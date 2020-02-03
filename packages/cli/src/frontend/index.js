@@ -31,7 +31,6 @@ class App extends AppContainer {
       validateSpec,
       validatePanel,
       executePanel,
-      embedUrl: 'https://gateway.temporal.cloud/ipns/ui.solui.dev/#l=QmZ4sPfUQXYfh9WyTguLPuAnNGkhfhqT8BZ54Eseu5pfS6&shortEmbedUrl=http%3A%2F%2Flocalhost%3A3002%2Fui%2FQmZ4sPfUQXYfh9WyTguLPuAnNGkhfhqT8BZ54Eseu5pfS6'
     })
   }
 }
