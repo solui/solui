@@ -1,3 +1,5 @@
+import urlParse from 'url-parse'
+import qs from 'qs'
 import slug from 'slugify'
 import validator from 'validator'
 
@@ -42,3 +44,19 @@ export const obfuscate = str => {
  */
 export const slugify = str => slug(`${str} ${Math.random().toString(36).substr(2, 6)}`)
 
+/**
+ * Parse given query string.
+ *
+ * @param  {String} str Input
+ * @return {Object}
+ */
+export const parseQueryString = str => qs.parse(str)
+
+
+/**
+ * Parse URL.
+ *
+ * @param  {String} str Input
+ * @return {Object}
+ */
+export const parseUrl = str => urlParse(str)

@@ -39,6 +39,7 @@ export const getTypeDefs = () => gql`
     id: ID!
     cid: String!
     url: String!
+    shortUrl: String!
   }
 
   type ErrorDetails {

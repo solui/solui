@@ -46,9 +46,18 @@ export const createApolloClient = ({ endpoint, authTokenImplementation, name, ve
   client.authToken = authToken
 
   client.safeQuery = async (...args) => {
-    const ret = await client.query(...args)
+    let ret
+    let error
 
-    const error = resolveError(ret)
+    try {
+      ret = await client.query(...args)
+    } catch (err) {
+      error = err
+    }
+
+    if (!error) {
+      error = resolveError(ret)
+    }
 
     if (error) {
       const e = new Error(stringifyError(error))
@@ -60,9 +69,18 @@ export const createApolloClient = ({ endpoint, authTokenImplementation, name, ve
   }
 
   client.safeMutate = async (...args) => {
-    const ret = await client.mutate(...args)
+    let ret
+    let error
 
-    const error = resolveError(ret)
+    try {
+      ret = await client.mutate(...args)
+    } catch (err) {
+      error = err
+    }
+
+    if (!error) {
+      error = resolveError(ret)
+    }
 
     if (error) {
       const e = new Error(stringifyError(error))
