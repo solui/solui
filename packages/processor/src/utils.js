@@ -43,3 +43,8 @@ export const getMethod = (ctx, contractId, methodName) => {
   ))
 }
 
+export const reportTransactionProgress = (progressCallback, tx) => {
+  if (progressCallback) {
+    progressCallback('tx', tx)
+  }
+}

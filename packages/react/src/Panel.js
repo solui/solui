@@ -7,6 +7,7 @@ import PanelInputs from './PanelInputs'
 import Image from './Image'
 import { useInput } from './hooks'
 import Result from './Result'
+import Tx from './Tx'
 import Icon from './Icon'
 import Button from './Button'
 
@@ -73,6 +74,12 @@ const StyledResult = styled(Result)`
   max-width: 100%;
 `
 
+const StyledTx = styled(Tx)`
+  margin-top: 1rem;
+  max-width: 100%;
+  word-break: break-all;
+`
+
 /**
  * Render a UI panel.
  * @return {ReactElement}
@@ -88,8 +95,19 @@ export const Panel = ({
   image,
   inputs
 }) => {
+  const [tx, setTx] = useState()
   const [ execResult, setExecResult ] = useState()
   const [ isExecuting, setIsExecuting ] = useState(false)
+
+  const executionProgressCallback = useCallback((progressType, obj) => {
+    switch (progressType) {
+      case 'tx':
+        setTx(obj)
+        break
+      default:
+        // do nothing
+    }
+  })
 
   const onClickContainer = useCallback(() => onClick(panelId), [ onClick, panelId ])
 
@@ -112,11 +130,12 @@ export const Panel = ({
       return
     }
 
+    setTx(null)
     setExecResult(null)
     setIsExecuting(true)
 
     try {
-      const value = await onExecute({ panelId, inputs: inputValue })
+      const value = await onExecute({ panelId, inputs: inputValue, executionProgressCallback })
       setExecResult({ value })
     } catch (error) {
       setExecResult({ error })
@@ -154,6 +173,11 @@ export const Panel = ({
         {execResult ? (
           <StyledResult result={execResult} />
         ) : null}
+
+        {tx ? (
+          <StyledTx tx={tx} />
+        ) : null}
+
       </Content>
     </Container>
   )

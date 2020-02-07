@@ -7,11 +7,11 @@ import { _ } from './lodash'
 import { GLOBAL_SCOPE } from './platform'
 
 const etherscanPrefix = {
-  1: 'https://etherscan.io/address/',
-  3: 'https://ropsten.etherscan.io/address/',
-  4: 'https://rinkeby.etherscan.io/address/',
-  5: 'https://goerli.etherscan.io/address/',
-  42: 'https://kovan.etherscan.io/address/',
+  1: 'https://etherscan.io',
+  3: 'https://ropsten.etherscan.io',
+  4: 'https://rinkeby.etherscan.io',
+  5: 'https://goerli.etherscan.io',
+  42: 'https://kovan.etherscan.io',
 }
 
 const getNetworkName = id => {
@@ -41,7 +41,8 @@ const _finalizeNetwork = async network => {
 
   network.getEtherscanLink = addr => {
     if (etherscanPrefix[network.id]) {
-      return `${etherscanPrefix[network.id]}${addr}`
+      const type = (isEthereumAddress(addr) ? 'address' : 'tx')
+      return `${etherscanPrefix[network.id]}/${type}/${addr}`
     } else {
       return null
     }

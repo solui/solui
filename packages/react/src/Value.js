@@ -44,6 +44,7 @@ const Value = ({ value, type }) => {
 
   switch (type) {
     case 'address':
+    case 'txHash':
       content = (
         <NetworkContext.Consumer>
           {({ network }) => {

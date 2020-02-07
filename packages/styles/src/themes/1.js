@@ -92,6 +92,9 @@ export default {
   iconButtonShadowColor: opacify(black, 0),
   // result component
   resultBgColor: opacify(tertiary, 0.3),
+  // tx component
+  txBgColor: lighterGrey,
+  txTextColor: black,
   // group component
   panelBorderColor: lightGrey,
   panelBgColor: white,

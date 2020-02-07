@@ -2,6 +2,7 @@ import { _, promiseSerial, createErrorWithDetails, getContractDeployer, getContr
 
 import {
   extractChildById,
+  reportTransactionProgress,
 } from './utils'
 import {
   checkIdIsValid,
@@ -189,6 +190,7 @@ export const validatePanel = async ({ artifacts, spec, panelId, inputs, node }) 
  * @param  {String}  params.panelId       Id of panel.
  * @param  {Object}  params.inputs        The user input values.
  * @param  {Node}    params.node          Node connection.
+ * @param  {Function} [params.progressCallback]   Progress callback.
  *
  * @throw {Error} If validation errors occur. The `details` property will
  * contain the individual errors.
@@ -196,7 +198,7 @@ export const validatePanel = async ({ artifacts, spec, panelId, inputs, node }) 
  * @return {Promise<Object>} Key-value pair of output values according to the
  * [outputs](https://solui.dev/docs/specification/outputs) configured for the panel.
  */
-export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) => (
+export const executePanel = async ({ artifacts, spec, panelId, inputs, node, progressCallback }) => (
   new Promise(async (resolve, reject) => {
     const panelConfig = extractChildById(_.get(spec, `panels`), panelId)
     if (!panelConfig) {
@@ -216,6 +218,8 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) =
             const contractInstance = await getContractAt({ abi, node, address })
 
             const tx = await (contractInstance[method](...args))
+
+            reportTransactionProgress(progressCallback, tx)
 
             await tx.wait()
 
@@ -243,10 +247,9 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node }) =
 
             const deployer = await getContractDeployer({ abi, bytecode, node })
 
-            // args = [ "abc", "abc", 10 ]
-            // console.warn(abi, args)
-
             const inst = await deployer.deploy(...args)
+
+            reportTransactionProgress(progressCallback, inst.deployTransaction)
 
             await inst.deployed()
 

@@ -88,7 +88,7 @@ const Dapp = ({
   }, [spec, artifacts, network, validatePanel])
 
   // execute a panel
-  const onExecutePanel = useCallback(async ({ panelId, inputs }) => {
+  const onExecutePanel = useCallback(async ({ panelId, inputs, executionProgressCallback }) => {
     if (!network) {
       throw new Error('Network not available')
     }
@@ -99,6 +99,7 @@ const Dapp = ({
       panelId,
       inputs,
       node: network.node,
+      progressCallback: executionProgressCallback,
     })
   }, [spec, artifacts, network, executePanel])
 

@@ -23,7 +23,6 @@ const ResultItem = styled.li`
 const Title = styled.h3`
   margin: 0 0 1em;
   font-size: 1.2rem;
-  font-weight: cold;
 `
 
 /**
