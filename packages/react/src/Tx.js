@@ -26,7 +26,7 @@ const Title = styled.span`
 const Tx = ({ className, tx: { hash } }) => {
   return (
     <Container className={className}>
-      <Title>Tx:</Title>
+      <Title title="Transaction hash">Tx:</Title>
       <Value type='txHash' value={hash} />
     </Container>
   )

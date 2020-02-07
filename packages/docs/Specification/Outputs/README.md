@@ -30,7 +30,13 @@ Note that outputs are only displayed once all [Execution steps](../Execs) have b
 
 **type**
 
-The output type. This is to help the renderer figure out how best to display the output value. At present only `string` is supported.
+The output type. This is to help the renderer figure out how best to display the output value. At present this must be one of:
+
+* `address`
+* `bool`
+* `bytes32`
+* `int`
+* `string`
 
 Example:
 

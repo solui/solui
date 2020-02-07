@@ -5,7 +5,6 @@ const OUTPUT_TYPES = {
   bool: true,
   string: true,
   bytes: true,
-  uint: true,
   int: true,
 }
 

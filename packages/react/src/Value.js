@@ -40,6 +40,11 @@ const Value = ({ value, type }) => {
     />
   )
 
+  // if value is a big number then convert to a base-10 string
+  if (value && value._hex) {
+    value = toDecimalVal(value).toString(10)
+  }
+
   let content
 
   switch (type) {
@@ -65,13 +70,10 @@ const Value = ({ value, type }) => {
         </NetworkContext.Consumer>
       )
       break
+    case 'bool':
+      value = (value ? 'TRUE' : 'FALSE')
     default:
       content = meta
-      // do nothing!
-  }
-
-  if (value && value._hex) {
-    value = toDecimalVal(value).toString(10)
   }
 
   return (
