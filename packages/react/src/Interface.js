@@ -1,10 +1,11 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
-import React, { useState, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from '@emotion/styled'
 import { flex, media } from '@solui/styles'
 
 import { PanelBuilder } from './Panel'
 import Image from './Image'
+import { useEffectOnce } from 'react-use'
 
 const Container = styled.div`
   ${flex()}
@@ -73,6 +74,12 @@ export const Interface = ({
   const onSelectPanel = useCallback(gid => {
     setSelectedPanel(selectedPanel === gid ? null : gid)
   }, [ selectedPanel ])
+
+  useEffect(() => {
+    if (window && window.document) {
+      window.document.title = title
+    }
+  }, [ title ])
 
   return (
     <Container>
