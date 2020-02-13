@@ -9,7 +9,7 @@ This will output something like:
 ```
 solui
 
-  Develop and publish declarative UIs for smart contracts. For more information
+  Develop and publish Dapps for smart contracts. For more information
   see https://solui.dev.
 
 Usage
@@ -18,10 +18,10 @@ Usage
 
 Commands
 
-  login     Login to the public spec repository and obtain an authentication token.
-  publish   Publish a UI spec to the solui spec repository.
+  login     Login to the solUI cloud and obtain an authentication token.
+  publish   Publish a Dapo to the solUI cloud.
   version   Display solUI version.
-  view      Render a UI spec and interact with it in your browser.
+  view      Render a Dapp and interact with it in your browser.
   help      Print this usage guide. Use "help <command>" for help on a specific command.
 ```
 

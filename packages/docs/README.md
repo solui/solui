@@ -8,6 +8,8 @@
   * [Command: view](CommandLine/View)
   * [Command: login](CommandLine/Login)
   * [Command: publish](CommandLine/Publish)
+  * [Command: publish-ipfs](CommandLine/PublishIpfs)
+  * [Command: publish-folder](CommandLine/PublishFolder)
   * [Command: version](CommandLine/Version)
   * [Command: help](CommandLine/Help)
 * [Specification](Specification)

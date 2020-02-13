@@ -57,21 +57,21 @@ npm run compile
 npm run migrate
 ```
 
-Now view the ERC-20 UI:
+Now view the ERC-20 Dapp:
 
 ```
 solui view --spec contracts/erc20/ui.json --artifacts build/contracts
 ```
 
 Open up the browser to http://localhost:3001 and you will now be able to view
-and use the ERC20 token UI:
+and use the ERC20 token Dapp:
 
-![Demo UI](../images/DemoUi.png)
+![Demo Dapp](../images/DemoUi.png)
 
 ## Make some changes
 
-Whenever you change the UI spec _or_ rebuild the contract artifacts, solUI will
-[auto-reload](https://webpack.js.org/concepts/hot-module-replacement/) the UI in your browser.
+Whenever you change the Dapp spec _or_ rebuild the contract artifacts, solUI will
+[auto-reload](https://webpack.js.org/concepts/hot-module-replacement/) the Dapp in your browser.
 
 Try this out by editing `contracts/erc20/ui.json`. Edit the root `title`
 property:
@@ -84,20 +84,20 @@ property:
 }
 ```
 
-Switch to the browser window and notice that the UI title has automatically been updated without a
+Switch to the browser window and notice that the Dapp title has automatically been updated without a
 page reload! Changes to the contract build artifacts also get picked up automatically, so you can
-compile new versions of your contracts and the UI will auto-reload them in.
+compile new versions of your contracts and the Dapp will auto-reload them in.
 
 If you any mistakes in your spec then solUI will display a friendly error
 pointing out the specific issue.
 
 Check out the [full specification documentation](../Specification) to learn about
-what else you can diisplay in your new UI.
+what else you can diisplay in your new Dapp.
 
 
 ## Publish
 
-Once your UI is ready you can publish it to the solUI cloud so that everyone can
+Once your Dapp is ready you can publish it to the solUI cloud so that everyone can
 use it!
 
 First, login:
@@ -112,5 +112,5 @@ One logged in, do:
 solui publish --spec contracts/erc20/ui.json --artifacts build/contracts
 ```
 
-The console should output a URL where you can view your IPFS-hosted UI. Read the
+The console should output a URL where you can view your IPFS-hosted Dapp. Read the
 [publishing docs](../../Publishing/Overview) for more information.

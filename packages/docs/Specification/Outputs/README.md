@@ -1,4 +1,4 @@
-Outputs specify results to display to the user once panel has succesfully executed. If no outputs are defined then the UI will not display any results but will simply show a success status.
+Outputs specify results to display to the user once panel has succesfully executed. If no outputs are defined then the Dapp will not display any results but will simply show a success status.
 
 ![Outputs](../../images/Outputs.png)
 

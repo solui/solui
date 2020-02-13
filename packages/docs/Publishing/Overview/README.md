@@ -1,50 +1,69 @@
-All UIs are published to and served from [IPFS](https://ipfs.io), a peer-to-peer decentralized network.
-This ensures that your UI will be available as long as at least one IPFS node has a copy of it.
+All Dapps are published to and served from [IPFS](https://ipfs.io), a peer-to-peer decentralized network.
+This ensures that your Dapp will be available as long as at least one IPFS node has a copy of it.
 
 ## Architecture
 
-A standalone version of the solUI viewer is published to IPFS at:
+A standalone version of the solUI renderer is published to IPFS at:
 
 ```
 https://gateway.temporal.cloud/ipns/ui.solui.dev
 ```
 
-Your UI spec and associated contract artifacts, when published, will return an
-IPFS _CID_ (a unique hash representing your content). To then view your UI you simply have to pass this CID to the
-standalone viewer as follows:
+Your Dapp spec and associated contract artifacts, when published, will return an
+IPFS _CID_ (a unique hash representing your content). To then view your Dapp you simply have to pass this CID to the
+standalone renderer as follows:
 
 ```
 https://gateway.temporal.cloud/ipns/ui.solui.dev#l=<Your CID>
 ```
 
-## Cloud IPFS
+## solUI cloud
 
-By default your UI spec and associated contract artifacts will be published via our backend server to our
-public IPFS cloud (hosted by [Temporal](https://temporal.cloud/)). Our IPFS node will ensure your UI always
+The default [publish command](../../CommandLine/Publish) will upload your Dapp spec and associated contract artifacts via our backend server to our
+public IPFS cloud (hosted by [Temporal](https://temporal.cloud/)). Our IPFS node will ensure your Dapp always
 remains accessible even if other nodes stop hosting it. Another benefit is that it saves you from having to
 host and manage an IPFS node yourself.
 
-Publishing is done quickly and easily [via the CLI](../../CommandLine/Publish). Once successful, a unique
-_content hash_ is returned - this is the hash for your UI as returned by IPFS and can be used to access
+Once successful, a unique
+_content hash_ is returned - this is the hash for your Dapp as returned by IPFS and can be used to access
 your published data.
 
-For example, after successfully [publishing  you will receive both a CID and a URL for viewing your UI, e.g:
+For example, after successfully [publishing  you will receive both a CID and a URL for viewing your Dapp, e.g:
 
 ![Publish to cloud](../../images/PublishCloud.png)
 
 _Note: publishing to our backend involves an [authentication step](../Authentication)_.
 
-## Custom/local IPFS
+## Custom IPFS
 
-You can of course choose to publish your UI to your own IPFS node hosted locally or elsewhere. No communication or authentication with our backend server is
-needed if publishing to your own IPFS node; however **it is your responsibility to manage your node and ensure that your UI remains accessible**.
+You can also [publish to your own IPFS node](../CommandLine/PublishIpfs). No communication or authentication with the solUI cloud is
+needed if publishing to your own IPFS node; however **it is your responsibility to manage your node and ensure that your Dapp remains accessible**.
 
-You can still use our IPFS-hosted viewer to render your UI by simplifying specifying the full IFPS URL.
-For example, if your UI is hosted at https://ipfs.yourdomain.com/QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY then render it using:
+You can still use our IPFS-hosted viewer to render your Dapp by simplifying specifying the full IFPS URL.
+For example, if your Dapp is hosted at https://ipfs.yourdomain.com/QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY then render it using:
 
 ```
 https://gateway.temporal.cloud/ipns/ui.solui.dev/#l=https://ipfs.yourdomain.com/QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY
 ```
+
+## Local folder
+
+You can also [publish to a local folder](../CommandLine/PublishFolder). No communication or authentication with the solUI cloud is needed with this method.
+
+The local folder you publish to will eventually contain 3 files:
+
+```
+index.html      <- HTML page
+index.js        <- solUI renderer
+dapp.json       <- your Dapp specification + artifacts
+```
+
+ You could then upload this folder to a to static web host such as [Github pages](https://pages.github.com/) and have total control over the hosting of your Dapp.
+
+
+
+
+
 
 
 

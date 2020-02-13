@@ -1,4 +1,4 @@
-Published UIs can be embedded in any webpage as using an `iframe` HTML tag. For example, if the content hash of your published UI is `QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY` then embed it in an existing page using:
+Published Dapps can be embedded in any webpage as using an `iframe` HTML tag. For example, if the content hash of your published Dapp is `QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY` then embed it in an existing page using:
 
 ```html
 <iframe src="https://gateway.temporal.cloud/ipns/ui.solui.dev/#l=QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY" width="800" height="600" />
@@ -26,7 +26,7 @@ If you view your Dapp via this shorter URL then the sharing/embedding interface 
 
 ## Customize styling
 
-The default colour scheme for the UI components can be customized on a per-embedded-instance basis. For example, to replace the default gradient background with a plain `black` colour, append `&layoutBgColor=black` to the view URL:
+The default colour scheme for the Dapp components can be customized on a per-embedded-instance basis. For example, to replace the default gradient background with a plain `black` colour, append `&layoutBgColor=black` to the view URL:
 
 ```
 https://gateway.temporal.cloud/ipns/ui.solui.dev/#l=QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY&layoutBgColor=black
