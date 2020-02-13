@@ -1,11 +1,17 @@
+import got from 'got'
+import path from 'path'
+import fs from 'fs'
+import mkdirp from 'mkdirp'
 import { PublishMutation } from '@solui/graphql'
 import { _, hash, uploadDataToIpfs } from '@solui/utils'
 import { getUsedContracts, assertSpecValid } from '@solui/processor'
 
 import { getApiClient } from './client'
 import { logInfo, logTrace, logWarn } from './utils'
+import config from './config'
 
-export const publish = async ({ spec, artifacts, customIpfs }) => {
+
+export const publish = async ({ spec, artifacts, customIpfs, customFolder }) => {
   // check spec is valid
   await assertSpecValid({ spec, artifacts })
 
@@ -45,27 +51,57 @@ export const publish = async ({ spec, artifacts, customIpfs }) => {
     return m
   }, {})
 
-  if (customIpfs) {
-    logTrace(`Publishing spec ${spec.id} to custom IPFS: ${customIpfs} ...`)
+  const dataToPublish = { spec, artifacts: artifactsToPublish }
+
+  if (customFolder) {
+    logTrace(`Publishing Dapp ${spec.id} to folder: ${customFolder} ...`)
+
+    // fetch renderer from IPFS
+    const indexPage = await got(`${config.SOLUI_RENDERER_HOST}/index.html`)
+    const jsScript = await got(`${config.SOLUI_RENDERER_HOST}/index.js`)
+
+    // create folder if necessary
+    logTrace(`Ensuring folder exists ...`)
+    mkdirp.sync(customFolder)
+
+    // put path to Dapp json into html
+    const htmlStr = indexPage.body.replace(
+      '<script',
+      `<script type="text/javascript">
+        window.location.hash='#l=./dapp.json';
+      </script><script`
+    )
+
+    // write files
+    logTrace(`Writing output ...`)
+    fs.writeFileSync(path.join(customFolder, 'index.html'), htmlStr, 'utf-8')
+    fs.writeFileSync(path.join(customFolder, 'index.js'), jsScript.body, 'utf-8')
+    fs.writeFileSync(path.join(customFolder, 'dapp.json'), JSON.stringify(dataToPublish), 'utf-8')
+
+    logTrace('Published successfully!')
+
+    logInfo(`Output:`, customFolder)
+  } else if (customIpfs) {
+    logTrace(`Publishing Dapp ${spec.id} to custom IPFS: ${customIpfs} ...`)
 
     const [ { hash: cid } ] = await uploadDataToIpfs(
-      JSON.stringify({ spec, artifacts: artifactsToPublish }),
+      JSON.stringify(dataToPublish),
       customIpfs
     )
 
     logTrace('Published successfully!')
 
     logInfo(`CID:`, cid)
-    logInfo(`View:`, `https://gateway.temporal.cloud/ipns/ui.solui.dev#l=<YOUR_IPFS_GATEWAY>/${cid}`)
+    logInfo(`View:`, `${config.SOLUI_RENDERER_HOST}#l=<YOUR_IPFS_GATEWAY>/${cid}`)
   } else {
-    logTrace(`Publishing spec ${spec.id} to solUI cloud ...`)
+    logTrace(`Publishing Dapp ${spec.id} to solUI cloud ...`)
 
     const client = getApiClient()
 
     const ret = await client.safeMutate({
       mutation: PublishMutation,
       variables: {
-        bundle: { spec, artifacts: artifactsToPublish }
+        bundle: dataToPublish
       }
     })
 

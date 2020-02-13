@@ -54,7 +54,7 @@ const Bootstrap = ({ hash }) => {
         return {}
       }
 
-      if (!q.l.startsWith('http')) {
+      if (!q.l.startsWith('http') && !q.l.startsWith('.')) {
         q.l = `https://gateway.temporal.cloud/ipfs/${q.l}`
       }
 

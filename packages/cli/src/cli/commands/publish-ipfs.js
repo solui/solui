@@ -2,7 +2,7 @@ import { loadSpecArtifacts } from '../../utils'
 import { publish } from '../../'
 
 export const getMeta = () => ({
-  summary: 'Publish a Dapp to the solUI cloud.',
+  summary: 'Publish a Dapp to an IPFS node.',
   params: [
     {
       name: 'spec',
@@ -13,15 +13,21 @@ export const getMeta = () => ({
       name: 'artifacts',
       typeLabel: '{underline folder}',
       description: 'Path to the folder containing the contract JSON artifacts.'
-    }
+    },
+    {
+      name: 'ipfs',
+      typeLabel: '{underline endpoint}',
+      description: 'The IPFS endpoint to publish to. (Format: <PROTOCOL>://<HOST>:<PORT>/PATH/TO/IPFS/API)',
+    },
   ]
 })
 
 export const execute = async ({
   spec: specFile,
   artifacts: artifactsDir,
+  ipfs: customIpfs,
 }) => {
   const { spec, artifacts } = loadSpecArtifacts({ specFile, artifactsDir })
 
-  await publish({ spec, artifacts })
+  await publish({ spec, artifacts, customIpfs })
 }
