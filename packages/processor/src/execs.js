@@ -46,7 +46,7 @@ const validateContractMethod = (ctx, config) => {
             resolveValue(ctx, inputId)
           } catch (err) {
             foundError = true
-            ctx.errors().add(ctx.id, `method argument ${argId} maps from an invalid reference: ${inputId}`)
+            ctx.errors().add(ctx.id, `method argument ${argId} maps from an invalid value: ${inputId}`)
           }
         })
 
@@ -60,7 +60,7 @@ const validateContractMethod = (ctx, config) => {
               resolveValue(ctx, address)
             } catch (err) {
               foundError = true
-              ctx.errors().add(ctx.id, `contract address maps from an invalid reference: ${address}`)
+              ctx.errors().add(ctx.id, `contract address maps from an invalid value: ${address}`)
             }
           }
         }
@@ -110,7 +110,7 @@ const EXECS = {
         )
         // further execs may need this output as input!
         if (saveResultAsInput) {
-          ctx.inputs()[saveResultAsInput] = result
+          ctx.inputs().set(saveResultAsInput, result)
         }
       }
     }
@@ -136,19 +136,19 @@ const EXECS = {
       try {
         contractAddress = resolveValue(ctx, address)
       } catch (err) {
-        ctx.errors().add(ctx.id, `contract address reference is invalid: ${address}`)
+        ctx.errors().add(ctx.id, `contract address value is invalid: ${address}`)
       }
 
       // do it!
-      ctx.inputs()[saveResultAsInput] = await ctx.callbacks().callMethod(
-        ctx.id, {
-          contract,
-          abi,
-          method,
-          args,
-          address: contractAddress,
-        }
-      )
+      const res = await ctx.callbacks().callMethod(ctx.id, {
+        contract,
+        abi,
+        method,
+        args,
+        address: contractAddress,
+      })
+
+      ctx.inputs().set(saveResultAsInput, res)
     }
   },
   send: {
@@ -172,7 +172,7 @@ const EXECS = {
       try {
         contractAddress = resolveValue(ctx, address)
       } catch (err) {
-        ctx.errors().add(ctx.id, `contract address reference is invalid: ${address}`)
+        ctx.errors().add(ctx.id, `contract address value is invalid: ${address}`)
       }
 
       // do it!

@@ -21,8 +21,8 @@ const inputValidationReducer = (state, { id, valid, error }) => {
 
 
 const createInitialInputValueState = inputs => (
-  inputs.reduce((m, { id, config: { initialValue } }) => {
-    m[id] = initialValue || ''
+  inputs.reduce((m, { id, config: { resolvedInitialValue } }) => {
+    m[id] = resolvedInitialValue || ''
     return m
   }, {})
 )

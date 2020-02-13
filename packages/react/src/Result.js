@@ -35,20 +35,24 @@ const Result = ({ className, result: { value, error } }) => {
   if (error) {
     return <ErrorBox className={className} error={error} />
   } else {
-    const valueKeys = Object.keys(value || {})
+    let resultItems = []
 
-    const resultItems = valueKeys.length ? valueKeys.map(k => {
-      const { type, title, result: actualValue } = value[k]
+    const sanitizedValue = (value || new Map())
 
-      return (
-        <ResultItem key={k} moreThanOne={!!valueKeys.length}>
+    sanitizedValue.forEach((v, k) => {
+      const { type, title, result: actualValue } = v
+
+      resultItems.push(
+        <ResultItem key={k} moreThanOne={!!sanitizedValue.size}>
           <Title>{title}</Title>
           <Value type={type} value={actualValue} />
         </ResultItem>
       )
-    }) : (
-      <ResultItem>Success!</ResultItem>
-    )
+    })
+
+    if (!resultItems.length) {
+      resultItems = <ResultItem>Success!</ResultItem>
+    }
 
     return <Results className={className}>{resultItems}</Results>
   }

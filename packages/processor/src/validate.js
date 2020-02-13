@@ -45,7 +45,7 @@ export const checkImageIsValid = (ctx, img) => {
 
 export const checkAddressIsValid = async (ctx, value, { allowedTypes } = {}) => {
   try {
-    await assertEthAddressIsValidOnChain(value, ctx.node(), {
+    await assertEthAddressIsValidOnChain(value, ctx.network().node, {
       allowContract: !!allowedTypes.contract,
       allowEoa: !!allowedTypes.eoa
     })
@@ -124,9 +124,9 @@ export const checkNumberIsValid = async (
 }
 
 export const checkValueIsRelatedToOtherFieldValue = async (ctx, value, { field } = {}) => {
-  const otherVal = ctx.inputs()[field.field]
+  const otherVal = ctx.inputs().get(field.field)
 
-  if (otherVal) {
+  if (typeof otherVal !== 'undefined') {
     try {
       switch (field.operation) {
         case 'notEqual':

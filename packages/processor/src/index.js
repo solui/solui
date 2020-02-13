@@ -12,7 +12,8 @@ import {
 } from './validate'
 
 import { RootContext } from './context'
-import { process as processPanel } from './panel'
+import { process as processPanel } from './panels'
+import { processList as processConstants } from './constants'
 
 export { RootContext }
 
@@ -25,14 +26,15 @@ export { RootContext }
  * @param  {Object}  params                Parameters.
  * @param  {Object}  params.spec           The UI specification.
  * @param  {Object}  params.artifacts      Contract artifacts.
+ * @param  {Network}    [params.network]      Network connection. Makes on-chain validation possible.
  * @param  {Object}  [callbacks={}]        Processor callbacks.
  *
  * @return {Promise<RootContext>}
  */
-export const process = async ({ spec, artifacts }, callbacks = {}) => {
-  const { id, version, title, description, image, panels } = (spec || {})
+export const process = async ({ spec, artifacts, network }, callbacks = {}) => {
+  const { id, version, title, description, image, constants, panels } = (spec || {})
 
-  const ctx = new RootContext('<root>', { artifacts, callbacks })
+  const ctx = new RootContext('<root>', { artifacts, callbacks, network })
 
   checkIdIsValid(ctx, id)
 
@@ -47,6 +49,8 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
   if (image) {
     await checkImageIsValid(ctx, image)
   }
+
+  await processConstants(ctx, constants)
 
   if (_.isEmpty(panels)) {
     ctx.errors().add(ctx.id, 'must have at least one panel')
@@ -82,14 +86,15 @@ export const process = async ({ spec, artifacts }, callbacks = {}) => {
  * @param  {Object}  params                Parameters.
  * @param  {Object}  params.spec           The UI specification.
  * @param  {Object}  params.artifacts      Contract artifacts.
+ * @param  {Network}    [params.network]      Network connection. Makes on-chain validation possible.
  *
  * @throw {Error} If validation errors occur. The `details` property will
  * contain the individual errors.
  *
  * @return {Promise}
  */
-export const assertSpecValid = async ({ spec, artifacts }) => {
-  const ctx = await process({ spec, artifacts })
+export const assertSpecValid = async ({ spec, artifacts, network }) => {
+  const ctx = await process({ spec, artifacts, network })
 
   const errors = ctx.errors()
 
@@ -139,14 +144,14 @@ export const getUsedContracts = ({ spec }) => {
  * @param  {Object}  params.artifacts      Contract artifacts.
  * @param  {String}  params.panelId      Id of panel.
  * @param  {Object}  params.inputs      The user input values.
- * @param  {Node}    [params.node]      Node connection. Makes on-chain validation possible.
+ * @param  {Network}    [params.network]      Network connection. Makes on-chain validation possible.
  *
  * @throw {Error} If validation errors occur. The `details` property will
  * contain the individual errors.
  *
  * @return {Promise}
  */
-export const validatePanel = async ({ artifacts, spec, panelId, inputs, node }) => (
+export const validatePanel = async ({ artifacts, spec, panelId, inputs, network }) => (
   new Promise(async (resolve, reject) => {
     const panelConfig = extractChildById(_.get(spec, `panels`), panelId)
     if (!panelConfig) {
@@ -156,13 +161,14 @@ export const validatePanel = async ({ artifacts, spec, panelId, inputs, node }) 
 
     const ctx = new RootContext(spec.id, {
       artifacts,
-      node,
+      network,
       callbacks: {
         processInput: id => inputs[id],
       }
     })
 
     try {
+      await processConstants(ctx, spec.constants)
       await processPanel(ctx, panelId, panelConfig)
     } catch (err) {
       ctx.errors().add(ctx.id, `error validating panel: ${err}`)
@@ -189,7 +195,7 @@ export const validatePanel = async ({ artifacts, spec, panelId, inputs, node }) 
  * @param  {Object}  params.artifacts     Contract artifacts.
  * @param  {String}  params.panelId       Id of panel.
  * @param  {Object}  params.inputs        The user input values.
- * @param  {Node}    params.node          Node connection.
+ * @param  {Network}    params.network       Network connection.
  * @param  {Function} [params.progressCallback]   Progress callback.
  *
  * @throw {Error} If validation errors occur. The `details` property will
@@ -198,8 +204,10 @@ export const validatePanel = async ({ artifacts, spec, panelId, inputs, node }) 
  * @return {Promise<Object>} Key-value pair of output values according to the
  * [outputs](https://solui.dev/docs/specification/outputs) configured for the panel.
  */
-export const executePanel = async ({ artifacts, spec, panelId, inputs, node, progressCallback }) => (
+export const executePanel = async ({ artifacts, spec, panelId, inputs, network, progressCallback }) => (
   new Promise(async (resolve, reject) => {
+    const { node } = network
+
     const panelConfig = extractChildById(_.get(spec, `panels`), panelId)
     if (!panelConfig) {
       reject(new Error(`panel not found: ${panelId}`))
@@ -208,7 +216,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node, pro
 
     const ctx = new RootContext(spec.id, {
       artifacts,
-      node,
+      network,
       callbacks: {
         processInput: id => inputs[id],
         sendTransaction: async (id, { contract, abi, method, address, args }) => {
@@ -264,6 +272,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, node, pro
     })
 
     try {
+      await processConstants(ctx, spec.constants)
       await processPanel(ctx, panelId, panelConfig)
     } catch (err) {
       ctx.errors().add(ctx.id, `error executing panel: ${err.message}`)

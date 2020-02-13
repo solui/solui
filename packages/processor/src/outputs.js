@@ -27,13 +27,13 @@ const process = (ctx, config) => {
     try {
       resolvedValue = resolveValue(ctx, value)
     } catch (err) {
-      ctx.errors().add(ctx.id, `output value is not a valid reference or value: ${value}`)
+      ctx.errors().add(ctx.id, `output value is not valid: ${value}`)
     }
 
-    ctx.outputs()[ctx.id] = {
+    ctx.outputs().set(ctx.id, {
       ...config,
       result: resolvedValue,
-    }
+    })
   }
 }
 
