@@ -98,17 +98,22 @@ const Dapp = ({
       spec,
       panelId,
       inputs,
-      node: network.node,
+      network,
       progressCallback: executionProgressCallback,
     })
   }, [ spec, artifacts, network, executePanel ])
 
   // build interface
   useEffect(() => {
+    // until network is available there is nothing to do!
+    if (!network) {
+      return
+    }
+
     (async () => {
       // assert validity
       try {
-        await validateSpec({ spec, artifacts })
+        await validateSpec({ spec, artifacts, network })
       } catch (err) {
         console.error(err)
         setBuildResult({ error: err })
@@ -117,7 +122,7 @@ const Dapp = ({
 
       try {
         const int = new InterfaceBuilder()
-        const { errors } = await processSpec({ spec, artifacts }, int)
+        const { errors } = await processSpec({ spec, artifacts, network }, int)
 
         if (errors.notEmpty) {
           throw createErrorWithDetails('There were processing errors', errors.toStringArray())
@@ -129,7 +134,7 @@ const Dapp = ({
         setBuildResult({ error: err })
       }
     })()
-  }, [ onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec ])
+  }, [ onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec, network ])
 
   return (
     <Container className={className}>

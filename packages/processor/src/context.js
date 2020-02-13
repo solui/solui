@@ -63,12 +63,14 @@ class Context {
     this._id = parentContext ? `${parentContext.id}.${id}` : id
 
     ;[
+      'inputs',
       'artifacts',
       'errors',
       'inputs',
       'outputs',
       'callbacks',
-      'node',
+      'network',
+      'constants',
     ].forEach(p => {
       this[p] = () => (this[`_${p}`] ? this[`_${p}`] : this._parentContext[p]())
     })
@@ -90,7 +92,7 @@ class Context {
 class PanelContext extends Context {
   constructor (id, parentContext) {
     super(id, parentContext)
-    this._inputs = {}
+    this._inputs = new Map()
   }
 
   createChildContext (id) {
@@ -106,13 +108,14 @@ class PanelContext extends Context {
  * collect errors which occur during processing for retrievel later on.
  */
 export class RootContext extends Context {
-  constructor (id, { node, artifacts, callbacks }) {
+  constructor (id, { network = {}, artifacts, callbacks }) {
     super(id)
-    this._node = node
+    this._network = network
     this._artifacts = artifacts
     this._errors = new ProcessingErrors()
     this._callbacks = { ...DEFAULT_CALLBACKS, ...callbacks }
-    this._outputs = {}
+    this._outputs = new Map()
+    this._constants = new Map()
   }
 
   createPanelContext (id) {

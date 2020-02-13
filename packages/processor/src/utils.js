@@ -2,21 +2,35 @@ import { _ } from '@solui/utils'
 
 export const extractChildById = (array, needle) => (array || []).find(({ id }) => id === needle)
 
-export const inputIsPresent = (ctx, key) => (
-  Object.keys(ctx.inputs() || {}).includes(key)
-)
+export const resolveValue = (ctx, val, { throwIfNotReference = false } = {}) => {
+  val = val || ''
 
-export const resolveValue = (ctx, val) => {
   const inputName = _.get(val.match(/@input\[(.+)\]/), '1')
+  const constantName = _.get(val.match(/@constant\[(.+)\]/), '1')
 
   if (inputName) {
-    if (!inputIsPresent(ctx, inputName)) {
+    if (!ctx.inputs().has(inputName)) {
       throw new Error(`input not found: ${inputName}`)
     }
 
-    return ctx.inputs()[inputName]
+    return ctx.inputs().get(inputName)
+  } else if (constantName) {
+    if (!ctx.constants().has(constantName)) {
+      throw new Error(`constant not found: ${constantName}`)
+    }
+
+    const def = ctx.constants().get(constantName)
+
+    // get value for network we're on or just return the default
+    const { id = 'default' } = ctx.network()
+
+    return def[id]
   } else {
-    throw new Error(`invalid reference: ${inputName}`)
+    if (throwIfNotReference) {
+      throw new Error(`invalid reference: ${val}`)
+    } else {
+      return val
+    }
   }
 }
 

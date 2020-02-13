@@ -5,6 +5,7 @@ import {
 } from '@solui/utils'
 
 import { validateInputValue } from './validate'
+import { resolveValue } from './utils'
 
 const _process = async (ctx, name, config) => ctx.callbacks().processInput(ctx.id, name, config)
 
@@ -64,7 +65,7 @@ export const processList = async (parentCtx, inputs) => (
 
     const ctx = parentCtx.createChildContext(`input[${name}]`)
 
-    const { title, type } = inputConfig
+    const { title, type, initialValue } = inputConfig
 
     if (!title) {
       ctx.errors().add(ctx.id, `must have a title`)
@@ -74,6 +75,18 @@ export const processList = async (parentCtx, inputs) => (
       ctx.errors().add(ctx.id, `must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
     }
 
-    ctx.inputs()[name] = await INPUTS[type].process(ctx, name, inputConfig)
+
+    // resolve initial value
+    try {
+      if (!_.isEmpty(initialValue)) {
+        inputConfig.resolvedInitialValue = resolveValue(ctx, initialValue)
+      }
+    } catch (err) {
+      ctx.errors().add(ctx.id, `initial value is invalid: ${err.message}`)
+    }
+
+    const res = await INPUTS[type].process(ctx, name, inputConfig)
+
+    ctx.inputs().set(name, res)
   })
 )
