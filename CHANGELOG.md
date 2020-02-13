@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/solui/solui/compare/v1.4.0...v1.5.0) (2020-02-13)
+
+
+### Features
+
+* publish a Dapp to a local folder ([2b148ff](https://github.com/solui/solui/commit/2b148ff6f2226371ef94e3cc8151d58ab3e7c88e))
+* set window title to dapp title ([0e6e41b](https://github.com/solui/solui/commit/0e6e41b0fbeea1e637a9d10cbe680dfe15d5164a))
+
+
+
+
+
 # [1.4.0](https://github.com/solui/solui/compare/v1.3.3...v1.4.0) (2020-02-08)
 
 
