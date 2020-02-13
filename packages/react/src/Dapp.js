@@ -101,7 +101,7 @@ const Dapp = ({
       node: network.node,
       progressCallback: executionProgressCallback,
     })
-  }, [spec, artifacts, network, executePanel])
+  }, [ spec, artifacts, network, executePanel ])
 
   // build interface
   useEffect(() => {
@@ -129,7 +129,7 @@ const Dapp = ({
         setBuildResult({ error: err })
       }
     })()
-  }, [onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec])
+  }, [ onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec ])
 
   return (
     <Container className={className}>

@@ -95,7 +95,7 @@ export const Panel = ({
   image,
   inputs
 }) => {
-  const [tx, setTx] = useState()
+  const [ tx, setTx ] = useState()
   const [ execResult, setExecResult ] = useState()
   const [ isExecuting, setIsExecuting ] = useState(false)
 
@@ -107,7 +107,7 @@ export const Panel = ({
       default:
         // do nothing
     }
-  })
+  }, [])
 
   const onClickContainer = useCallback(() => onClick(panelId), [ onClick, panelId ])
 
@@ -142,7 +142,7 @@ export const Panel = ({
     } finally {
       setIsExecuting(false)
     }
-  }, [ allInputsAreValid, onExecute, panelId, inputValue ])
+  }, [ allInputsAreValid, onExecute, panelId, inputValue, executionProgressCallback ])
 
   return (
     <Container expanded={expanded}>

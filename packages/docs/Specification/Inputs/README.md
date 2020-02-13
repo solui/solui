@@ -15,6 +15,7 @@ inputs are rendered in the order in which they're defined in a panel.
         {
           "name": "...",
           "title": "...",
+          "initialValue": "...",
           "type": "...",
           "unit": "...",
           "scale": "...",
@@ -68,6 +69,18 @@ Example:
 ```js
 {
   "type": "bytes32"
+}
+```
+
+**initialValue** _(optional)_
+
+Initial value to display in the input field, specified as a string.
+
+Example:
+
+```js
+{
+  "initialValue": "100"
 }
 ```
 
