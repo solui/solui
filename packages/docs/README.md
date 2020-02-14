@@ -20,6 +20,7 @@
   * [Input validation](Specification/InputValidation)
   * [Execs](Specification/Execs)
   * [Outputs](Specification/Outputs)
+  * [Environment](Specification/EnvVars)
 * [Publishing](Publishing)
   * [Overview](Publishing/Overview)
   * [Authentication](Publishing/Authentication)

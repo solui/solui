@@ -65,3 +65,6 @@ The above constant resolves to a different value depending on the Ethereum netwo
 
 _Note: When using a mapping the `default` key-value pair MUST be specified_.
 
+**How to use**
+
+To refer to a constant, use the `@constants[name]` syntax, where `name` is the the actual constant name. See the docs for [inputs](../Inputs) for examples.

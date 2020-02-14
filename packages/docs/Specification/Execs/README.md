@@ -66,7 +66,8 @@ The on-chain address of the contract, specified as one of:
 
   * Name of a panel [input field](../Inputs).
   * A named [constant](../Constants).
-  * The named result of a previous execution task (see `saveResultAs` below).
+  * An [environment variable](../EnvVars).
+  * The result of a previous execution task (see `saveResultAs` below).
   * A fixed value.
 
 Example (address is specified as a user input field):
@@ -141,6 +142,7 @@ method argument and corresponding value is one of:
 
   * Name of a panel [input field](../Inputs).
   * A named [constant](../Constants).
+  * An [environment variable](../EnvVars).
   * The named result of a previous execution task (see `saveResultAs` below).
   * A fixed value.
 
@@ -163,6 +165,23 @@ Example:
        "_initialSupply": "1000000"
      }
    }
+  ]
+}
+```
+
+Example using an environment variable:
+
+```js
+{
+  "execs": [
+    {
+      "type": "call",
+      "method": "balanceOf",
+      "args": {
+        "_address": "@env[account]",
+      }
+      ...,
+    }
   ]
 }
 ```

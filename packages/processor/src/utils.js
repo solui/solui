@@ -1,4 +1,4 @@
-import { _ } from '@solui/utils'
+import { _, getAccount } from '@solui/utils'
 
 export const extractChildById = (array, needle) => (array || []).find(({ id }) => id === needle)
 
@@ -7,6 +7,7 @@ export const resolveValue = (ctx, val, { throwIfNotReference = false } = {}) => 
 
   const inputName = _.get(val.match(/@input\[(.+)\]/), '1')
   const constantName = _.get(val.match(/@constant\[(.+)\]/), '1')
+  const envName = _.get(val.match(/@env\[(.+)\]/), '1')
 
   if (inputName) {
     if (!ctx.inputs().has(inputName)) {
@@ -25,6 +26,15 @@ export const resolveValue = (ctx, val, { throwIfNotReference = false } = {}) => 
     const { id = 'default' } = ctx.network()
 
     return def[id]
+  } else if (envName) {
+    // only "account" is supported right now
+    if (envName !== 'account') {
+      throw new Error(`invalid env var: ${envName}`)
+    }
+
+    const { account = '' } = ctx.network()
+
+    return account
   } else {
     if (throwIfNotReference) {
       throw new Error(`invalid reference: ${val}`)

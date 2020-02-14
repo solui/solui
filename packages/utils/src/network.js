@@ -39,6 +39,8 @@ const _finalizeNetwork = async network => {
   network.id = normalizeNetworkId(info.chainId)
   network.name = getNetworkName(network.id)
 
+  network.account = await getAccount(network.node)
+
   network.getEtherscanLink = addr => {
     if (etherscanPrefix[network.id]) {
       const type = (isEthereumAddress(addr) ? 'address' : 'tx')
@@ -170,6 +172,21 @@ export const getNetworkInfo = async node => {
   await _finalizeNetwork(network)
 
   return network
+}
+
+
+/**
+ * Get account address.
+ *
+ * @param  {Node}  node node.
+ * @return {Promise<String>}  Account address.
+ */
+export const getAccount = async node => {
+  if (node.askWalletOwnerForPermissionToViewAccounts) {
+    await node.askWalletOwnerForPermissionToViewAccounts()
+  }
+
+  return node.getSigner(0).getAddress()
 }
 
 

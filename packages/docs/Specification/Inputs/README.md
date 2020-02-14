@@ -108,6 +108,7 @@ Example:
 Initial value to display in the input field, specified as one of.
 
   * A named [constant](../Constants).
+  * An [environment variable](../EnvVars).
   * A fixed string value.
 
 Example using a fixed value:
@@ -123,6 +124,14 @@ Example using a named constant:
 ```js
 {
   "initialValue": "@constant[contractAddress]"
+}
+```
+
+Example using an environment variable:
+
+```js
+{
+  "initialValue": "@env[account]"
 }
 ```
 
