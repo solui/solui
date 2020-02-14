@@ -1,4 +1,4 @@
-Use the `publish-ipfs` command to [publish a Dapp](../../Publishing/Overview) to a local folder:
+Use the `publish-folder` command to [publish a Dapp](../../Publishing/Overview) to a local folder:
 
 ```shell
 solui publish-folder --spec /path/to/json --artifacts /path/to/contract/artifacts --folder /usr/local/share/dapp
