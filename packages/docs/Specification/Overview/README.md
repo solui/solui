@@ -22,6 +22,7 @@ The general structure of a spec is as follows:
   "description": "...",
   "image": { ... },
   "aboutUrl": "...",
+  "constants": { ... },
   "panels": [ ... ]
 }
 ```
@@ -114,6 +115,22 @@ Example:
 ```js
 {
   "aboutUrl": "https://github.com/solui/demo"
+}
+```
+
+
+**constants** _(optional)_
+
+The list of [named constants](../Constants).
+
+Example:
+
+```js
+{
+  "constants": {
+    "tokenAddress": "0x12ab....",
+    ...
+  }
 }
 ```
 

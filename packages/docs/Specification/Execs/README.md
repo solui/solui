@@ -1,6 +1,6 @@
 Execution tasks define what contract methods get called with what arguments.
 
-If a [panel](../Panels.md) defines more than one execution task they are
+If a [panel](../Panels) defines more than one execution task they are
 executed in _sequence_, not parallel.
 This allows for the output of an earlier task to be re-used as the input argument of a later task.
 
@@ -64,8 +64,10 @@ Example:
 
 The on-chain address of the contract, specified as one of:
 
-* Name of a panel [input field](../Inputs.md).
-* The named result of a previous execution task (see `saveResultAs` below).
+  * Name of a panel [input field](../Inputs).
+  * A named [constant](../Constants).
+  * The named result of a previous execution task (see `saveResultAs` below).
+  * A fixed value.
 
 Example (address is specified as a user input field):
 
@@ -79,6 +81,19 @@ Example (address is specified as a user input field):
     {
       ...,
       "address": "@input[contractAddress]"
+    }
+  ]
+}
+```
+
+Example (address is specified as a named constant):
+
+```js
+{
+  "execs": [
+    {
+      ...,
+      "address": "@constant[contractAddress]"
     }
   ]
 }
@@ -124,11 +139,12 @@ The arguments to pass to the contract method.
 This is specified as key-value pairs, where the key is the name of contract
 method argument and corresponding value is one of:
 
-  * Name of a panel [input field](../Inputs.md).
+  * Name of a panel [input field](../Inputs).
+  * A named [constant](../Constants).
   * The named result of a previous execution task (see `saveResultAs` below).
   * A fixed value.
 
-Example mapping from user inputs as well as setting a fixed value:
+Example:
 
 ```js
 {
@@ -142,7 +158,7 @@ Example mapping from user inputs as well as setting a fixed value:
      "type": "deploy",
      "contract": "ERC20",
      "args": {
-       "_name": "@input[name]",
+       "_name": "@constant[tokenName]",
        "_symbol": "@input[symbol]",
        "_initialSupply": "1000000"
      }

@@ -62,7 +62,8 @@ Example:
 
 The value to display, specified as one of:
 
-* Reference to a panel [input field](../Inputs.md).
+* Reference to a panel [input field](../Inputs).
+* Reference to a previous [execution result](../Execs)
 * A fixed value.
 
 Examples:

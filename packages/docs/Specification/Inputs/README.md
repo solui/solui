@@ -42,6 +42,8 @@ Example:
 }
 ```
 
+The above example's input value can be referenced elsewhere in the Dapp using `@input[tokenName]`.
+
 **title**
 
 The user-friendly name of the input. This is shown the user as the label for the input.
@@ -74,13 +76,24 @@ Example:
 
 **initialValue** _(optional)_
 
-Initial value to display in the input field, specified as a string.
+Initial value to display in the input field, specified as one of.
 
-Example:
+  * A named [constant](../Constants).
+  * A fixed string value.
+
+Example using a fixed value:
 
 ```js
 {
   "initialValue": "100"
+}
+```
+
+Example using a named constant:
+
+```js
+{
+  "initialValue": "@constant[contractAddress]"
 }
 ```
 

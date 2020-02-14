@@ -14,6 +14,7 @@
   * [Command: help](CommandLine/Help)
 * [Specification](Specification)
   * [Overview](Specification/Overview)
+  * [Constants](Specification/Constants)
   * [Panels](Specification/Panels)
   * [Inputs](Specification/Inputs)
   * [Input validation](Specification/InputValidation)
