@@ -1,5 +1,5 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from '@emotion/styled'
 import { _, createErrorWithDetails } from '@solui/utils'
 import { flex, boxShadow, childAnchors } from '@solui/styles'
@@ -7,6 +7,7 @@ import { flex, boxShadow, childAnchors } from '@solui/styles'
 import { InterfaceBuilder } from './Interface'
 import ErrorBox from './ErrorBox'
 import Progress from './Progress'
+import Button from './Button'
 import NetworkInfoLabel from './NetworkInfoLabel'
 import Menu from './Menu'
 
@@ -28,6 +29,11 @@ const StyledProgress = styled(Progress)`
 
 const StyledError = styled(ErrorBox)`
   margin: 1rem;
+`
+
+const Preamble = styled.div`
+  ${flex({ direction: 'column', justify: 'center', align: 'center' })};
+  margin-bottom: 1rem;
 `
 
 const TopBar = styled.div`
@@ -76,8 +82,15 @@ const Dapp = ({
 }) => {
   const [buildResult, setBuildResult] = useState()
 
+  const [refreshCounter, setRefreshCounter] = useState(0)
+  const accountAvailable = useMemo(() => !!_.get(network, 'account'), [ network, refreshCounter ])
+
   // validate a panel's inputs
   const onValidatePanel = useCallback(async ({ panelId, inputs }) => {
+    if (!accountAvailable) {
+      throw new Error('Account not available')
+    }
+
     return validatePanel({
       artifacts,
       spec,
@@ -85,12 +98,12 @@ const Dapp = ({
       inputs,
       network,
     })
-  }, [spec, artifacts, network, validatePanel])
+  }, [ spec, artifacts, network, validatePanel, accountAvailable ])
 
   // execute a panel
   const onExecutePanel = useCallback(async ({ panelId, inputs, executionProgressCallback }) => {
-    if (!network) {
-      throw new Error('Network not available')
+    if (!accountAvailable) {
+      throw new Error('Account not available')
     }
 
     return executePanel({
@@ -101,12 +114,11 @@ const Dapp = ({
       network,
       progressCallback: executionProgressCallback,
     })
-  }, [ spec, artifacts, network, executePanel ])
+  }, [ spec, artifacts, network, executePanel, accountAvailable  ])
 
   // build interface
   useEffect(() => {
-    // until network is available there is nothing to do!
-    if (!network) {
+    if (!accountAvailable) {
       return
     }
 
@@ -134,36 +146,56 @@ const Dapp = ({
         setBuildResult({ error: err })
       }
     })()
-  }, [ onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec, network ])
+  }, [ onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec, network, accountAvailable ])
+
+  const enableAccountAccess = useCallback(async () => {
+    await network.enableAccountAccess()
+    setRefreshCounter(refreshCounter + 1)
+  }, [ network, refreshCounter ])
+
+  let content
+
+  if (!network) {
+    content = (
+      <StyledProgress>Waiting for Ethereum network connection (please check your wallet / Metamask!)</StyledProgress>
+    )
+  } else if (!accountAvailable) {
+    content = (
+      <Preamble>
+        <StyledProgress>We need your permission to know your Ethereum account address</StyledProgress>
+        <Button onClick={enableAccountAccess}>Enable access</Button>
+      </Preamble>
+    )
+  } else {
+    content = (
+      <div>
+        <TopBar>
+          <NetworkInfoLabel network={network} />
+        </TopBar>
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {(!buildResult) ? <StyledProgress>Rendering...</StyledProgress> : (
+          buildResult.error ? <StyledError error={buildResult.error} /> : (
+            buildResult.interface.buildContent({
+              onValidatePanel,
+              onExecutePanel,
+            })
+          )
+        )}
+        <BottomBar>
+          <StyledMenu
+            embedUrl={embedUrl}
+            spec={spec}
+            artifacts={artifacts}
+          />
+          <Credit>Powered by <a href="https://solui.dev">solUI</a></Credit>
+        </BottomBar>
+      </div>
+    )
+  }
 
   return (
     <Container className={className}>
-      <InnerContainer>
-        {(!network) ? <StyledProgress>Waiting for Ethereum network connection (please check your browser/Metamask!)</StyledProgress> : (
-          <div>
-            <TopBar>
-              <NetworkInfoLabel network={network} />
-            </TopBar>
-            {/* eslint-disable-next-line no-nested-ternary */}
-            {(!buildResult) ? <StyledProgress>Rendering...</StyledProgress> : (
-              buildResult.error ? <StyledError error={buildResult.error} /> : (
-                buildResult.interface.buildContent({
-                  onValidatePanel,
-                  onExecutePanel,
-                })
-              )
-            )}
-            <BottomBar>
-              <StyledMenu
-                embedUrl={embedUrl}
-                spec={spec}
-                artifacts={artifacts}
-              />
-              <Credit>Powered by <a href="https://solui.dev">solUI</a></Credit>
-            </BottomBar>
-          </div>
-        )}
-      </InnerContainer>
+      <InnerContainer>{content}</InnerContainer>
     </Container>
   )
 }

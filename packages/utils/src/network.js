@@ -34,12 +34,12 @@ const getNetworkName = id => {
 const normalizeNetworkId = i => `${i}`
 
 const _finalizeNetwork = async network => {
-  const info = await network.node.getNetwork()
+  const { node } = network
+
+  const info = await node.getNetwork()
 
   network.id = normalizeNetworkId(info.chainId)
   network.name = getNetworkName(network.id)
-
-  network.account = await getAccount(network.node)
 
   network.getEtherscanLink = addr => {
     if (etherscanPrefix[network.id]) {
@@ -48,6 +48,27 @@ const _finalizeNetwork = async network => {
     } else {
       return null
     }
+  }
+
+  // try getting account
+  try {
+    network.account = await node.getSigner(0).getAddress()
+    console.log(`User account: ${network.account}`)
+  } catch (err) {
+    console.log('Unable to automatically fetch account address, will need to ask user for permission!')
+  }
+
+  // function to enable account access
+  network.enableAccountAccess = async () => {
+    if (network.account) {
+      return
+    }
+
+    if (node.askWalletOwnerForPermissionToViewAccounts) {
+      await node.askWalletOwnerForPermissionToViewAccounts()
+    }
+
+    network.account = await node.getSigner(0).getAddress()
   }
 }
 
@@ -77,13 +98,18 @@ export const getNodeConnection = async url => {
 
 
 /**
- * Get node connection from given `Web3` connection.
+ * Get network information from given `Web3` connection.
  *
  * @param  {Web3}  web3 Web3 instance.
- * @return {Promise<Node>}
+ * @return {Promise<NetworkInfo>}
  */
-export const getNodeConnectionFromWeb3 = async web3 => {
-  return new Web3Provider(web3)
+export const getNetworkInfoFromWeb3 = async web3 => {
+  const network = { node: new Web3Provider(web3) }
+
+  await _finalizeNetwork(network)
+
+  return network
+
 }
 
 
@@ -148,9 +174,9 @@ export const getNetworkInfoFromGlobalScope = async () => {
       throw new Error('Error setting up connection')
     }
 
-    await _finalizeNetwork(network)
-
     Object.assign(network.node, extraProps)
+
+    await _finalizeNetwork(network)
 
     return network
   } catch (err) {
@@ -160,34 +186,6 @@ export const getNetworkInfoFromGlobalScope = async () => {
   }
 }
 
-/**
- * Get network information from given node.
- *
- * @param  {Node}  node connection.
- * @return {Promise<NetworkInfo>}
- */
-export const getNetworkInfo = async node => {
-  const network = { node }
-
-  await _finalizeNetwork(network)
-
-  return network
-}
-
-
-/**
- * Get account address.
- *
- * @param  {Node}  node node.
- * @return {Promise<String>}  Account address.
- */
-export const getAccount = async node => {
-  if (node.askWalletOwnerForPermissionToViewAccounts) {
-    await node.askWalletOwnerForPermissionToViewAccounts()
-  }
-
-  return node.getSigner(0).getAddress()
-}
 
 
 /**
