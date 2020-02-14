@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/solui/solui/compare/v1.5.0...v1.6.0) (2020-02-14)
+
+
+### Features
+
+* constants ([#25](https://github.com/solui/solui/issues/25)) ([cfab0e9](https://github.com/solui/solui/commit/cfab0e9d6b7a24a35e43a83a639b837c39c3c8c3))
+
+
+
+
+
 # [1.5.0](https://github.com/solui/solui/compare/v1.4.0...v1.5.0) (2020-02-13)
 
 
