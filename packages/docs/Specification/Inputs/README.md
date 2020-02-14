@@ -17,6 +17,8 @@ inputs are rendered in the order in which they're defined in a panel.
           "title": "...",
           "initialValue": "...",
           "type": "...",
+          "placeholder": "...",
+          "helpText": "...",
           "unit": "...",
           "scale": "...",
           "validation": [ ... ]
@@ -73,6 +75,33 @@ Example:
   "type": "bytes32"
 }
 ```
+
+
+**placeholder** _(optional)_
+
+The placholder text.
+
+Example:
+
+```js
+{
+  "placeholder": "A non-zero number"
+}
+```
+
+
+**helpText** _(optional)_
+
+Help text to be displayed next to the input field to help clarify its use.
+
+Example:
+
+```js
+{
+  "helpText": "Please enter the desired totaly supply of your token."
+}
+```
+
 
 **initialValue** _(optional)_
 

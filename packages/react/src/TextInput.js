@@ -26,19 +26,6 @@ const Input = styled.input`
   }
  `
 
-const getPlaceholder = ({ type }) => {
-  switch (type) {
-    case 'email':
-      return 'Email address'
-    default:
-      return type
-  }
-}
-
-const getInputType = ({ type }) => {
-  return type
-}
-
 /**
  * Render a text input field.
  * @return {ReactElement}
@@ -49,26 +36,19 @@ const TextInput = forwardRef(({
   onChange,
   value,
   error,
-  type,
-  placeholder
+  placeholder = '',
 }, ref) => {
-  const inputType = useMemo(() => getInputType({ type }), [ type ])
-  const placeholderStr = useMemo(
-    () => placeholder || getPlaceholder({ type }),
-    [ type, placeholder ]
-  )
-
   const onTextChange = useCallback(e => onChange(e.currentTarget.value), [ onChange ])
 
   return (
     <Input
       ref={ref}
       className={className}
-      type={inputType}
+      type='text'
       name={name}
       onChange={onTextChange}
       value={value}
-      placeholder={placeholderStr}
+      placeholder={placeholder}
       hasError={!!error}
     />
   )

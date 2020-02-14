@@ -6,7 +6,7 @@ import { flex } from '@solui/styles'
 import ErrorBox from './ErrorBox'
 import IconButton from './IconButton'
 import TextInput from './TextInput'
-import { getInputHelpBasedOnInputConfig } from './utils'
+import { getMetaTextForInput } from './utils'
 
 const Container = styled.div`
   ${flex({ justify: 'flex-start', align: 'flex-start' })};
@@ -36,6 +36,17 @@ const HelpText = styled.p`
   display: block;
   color: ${({ theme }) => theme.inputHelpTextColor};
   margin-top: 0.2rem;
+  line-height: 1.5em;
+`
+
+const MetaText = styled.p`
+  ${({ theme }) => theme.font('body')};
+  display: block;
+  color: ${({ theme }) => theme.inputMetaTextColor};
+  background-color: ${({ theme }) => theme.inputMetaTextBgColor};
+  border-radius: 5px;
+  padding: 0.5em;
+  margin-top: 0.2rem;
 `
 
 /**
@@ -47,14 +58,14 @@ const Field = ({
   name,
   value,
   onChange,
-  config: { title, type, ...config },
+  config: { title, type, helpText, placeholder, ...config },
   validationStatus,
 }) => {
-  const { helpText, tooltip } = useMemo(() => {
-    const { helpStr, tips } = getInputHelpBasedOnInputConfig({ type, value, config })
+  const { metaText, tooltip } = useMemo(() => {
+    const { metaText, tips } = getMetaTextForInput({ type, value, config })
 
     return {
-      helpText: helpStr,
+      metaText,
       tooltip: tips.length ? tips.join('\n') : '',
     }
   }, [ type, value, config ])
@@ -69,9 +80,11 @@ const Field = ({
         name={name}
         onChange={onChange}
         value={value}
-        type='text'
+        placeholder={placeholder}
+        type={type}
         {...validationStatus}
       />
+      {metaText ? <MetaText>{metaText}</MetaText> : null}
       {helpText ? <HelpText>{helpText}</HelpText> : null}
       {validationStatus.error ? <StyledErrorBox error={validationStatus.error} /> : null}
     </Container>
