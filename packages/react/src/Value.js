@@ -1,15 +1,16 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
-import React, { Fragment, useState, useCallback } from 'react'
+import React, { Fragment, useState, useCallback, useMemo } from 'react'
 import styled from '@emotion/styled'
-import ReactTooltip from 'react-tooltip'
 import * as clipboard from 'clipboard-polyfill'
-import { toDecimalVal } from '@solui/utils'
+import ReactTooltip from 'react-tooltip'
 
-import { openUrl } from './utils'
+import { openUrl, getRenderableValuesForOutput } from './utils'
 import IconButton from './IconButton'
+import LinkButton from './LinkButton'
 import { NetworkContext } from './contexts'
 
 const Span = styled.span``
+
 const StyledIconButton = styled(IconButton)`
   margin-left: 0.5rem;
 `
@@ -23,16 +24,36 @@ const COPY_TO_CLIPBOARD = 'Copy to clipboard'
  *
  * @return {ReactElement}
  */
-const Value = ({ value, type }) => {
+const Value = ({ value, ...config }) => {
+  const { type } = config
+
   const [ copyButtonTooltip, setCopyButtonTooltip ] = useState(COPY_TO_CLIPBOARD)
+  const [ currentValueFormatIndex, setCurrentValueFormatIndex ] = useState(0)
+
+  const valueFormats = useMemo(() => {
+    return getRenderableValuesForOutput({ value, type, config })
+  }, [ value, type, config ])
+
+  const hasMoreThanOneValueFormat = useMemo(() => valueFormats.length > 1, [ valueFormats ])
+
+  const valueFormatToRender = useMemo(() => {
+    if (currentValueFormatIndex >= valueFormats.length) {
+      currentValueFormatIndex = 0;
+    }
+    return valueFormats[currentValueFormatIndex]
+  }, [currentValueFormatIndex, valueFormats ])
+
+  const showNextValueFormat = useCallback(() => {
+    setCurrentValueFormatIndex(currentValueFormatIndex >= valueFormats.length - 1 ? 0 : currentValueFormatIndex + 1)
+  }, [ currentValueFormatIndex , valueFormats ])
 
   const copyToClipboard = useCallback(() => {
-    clipboard.writeText(value)
+    clipboard.writeText(valueFormatToRender)
     setCopyButtonTooltip('Copied!')
     setTimeout(() => setCopyButtonTooltip(COPY_TO_CLIPBOARD), 5000)
-  }, [ value ])
+  }, [ valueFormatToRender ])
 
-  const meta = (
+  const actions = (
     <StyledIconButton
       tooltip={copyButtonTooltip}
       icon={{ name: 'copy' }}
@@ -40,20 +61,15 @@ const Value = ({ value, type }) => {
     />
   )
 
-  // if value is a big number then convert to a base-10 string
-  if (value && value._hex) {
-    value = toDecimalVal(value).toString(10)
-  }
-
-  let content
+  let postValueContent
 
   switch (type) {
     case 'address':
     case 'txHash':
-      content = (
+      postValueContent = (
         <NetworkContext.Consumer>
           {({ network }) => {
-            const etherscanLink = network ? network.getEtherscanLink(value) : null
+            const etherscanLink = network ? network.getEtherscanLink(valueFormatToRender) : null
 
             const link = etherscanLink ? (
               <StyledIconButton
@@ -64,22 +80,27 @@ const Value = ({ value, type }) => {
             ) : null
 
             return (
-              <Fragment>{meta}{link}</Fragment>
+              <Fragment>{actions}{link}</Fragment>
             )
           }}
         </NetworkContext.Consumer>
       )
       break
-    case 'bool':
-      value = (value ? 'TRUE' : 'FALSE')
     default:
-      content = meta
+      postValueContent = actions
   }
 
   return (
     <Fragment>
       <ReactTooltip />
-      <Span><Span>{value}</Span>{content}</Span>
+      <Span>
+        {hasMoreThanOneValueFormat ? (
+          <LinkButton title="Change format" onClick={showNextValueFormat}>{valueFormatToRender}</LinkButton>
+        ): (
+          <Span>{ valueFormatToRender }</Span>
+        )}
+        {postValueContent}
+      </Span>
     </Fragment>
   )
 }

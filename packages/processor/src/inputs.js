@@ -1,7 +1,7 @@
 import {
   _,
   promiseSerial,
-  deriveRealNumber,
+  deriveDecimalVal,
 } from '@solui/utils'
 
 import { validateInputValue } from './validate'
@@ -29,7 +29,7 @@ const INPUTS = {
 
       if (result) {
         await validateInputValue(ctx, result, config)
-        realVal = deriveRealNumber(result, config)
+        realVal = deriveDecimalVal(result, config)
       }
 
       return realVal ? realVal.toString(10) : undefined

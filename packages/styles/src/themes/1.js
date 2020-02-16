@@ -90,6 +90,17 @@ export default {
   iconButtonHoverBgColor: secondary,
   iconButtonHoverTextColor: white,
   iconButtonShadowColor: opacify(black, 0),
+  // linkButton component
+  linkButtonBorderColor: transparent,
+  linkButtonBgColor: transparent,
+  linkButtonTextColor: 'inherit',
+  linkButtonDisabledBorderColor: transparent,
+  linkButtonDisabledBgColor: transparent,
+  linkButtonDisabledTextColor: grey,
+  linkButtonHoverBorderColor: transparent,
+  linkButtonHoverBgColor: secondary,
+  linkButtonHoverTextColor: white,
+  linkButtonShadowColor: transparent,
   // result component
   resultBgColor: opacify(tertiary, 0.3),
   // tx component

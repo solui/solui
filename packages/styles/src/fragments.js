@@ -99,7 +99,6 @@ export const buttonStyles = ({
   ${smoothTransitions()};
   ${theme.font('body', 'bold')};
   cursor: pointer;
-  cursor: pointer;
   border: 1px solid ${(disabled ? buttonDisabledBorderColor : buttonBorderColor)};
   background-color: ${(disabled ? buttonDisabledBgColor : buttonBgColor)};
   color: ${(disabled ? buttonDisabledTextColor : buttonTextColor)};

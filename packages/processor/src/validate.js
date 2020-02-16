@@ -2,7 +2,7 @@ import {
   _,
   assertEthAddressIsValidOnChain,
   toDecimalVal,
-  deriveRealNumber,
+  deriveDecimalVal,
 } from '@solui/utils'
 
 export const checkIdIsValid = (ctx, id) => {
@@ -96,7 +96,7 @@ export const checkNumberIsValid = async (
   { scale, range } = {},
 ) => {
   try {
-    const val = deriveRealNumber(value, { scale })
+    const val = deriveDecimalVal(value, { scale })
 
     if (!val) {
       throw new Error('invalid input')

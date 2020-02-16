@@ -10,6 +10,7 @@ import Icon from './Icon'
 import IconButton from './IconButton'
 import Image from './Image'
 import Layout from './Layout'
+import LinkButton from './LinkButton'
 import LoadingIcon from './LoadingIcon'
 import MaxContentWidth from './MaxContentWidth'
 import Menu from './Menu'
@@ -34,6 +35,7 @@ export {
   IconButton,
   Image,
   Layout,
+  LinkButton,
   LoadingIcon,
   MaxContentWidth,
   Menu,

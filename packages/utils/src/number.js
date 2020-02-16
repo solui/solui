@@ -14,12 +14,12 @@ export const toDecimalVal = (a, scale = 0) => {
 
     const d = new PreciseDecimal(`${a}`)
 
-    return scale ? d.mul(Decimal.pow(10, scale)) : d
+    return (0 == scale ? d : d.mul(Decimal.pow(10, scale)))
   } catch (err) {
     return null
   }
 }
 
-export const deriveRealNumber = (value, { scale } = {}) => {
+export const deriveDecimalVal = (value, { scale = 0 } = {}) => {
   return toDecimalVal(value, scale)
 }
