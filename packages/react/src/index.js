@@ -5,6 +5,7 @@ import Button from './Button'
 import Dapp from './Dapp'
 import DateTime from './DateTime'
 import ErrorBox from './ErrorBox'
+import ExecutionHistoryModal from './ExecutionHistoryModal'
 import GlobalStyles from './GlobalStyles'
 import Icon from './Icon'
 import IconButton from './IconButton'
@@ -20,6 +21,7 @@ import Progress from './Progress'
 import Result from './Result'
 import TextInput from './TextInput'
 import Tooltip from './Tooltip'
+import Tx from './Tx'
 import Value from './Value'
 
 export {
@@ -30,6 +32,7 @@ export {
   Dapp,
   DateTime,
   ErrorBox,
+  ExecutionHistoryModal,
   GlobalStyles,
   Icon,
   IconButton,
@@ -45,6 +48,7 @@ export {
   Result,
   TextInput,
   Tooltip,
+  Tx,
   Value,
 }
 
