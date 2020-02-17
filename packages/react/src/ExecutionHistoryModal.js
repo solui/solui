@@ -119,7 +119,7 @@ const HistoryItem = ({ onRetry, item: { ts, inputs, inputValues, outputValues, t
           <h3>Input</h3>
           <InputList>
             {inputs.map(i => (
-              <li>
+              <li key={i.id}>
                 <InputName>{i.config.title}:</InputName>
                 <InputValue>{inputValues[i.id]}</InputValue>
                 <CopyToClipboardButton value={inputValues[i.id]} />

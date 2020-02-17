@@ -4,10 +4,15 @@ import styled from '@emotion/styled'
 
 import { openUrl, getRenderableValuesForOutput } from './utils'
 import LinkButton from './LinkButton'
+import IconButton from './IconButton'
 import CopyToClipboardButton from './CopyToClipboardButton'
 import { NetworkContext } from './contexts'
 
 const Span = styled.span``
+
+const StyledIconButton = styled(IconButton)`
+  margin-left: 0.5rem;
+`
 
 const StyledCopyToClipboardButton = styled(CopyToClipboardButton)`
   margin-left: 0.5rem;
