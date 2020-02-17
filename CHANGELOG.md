@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.1](https://github.com/solui/solui/compare/v1.7.0...v1.7.1) (2020-02-17)
+
+
+### Bug Fixes
+
+* missing import bug ([44ad705](https://github.com/solui/solui/commit/44ad705ecda3218bb5b4bac27b85197a6851d8ad))
+
+
+
+
+
 # [1.7.0](https://github.com/solui/solui/compare/v1.6.0...v1.7.0) (2020-02-17)
 
 
