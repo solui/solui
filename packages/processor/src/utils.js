@@ -72,3 +72,4 @@ export const reportTransactionProgress = (progressCallback, tx) => {
     progressCallback('tx', tx)
   }
 }
+

@@ -3,6 +3,7 @@ import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 import { flex, boxShadow, smoothTransitions } from '@solui/styles'
 
+import { useExecutionHistory } from './hooks'
 import PanelInputs from './PanelInputs'
 import Image from './Image'
 import { useInput } from './hooks'
@@ -10,6 +11,8 @@ import Result from './Result'
 import Tx from './Tx'
 import Icon from './Icon'
 import Button from './Button'
+import IconButton from './IconButton'
+import ExecutionHistoryModal from './ExecutionHistoryModal'
 
 const containerActiveCss = theme => `
   background-color: ${theme.panelActiveBgColor};
@@ -65,8 +68,9 @@ const Content = styled.section`
   overflow: hidden;
 `
 
-const StyledButton = styled(Button)`
+const Actions = styled.div`
   margin-top: 1rem;
+  ${flex({ direction: 'row', justify: 'space-between', align: 'center' })};
 `
 
 const StyledResult = styled(Result)`
@@ -77,7 +81,11 @@ const StyledResult = styled(Result)`
 const StyledTx = styled(Tx)`
   margin-top: 1rem;
   max-width: 100%;
-  word-break: break-all;
+`
+
+const HistoryButton = styled(IconButton)`
+  padding: 0.4em 0.5em;
+  border: none;
 `
 
 /**
@@ -98,18 +106,15 @@ export const Panel = ({
   const [ tx, setTx ] = useState()
   const [ execResult, setExecResult ] = useState()
   const [ isExecuting, setIsExecuting ] = useState(false)
-
-  const executionProgressCallback = useCallback((progressType, obj) => {
-    switch (progressType) {
-      case 'tx':
-        setTx(obj)
-        break
-      default:
-        // do nothing
-    }
-  }, [])
+  const { executionHistory, saveExecutionToHistory } = useExecutionHistory()
+  const [ executionHistoryModalIsShown, setShowExecutionHistoryModal ] = useState(false)
 
   const onClickContainer = useCallback(() => onClick(panelId), [ onClick, panelId ])
+
+  const clearPreviousResults = useCallback(() => {
+    setTx(null)
+    setExecResult(null)
+  }, [])
 
   const {
     inputValue,
@@ -118,7 +123,10 @@ export const Panel = ({
     onInputChange,
   } = useInput({
     inputs,
-    validate: useCallback(panelInputs => onValidate({ panelId, inputs: panelInputs }), [
+    validate: useCallback(panelInputs => {
+      clearPreviousResults()
+      return onValidate({ panelId, inputs: panelInputs })
+    }, [
       panelId, onValidate
     ])
   })
@@ -130,19 +138,47 @@ export const Panel = ({
       return
     }
 
-    setTx(null)
-    setExecResult(null)
+    clearPreviousResults()
     setIsExecuting(true)
 
+    const execHistoryItem = { inputs, inputValues: inputValue }
+
     try {
-      const value = await onExecute({ panelId, inputs: inputValue, executionProgressCallback })
+      const value = await onExecute({
+        panelId,
+        inputs: inputValue,
+        executionProgressCallback: (progressType, obj) => {
+          switch (progressType) {
+            case 'tx':
+              execHistoryItem.tx = obj
+              setTx(obj)
+              break
+            default:
+            // do nothing
+          }
+        }
+      })
       setExecResult({ value })
+      saveExecutionToHistory({ ...execHistoryItem, outputValues: value })
     } catch (error) {
       setExecResult({ error })
+      saveExecutionToHistory({ ...execHistoryItem, error })
     } finally {
       setIsExecuting(false)
     }
-  }, [ allInputsAreValid, onExecute, panelId, inputValue, executionProgressCallback ])
+  }, [ allInputsAreValid, onExecute, panelId, inputValue ])
+
+  const toggleExecutionHistoryModal = useCallback(() => {
+    setShowExecutionHistoryModal(!executionHistoryModalIsShown)
+  }, [ executionHistoryModalIsShown ])
+
+  const retryInputValues = useCallback(inputValues => {
+    Object.keys(inputValues).forEach(k => {
+      onInputChange[k](inputValues[k])
+    })
+    clearPreviousResults()
+    setShowExecutionHistoryModal(false)
+  })
 
   return (
     <Container expanded={expanded}>
@@ -163,12 +199,25 @@ export const Panel = ({
           />
         ) : null}
 
-        <StyledButton
-          onClick={isExecuting ? null : onExecutePanel}
-          disabled={!allInputsAreValid}
-        >
-          {isExecuting ? <Icon name='laugh-squint' spin /> : 'Execute'}
-        </StyledButton>
+        <Actions>
+          <Button
+            onClick={isExecuting ? null : onExecutePanel}
+            disabled={!allInputsAreValid}
+          >
+            {isExecuting ? <Icon name='laugh-squint' spin /> : 'Execute'}
+          </Button>
+
+          {(!isExecuting && !!executionHistory.length) ? (
+            <HistoryButton title='View execution history' icon={{ name: 'history' }} onClick={toggleExecutionHistoryModal} />
+          ) : null}
+
+          <ExecutionHistoryModal
+            history={executionHistory}
+            open={executionHistoryModalIsShown}
+            onClose={toggleExecutionHistoryModal}
+            onRetry={retryInputValues}
+          />
+        </Actions>
 
         {execResult ? (
           <StyledResult result={execResult} />

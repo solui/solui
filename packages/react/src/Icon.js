@@ -16,6 +16,10 @@ import {
   faShareAltSquare,
   faEye,
   faHome,
+  faHistory,
+  faClock,
+  faPlus,
+  faMinus,
 } from '@fortawesome/free-solid-svg-icons'
 
 config.autoAddCss = false
@@ -32,6 +36,10 @@ library.add(
   faShareAltSquare,
   faEye,
   faHome,
+  faHistory,
+  faClock,
+  faPlus,
+  faMinus,
 )
 
 const MAP = {
@@ -47,6 +55,10 @@ const MAP = {
     'share-alt-square',
     'eye',
     'home',
+    'history',
+    'clock',
+    'plus',
+    'minus',
   ],
 }
 

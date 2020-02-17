@@ -23,11 +23,12 @@ export const toDate = d => {
  * representation (format: MMM d, YYYY).
  *
  * @param  {String|Number|Date} d Input date
+ * @param  {String} [formatStr] Format, default is MMM d, yyyy
  * @return {String} e.g. _Oct 27, 2019_
  */
-export const prettyDate = d => {
+export const prettyDate = (d, formatStr = 'MMM d, yyyy') => {
   try {
-    return format(toDate(d), 'MMM d, yyyy')
+    return format(toDate(d), formatStr)
   } catch (err) {
     console.error(`Error formatting date: ${d}`, err)
     return ''

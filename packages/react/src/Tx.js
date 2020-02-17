@@ -10,6 +10,7 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.txBgColor};
   color: ${({ theme }) => theme.txTextColor};
   font-size: 0.8rem;
+  word-break: break-all;
 `
 
 const Title = styled.span`

@@ -1,5 +1,6 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
-import React from 'react'
+import React, { Fragment } from 'react'
+import ReactTooltip from 'react-tooltip'
 import styled from '@emotion/styled'
 import { buttonStyles } from '@solui/styles'
 
@@ -35,18 +36,21 @@ const StyledButton = styled.button`
  */
 const IconButton = ({ icon, tooltip, ...props }) => {
   return (
-    <Tooltip text={tooltip}>
-      {({ tooltipElement, show, hide }) => (
-        <StyledButton
-          {...props}
-          onMouseOver={show}
-          onMouseOut={hide}
-        >
-          <Icon {...icon} />
-          {tooltipElement}
-        </StyledButton>
-      )}
-    </Tooltip>
+    <Fragment>
+      <ReactTooltip />
+      <Tooltip text={tooltip}>
+        {({ tooltipElement, show, hide }) => (
+          <StyledButton
+            {...props}
+            onMouseOver={show}
+            onMouseOut={hide}
+          >
+            <Icon {...icon} />
+            {tooltipElement}
+          </StyledButton>
+        )}
+      </Tooltip>
+    </Fragment>
   )
 }
 

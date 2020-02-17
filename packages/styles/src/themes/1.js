@@ -8,6 +8,7 @@ import { opacify } from '../color'
 
 const yellow = '#ffd739'
 const red = '#FF714F'
+const green = '#00aa00'
 const white = '#fff'
 const black = '#000'
 const darkGrey = '#666'
@@ -35,6 +36,7 @@ export default {
   lighterGrey,
   yellow,
   red,
+  green,
   primary,
   secondary,
   tertiary,
@@ -106,12 +108,18 @@ export default {
   // tx component
   txBgColor: lighterGrey,
   txTextColor: black,
-  // group component
+  // panel
   panelBorderColor: lightGrey,
   panelBgColor: white,
   panelActiveBgColor: white,
   panelActiveBorderColor: transparent,
   panelActiveShadowColor: opacify(black, 0.4),
+  // panel execution history
+  execHistoryMetaTextColor: grey,
+  execHistorySuccessBorderColor: grey,
+  execHistorySuccessBgColor: opacify(grey, 0.05),
+  execHistoryFailureBorderColor: red,
+  execHistoryFailureBgColor: opacify(red, 0.05),
   // generic input component
   inputLabelTextColor: black,
   inputBorderColor: lightGrey,
