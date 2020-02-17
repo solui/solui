@@ -15,7 +15,9 @@ Outputs specify results to display to the user once panel has succesfully execut
         {
           "title": "...",
           "type": "...",
-          "value": "..."
+          "value": "...",
+          "scale": "...",
+          "unit": "...",
         },
         ...
       ]
@@ -79,3 +81,41 @@ Examples:
   "value": "A fixed value"
 }
 ```
+
+**scale** _(optional)_
+
+Applies to `type`: `int`
+
+This is how to much to scale the output value by to obtain the displayable value. This
+means multiplying the input value by `10^scale` to obtain the real value.
+
+For example, if outputting an ETH value (which gets returned as WEI from a contract call)
+then the scale should be set to -18.
+
+Example:
+
+```js
+{
+  "scale": "-18"
+}
+```
+
+If a scale is set then the output value becomes clickable such that the user is able to
+cycle through the different formats (both scaled and unscaled):
+
+![Output value](../../images/OutputValue.png)
+
+**unit** _(optional)_
+
+Applies to `type`: `int`
+
+This is user-friendly text that gets shown next to the output value when the `scale` property is also set.
+
+Example:
+
+```js
+{
+  "unit": "Tokens"
+}
+```
+
