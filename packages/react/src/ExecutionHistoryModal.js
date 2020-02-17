@@ -129,7 +129,7 @@ const HistoryItem = ({ onRetry, item: { ts, inputs, inputValues, outputValues, t
           <h3>Result</h3>
           <StyledResult result={{ value: outputValues, error }} />
           {tx ? <StyledTx tx={tx} /> : null}
-          <StyledButton onClick={doRetry}>Retry</StyledButton>
+          <StyledButton onClick={doRetry} title='Replay this execution'>Replay</StyledButton>
         </Fragment>
       ) : (
         <Fragment>

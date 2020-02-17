@@ -12,7 +12,7 @@ When viewing an embedded solUI interface you can grab it embedding URL via share
 
 The _View source_ link will allow you to view the full JSON for both the spec and the contract artifacts.
 
-## Short URLs
+## Short URLs
 
 When publishing to the solUI cloud the CLI will also output a "shorter" friendlier URL that redirects to the IFPS one, e.g:
 
