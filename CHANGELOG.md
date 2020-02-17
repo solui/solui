@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/solui/solui/compare/v1.6.0...v1.7.0) (2020-02-17)
+
+
+### Bug Fixes
+
+* docs typo ([d50d031](https://github.com/solui/solui/commit/d50d031e58b3e29205e6b3816554604dceaf16a3))
+
+
+### Features
+
+* add user account as an environment variable - [#23](https://github.com/solui/solui/issues/23) ([192125e](https://github.com/solui/solui/commit/192125e9856b213ba92873d7a59416db6543c648))
+* execution history and retry - [#11](https://github.com/solui/solui/issues/11) ([24ffe52](https://github.com/solui/solui/commit/24ffe52493de05606237b6603ccaa7ba74371890))
+* input field help text ([ea3ba3a](https://github.com/solui/solui/commit/ea3ba3ac322c60b509a4625b879792ceb0982def))
+* introduce enable-account-access step for better ux ([78e9daa](https://github.com/solui/solui/commit/78e9daa8d1960417e97c11a64f61b51251be7ef8))
+* output scaling ([c4a66fb](https://github.com/solui/solui/commit/c4a66fbfcf5d73e6e28f9c77f20281dd662f2fcd))
+
+
+
+
+
 # [1.6.0](https://github.com/solui/solui/compare/v1.5.0...v1.6.0) (2020-02-14)
 
 
