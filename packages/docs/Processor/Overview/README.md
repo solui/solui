@@ -91,7 +91,7 @@ Take the following spec as an example:
             "_symbol": "symbol",
             "_initialSupply": "initialSupply"
           },
-          "saveResultAs": "contractAddress"
+          "saveResultAsInput": "contractAddress"
         }
       ],
       "outputs": [
