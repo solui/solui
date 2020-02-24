@@ -19,7 +19,7 @@ This allows for the output of an earlier task to be re-used as the input argumen
           "address": "...",
           "method": "...",
           "args": { ... },
-          "saveResultAs": "..."
+          "saveResultAsInput": "..."
         }
       ]
     }
@@ -108,7 +108,7 @@ Example (address is specified as result of earlier task):
     /* this gets executed first */
     {
       ...,
-      "saveResultAs": "contractAddress"
+      "saveResultAsInput": "contractAddress"
     },
     /* this gets executed second */
     {
@@ -194,7 +194,7 @@ Example mapping from result of previous execution:
     {
       "type": "deploy",
       ...,
-      "saveResultAs": "newContractAddress",
+      "saveResultAsInput": "newContractAddress",
     },
     {
       "type": "send",
@@ -208,7 +208,7 @@ Example mapping from result of previous execution:
 }
 ```
 
-**saveResultAs** _(optional)_
+**saveResultAsInput** _(optional)_
 
 Save the result of the execution as a named variable to used as an input later
 on.
@@ -221,7 +221,7 @@ Example:
     {
       "type": "call",
       ...,
-      "saveResultAs": "currentBalance",
+      "saveResultAsInput": "currentBalance",
     },
     {
       "type": "send",
