@@ -33,7 +33,7 @@ const StyledCopyToClipboardButton = styled(CopyToClipboardButton)`
  *
  * @return {ReactElement}
  */
-const SingleValue = ({ value, ...config }) => {
+const SingleValue = ({ className, value, ...config }) => {
   const { type } = config
 
   const [ currentValueFormatIndex, setCurrentValueFormatIndex ] = useState(0)
@@ -90,7 +90,7 @@ const SingleValue = ({ value, ...config }) => {
   const Comp = (type.startsWith('bytes32') ? BytesVal : Val)
 
   return (
-    <Container>
+    <Container className={className}>
       {hasMoreThanOneValueFormat ? (
         <LinkButton title="Change format" onClick={showNextValueFormat}>{valueFormatToRender}</LinkButton>
       ) : (
@@ -115,12 +115,16 @@ const ArrayContainer = styled.div`
   }
 `
 
+const ArraySingleValue = styled(SingleValue)`
+  display: block;
+`
+
 const ArrayValue = ({ value, ...config }) => {
   return (
     <ArrayContainer>
       {value.map((v, i) => {
         return (
-          <SingleValue key={i} value={v} {...config} />
+          <ArraySingleValue key={i} value={v} {...config} />
         )
       })}
     </ArrayContainer>

@@ -2,34 +2,68 @@ import { _ } from '@solui/utils'
 
 export const extractChildById = (array, needle) => (array || []).find(({ id }) => id === needle)
 
+const extractRefTypeNameAndSubPath = v => {
+  const extractorRegex = new RegExp(`\\[(.+?)\\]`, 'gmi')
+
+  const refType = [
+    'input',
+    'constant',
+    'env'
+  ].find(k => {
+    const r = new RegExp(`@${k}\\[.+\\]`)
+    return !!r.exec(v)
+  })
+
+  if (!refType) {
+    return {}
+  }
+
+  const refPath = []
+  let s
+  do {
+    s = _.get(extractorRegex.exec(v), '1')
+    if (s) {
+      refPath.push(s)
+    }
+  } while (s)
+
+  return { type: refType, name: refPath[0], subPath: refPath.slice(1) }
+}
+
+const getValAtPath = (v, pathArray) => {
+  if (pathArray.length) {
+    return _.get(v, pathArray.join('.'))
+  } else {
+    return v
+  }
+}
+
 export const resolveValue = (ctx, val, { throwIfNotReference = false } = {}) => {
   val = val || ''
 
-  const inputName = _.get(val.match(/@input\[(.+)\]/), '1')
-  const constantName = _.get(val.match(/@constant\[(.+)\]/), '1')
-  const envName = _.get(val.match(/@env\[(.+)\]/), '1')
+  const { type, name, subPath } = extractRefTypeNameAndSubPath(val)
 
-  if (inputName) {
-    if (!ctx.inputs().has(inputName)) {
-      throw new Error(`input not found: ${inputName}`)
+  if ('input' === type) {
+    if (!ctx.inputs().has(name)) {
+      throw new Error(`input not found: ${name}`)
     }
 
-    return ctx.inputs().get(inputName)
-  } else if (constantName) {
-    if (!ctx.constants().has(constantName)) {
-      throw new Error(`constant not found: ${constantName}`)
+    return getValAtPath(ctx.inputs().get(name), subPath)
+  } else if ('constant' === type) {
+    if (!ctx.constants().has(name)) {
+      throw new Error(`constant not found: ${name}`)
     }
 
-    const def = ctx.constants().get(constantName)
+    const def = ctx.constants().get(name)
 
     // get value for network we're on or just return the default
     const { id = 'default' } = ctx.network()
 
-    return def[id]
-  } else if (envName) {
+    return getValAtPath(def[id], subPath)
+  } else if ('env' === type) {
     // only "account" is supported right now
-    if (envName !== 'account') {
-      throw new Error(`invalid env var: ${envName}`)
+    if (name !== 'account') {
+      throw new Error(`invalid env var: ${name}`)
     }
 
     const { account = '' } = ctx.network()
