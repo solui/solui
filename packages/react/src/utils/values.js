@@ -53,9 +53,10 @@ export const getRenderableValuesForOutput = ({ type, value, config }) => {
   }
 
   switch (type) {
-    case 'bool':
+    case 'bool': {
       return [ value ? 'TRUE' : 'FALSE' ]
-    case 'int':
+    }
+    case 'int': {
       const v = []
 
       const unit = _.get(config, 'unit')
@@ -69,6 +70,7 @@ export const getRenderableValuesForOutput = ({ type, value, config }) => {
       v.push(value)
 
       return v
+    }
     default:
       return [ value ]
   }

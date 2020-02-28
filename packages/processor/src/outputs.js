@@ -6,6 +6,10 @@ const OUTPUT_TYPES = {
   string: true,
   bytes: true,
   int: true,
+  'bytes32[]': true,
+  'int[]': true,
+  'bool[]': true,
+  'address[]': true,
 }
 
 const process = (ctx, config) => {
