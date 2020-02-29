@@ -92,6 +92,11 @@ export const getBytecode = (ctx, contractId) => {
   return bytecode
 }
 
+export const getDeployedBytecode = (ctx, contractId) => {
+  const { deployedBytecode } = ctx.artifacts()[contractId]
+  return deployedBytecode
+}
+
 export const getMethod = (ctx, contractId, methodName) => {
   const { abi } = ctx.artifacts()[contractId]
   return abi.find(def => (

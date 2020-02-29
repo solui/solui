@@ -62,10 +62,10 @@ const Field = ({
   validationStatus,
 }) => {
   const { metaText, tooltip } = useMemo(() => {
-    const { metaText, tips } = getMetaTextForInput({ type, value, config })
+    const { metaText: mt, tips } = getMetaTextForInput({ type, value, config })
 
     return {
-      metaText,
+      metaText: mt,
       tooltip: tips.length ? tips.join('\n') : '',
     }
   }, [ type, value, config ])

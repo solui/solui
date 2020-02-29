@@ -26,14 +26,15 @@ Input validations define validation checks to be performed on input field values
   ]
 }
 ```
-
-## Reference
+## Reference
 
 The `type` parameter specifies the input validation type:
 
 * `length`
 * `range`
 * `allowedTypes`
+* `compareToField`
+* `matchesBytecode`
 
 Example:
 
@@ -43,7 +44,7 @@ Example:
 }
 ```
 
-Additional attributes depend on the validation `type`.
+Additional attributes depend on this parameter.
 
 **Validation: length**
 
@@ -141,5 +142,47 @@ Examples:
   "type": "allowedTypes",
   "contract": true,
   "eoa": true
+}
+```
+
+**Validation: compareToField**
+
+This validation specifies how the value of the input must relate to the value of another input in the
+same panel.
+
+It requires two config parameters:
+
+* `field` - name of other input field within the same panel.
+* `operation` - the type of comparision to make. Must be one of:
+  - `notEqual`: _input value must NOT equal other input field's value_
+
+Example:
+
+```js
+{
+  "type": "compareToField",
+  "field": "field1",
+  "operation": "notEqual",
+}
+```
+
+**Validation: matchesBytecode**
+
+This validation specifies that the value should be the address of an on-chain contract which has the same
+bytecode as the contract specified in the validation config.
+
+This is useful in Dapps where e.g. a user may deploys a contract via one panel and then interacts with
+the deployed contract from another panel.
+
+It requires one parameter:
+
+* `contract` - canonical name of contract from the artifacts list.
+
+Example:
+
+```js
+{
+  "type": "matchesBytecode",
+  "contract": "ERC20"
 }
 ```

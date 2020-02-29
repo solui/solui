@@ -15,6 +15,11 @@ const ErrorDiv = styled.div`
   color: ${({ theme }) => theme.errorTextColor};
   padding: 0.6em;
   border-radius: 5px;
+  margin-top: 0.2rem;
+
+  *:first-child {
+    margin-top: 0;
+  }
 `
 
 const StyledIcon = styled(Icon)`

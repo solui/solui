@@ -1,9 +1,13 @@
 import {
   _,
   assertEthAddressIsValidOnChain,
+  getBytecode,
   toDecimalVal,
   deriveDecimalVal,
+  hash,
 } from '@solui/utils'
+
+import { getDeployedBytecode } from './utils'
 
 export const checkIdIsValid = (ctx, id) => {
   if (!id) {
@@ -49,6 +53,29 @@ export const checkAddressIsValid = async (ctx, value, { allowedTypes } = {}) => 
       allowContract: !!allowedTypes.contract,
       allowEoa: !!allowedTypes.eoa
     })
+  } catch (err) {
+    ctx.errors().add(ctx.id, err.message)
+  }
+}
+
+export const checkAddressIsContractWithBytecode = async (ctx, value, { contract }) => {
+  try {
+    const bc = getDeployedBytecode(ctx, contract)
+
+    if (!bc) {
+      throw new Error(`bytecode not found for ${contract}`)
+    }
+
+    await assertEthAddressIsValidOnChain(value, ctx.network().node, {
+      allowContract: true,
+      allowEoa: false,
+    })
+
+    const ocbc = await getBytecode(ctx.network().node, value)
+
+    if (hash(bc) !== hash(ocbc)) {
+      throw new Error(`must have same bytecode as ${contract}`)
+    }
   } catch (err) {
     ctx.errors().add(ctx.id, err.message)
   }
@@ -162,6 +189,8 @@ export const validateInputValue = async (ctx, value, config) => {
         })
       case 'compareToField':
         return checkValueIsRelatedToOtherFieldValue(ctx, value, { field: vConfig })
+      case 'matchesBytecode':
+        return checkAddressIsContractWithBytecode(ctx, value, vConfig)
       default:
         return null
     }
