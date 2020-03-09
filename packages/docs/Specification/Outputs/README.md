@@ -35,9 +35,13 @@ Note that outputs are only displayed once all [Execution steps](../Execs) have b
 The output type. This is to help the renderer figure out how best to display the output value. At present this must be one of:
 
 * `address`
+* `address[]`
 * `bool`
+* `bool[]`
 * `bytes32`
+* `bytes32[]`
 * `int`
+* `int[]`
 * `string`
 
 Example:
@@ -47,6 +51,10 @@ Example:
   "type": "string"
 }
 ```
+
+_Note: If you specify an array type (i.e. with the `[]` suffix) then the each value within the returned array will be rendered
+one after another, and the other output formatting options will be applied to each and every value in turn._
+
 
 **title**
 

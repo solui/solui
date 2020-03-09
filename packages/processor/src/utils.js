@@ -25,6 +25,10 @@ const extractRefTypeNameAndSubPath = v => {
     if (s) {
       refPath.push(s)
     }
+    // only inputs support nested values at the moment
+    if ('input' !== refType) {
+      break
+    }
   } while (s)
 
   return { type: refType, name: refPath[0], subPath: refPath.slice(1) }
