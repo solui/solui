@@ -106,7 +106,14 @@ const EXECS = {
         const { abi, args } = prepareContractCall(ctx, { ...config, method: 'constructor' })
         // do it!
         const result = await ctx.callbacks().deployContract(
-          ctx.id, { contract, abi, bytecode, args }
+          ctx.id, {
+            contract,
+            abi,
+            bytecode,
+            args,
+            successMessage: config.successMessage,
+            failureMessage: config.failureMessage
+          }
         )
         // further execs may need this output as input!
         if (saveResultAsInput) {
@@ -146,6 +153,8 @@ const EXECS = {
         method,
         args,
         address: contractAddress,
+        successMessage: config.successMessage,
+        failureMessage: config.failureMessage
       })
 
       ctx.inputs().set(saveResultAsInput, res)

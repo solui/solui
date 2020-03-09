@@ -1,16 +1,21 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
-import React from 'react'
+import React, { Fragment } from 'react'
 import styled from '@emotion/styled'
 
+import AlertBox from './AlertBox'
 import ErrorBox from './ErrorBox'
 import Value from './Value'
+
+const Container = styled.div`
+  margin-bottom: 0.5rem;
+`
 
 const Results = styled.ul`
   list-style: none;
   display: block;
   padding: 1rem;
-  margin-bottom: 0.5rem;
   background-color: ${({ theme }) => theme.resultBgColor};
+  margin-bottom: 0.2rem;
 `
 
 const ResultItem = styled.li`
@@ -18,6 +23,14 @@ const ResultItem = styled.li`
   &:last-child {
     margin-bottom: 0;
   }
+`
+
+const StyledErrorBox = styled(ErrorBox)`
+  margin-bottom: 0.2rem;
+`
+
+const StyledAlertBox = styled(AlertBox)`
+  margin-bottom: 0.2rem;
 `
 
 const Title = styled.h3`
@@ -31,9 +44,18 @@ const Title = styled.h3`
  * @see {Value}
  * @return {ReactElement}
  */
-const Result = ({ className, result: { value, error } }) => {
+const Result = ({ className, result: { value, error, meta: { successMsgs, failureMsgs } } }) => {
+  let content
+
   if (error) {
-    return <ErrorBox className={className} error={error} />
+    content = (
+      <Fragment>
+        <StyledErrorBox error={error} />
+        {failureMsgs.map(msg => (
+          <StyledErrorBox key={msg} error={msg} />
+        ))}
+      </Fragment>
+    )
   } else {
     let resultItems = []
 
@@ -54,8 +76,23 @@ const Result = ({ className, result: { value, error } }) => {
       resultItems = <ResultItem>Success!</ResultItem>
     }
 
-    return <Results className={className}>{resultItems}</Results>
+    content = (
+      <Fragment>
+        <Results>
+          {resultItems}
+        </Results>
+        {successMsgs.map(msg => (
+          <StyledAlertBox key={msg} msg={msg} />
+        ))}
+      </Fragment>
+    )
   }
+
+  return (
+    <Container className={className}>
+      {content}
+    </Container>
+  )
 }
 
 export default Result

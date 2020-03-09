@@ -3,6 +3,8 @@ import { _, promiseSerial, createErrorWithDetails, getContractDeployer, getContr
 import {
   extractChildById,
   reportTransactionProgress,
+  reportExecutionFailure,
+  reportExecutionSuccess,
 } from './utils'
 import {
   checkIdIsValid,
@@ -219,7 +221,29 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, network, 
       network,
       callbacks: {
         processInput: id => inputs[id],
-        sendTransaction: async (id, { contract, abi, method, address, args }) => {
+        deployContract: async (id, { contract, abi, bytecode, args, successMessage, failureMessage }) => {
+          try {
+            await node.askWalletOwnerForPermissionToViewAccounts()
+
+            const deployer = await getContractDeployer({ abi, bytecode, node })
+
+            const inst = await deployer.deploy(...args)
+
+            reportTransactionProgress(progressCallback, inst.deployTransaction)
+
+            await inst.deployed()
+
+            reportExecutionSuccess(progressCallback, successMessage)
+
+            return inst.address
+          } catch (err) {
+            console.warn(err)
+            reportExecutionFailure(progressCallback, failureMessage)
+            ctx.errors().add(id, `error deploying ${contract}: ${err.message}`)
+            return null
+          }
+        },
+        sendTransaction: async (id, { contract, abi, method, address, args, successMessage, failureMessage }) => {
           try {
             await node.askWalletOwnerForPermissionToViewAccounts()
 
@@ -231,8 +255,11 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, network, 
 
             await tx.wait()
 
+            reportExecutionSuccess(progressCallback, successMessage)
+
             return true
           } catch (err) {
+            reportExecutionFailure(progressCallback, failureMessage)
             ctx.errors().add(id, `error calling ${contract}.${method}: ${err.message}`)
             return null
           }
@@ -249,25 +276,6 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, network, 
             return null
           }
         },
-        deployContract: async (id, { contract, abi, bytecode, args }) => {
-          try {
-            await node.askWalletOwnerForPermissionToViewAccounts()
-
-            const deployer = await getContractDeployer({ abi, bytecode, node })
-
-            const inst = await deployer.deploy(...args)
-
-            reportTransactionProgress(progressCallback, inst.deployTransaction)
-
-            await inst.deployed()
-
-            return inst.address
-          } catch (err) {
-            console.warn(err)
-            ctx.errors().add(id, `error deploying ${contract}: ${err.message}`)
-            return null
-          }
-        }
       }
     })
 

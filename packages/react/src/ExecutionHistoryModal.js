@@ -5,6 +5,8 @@ import { flex } from '@solui/styles'
 import { prettyDate } from '@solui/utils'
 
 import { Modal } from './Modal'
+import AlertBox from './AlertBox'
+import ErrorBox from './ErrorBox'
 import Result from './Result'
 import Tx from './Tx'
 import Icon from './Icon'
@@ -98,7 +100,7 @@ const StyledButton = styled(Button)`
   margin-top: 2rem;
 `
 
-const HistoryItem = ({ onRetry, item: { ts, inputs, inputValues, outputValues, tx, error } }) => {
+const HistoryItem = ({ onRetry, item: { ts, inputs, inputValues, outputValues, tx, error, successMsgs, failureMsgs } }) => {
   const [ expanded, setExpanded ] = useState(false)
 
   const toggleExpanded = useCallback(() => {
@@ -127,7 +129,7 @@ const HistoryItem = ({ onRetry, item: { ts, inputs, inputValues, outputValues, t
             ))}
           </InputList>
           <h3>Result</h3>
-          <StyledResult result={{ value: outputValues, error }} />
+          <StyledResult result={{ value: outputValues, error, meta: { successMsgs, failureMsgs } }} />
           {tx ? <StyledTx tx={tx} /> : null}
           <StyledButton onClick={doRetry} title='Replay this execution'>Replay</StyledButton>
         </Fragment>

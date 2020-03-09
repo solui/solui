@@ -19,7 +19,9 @@ This allows for the output of an earlier task to be re-used as the input argumen
           "address": "...",
           "method": "...",
           "args": { ... },
-          "saveResultAs": "..."
+          "saveResultAs": "...",
+          "successMessage": "...",
+          "failureMessage": "..."
         }
       ]
     }
@@ -234,3 +236,65 @@ Example:
   ]
 }
 ```
+
+**successMessage** _(optional)_
+
+A message to be shown to the user if the transaction succeeds. This property thus only applies to
+contract execution tasks of types `deploy` and `send`.
+
+Note that this message will be shown _in addition_ to what is normally shown.
+
+Example:
+
+```js
+{
+  "execs": [
+    {
+      "type": "deploy",
+      "contract": "ERC20",
+      "args": {
+        "_name": "@input[name]",
+        "_symbol": "@input[symbol]",
+        "_initialSupply": "@input[initialSupply]"
+      },
+      "saveResultAsInput": "contractAddress",
+      "successMessage": "Now try interacting with your new contract using the panels below!"
+    }
+  ]
+}
+```
+
+The displayed message will look something like this:
+
+![Success message](../../images/SuccessMessage.png)
+
+**failureMessage** _(optional)_
+
+A message to be shown to the user if the transaction fails. This property thus only applies to
+contract execution tasks of types `deploy` and `send`.
+
+Note that this message will be shown _in addition_ to what is normally shown.
+
+Example:
+
+```js
+{
+  "execs": [
+    {
+      "type": "deploy",
+      "contract": "ERC20",
+      "args": {
+        "_name": "@input[name]",
+        "_symbol": "@input[symbol]",
+        "_initialSupply": "@input[initialSupply]"
+      },
+      "saveResultAsInput": "contractAddress",
+      "failureMessage": "Uh oh, something went wrong!"
+    }
+  ]
+}
+```
+
+The displayed message will look something like this:
+
+![Failure message](../../images/FailureMessage.png)
