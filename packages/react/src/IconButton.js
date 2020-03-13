@@ -1,6 +1,5 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
 import React, { Fragment } from 'react'
-import ReactTooltip from 'react-tooltip'
 import styled from '@emotion/styled'
 import { buttonStyles } from '@solui/styles'
 
@@ -37,8 +36,7 @@ const StyledButton = styled.button`
 const IconButton = ({ icon, tooltip, ...props }) => {
   return (
     <Fragment>
-      <ReactTooltip />
-      <Tooltip text={tooltip}>
+      <Tooltip content={tooltip}>
         {({ tooltipElement, show, hide }) => (
           <StyledButton
             {...props}

@@ -2,7 +2,6 @@
 import React, { useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 import * as clipboard from 'clipboard-polyfill'
-import ReactTooltip from 'react-tooltip'
 
 import IconButton from './IconButton'
 
@@ -26,7 +25,6 @@ const CopyToClipboardButton = ({ value, className }) => {
 
   return (
     <Container className={className}>
-      <ReactTooltip />
       <IconButton
         tooltip={copyButtonTooltip}
         icon={{ name: 'copy' }}

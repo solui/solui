@@ -136,7 +136,7 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
           <EmbedModalBlock>
             <p>Use the following URL to view/embed this UI elsewhere:</p>
             <Textarea defaultValue={embedUrl}></Textarea>
-            <Tooltip text={`Copied to clipboard`} position='bottom'>
+            <Tooltip content={`Copied to clipboard`} position='top' distance={60}>
               {({ tooltipElement, flash }) => (
                 <TooltipContainer>
                   <Button onClick={() => copyToClipboard(embedUrl, flash)}>
@@ -151,7 +151,7 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
             <EmbedModalBlock>
               <p>A shorter version that redirects to the above:</p>
               <Textarea defaultValue={shortEmbedUrl}></Textarea>
-              <Tooltip text={`Copied to clipboard`} position='bottom'>
+              <Tooltip content={`Copied to clipboard`} position='top' distance={60}>
                 {({ tooltipElement, flash }) => (
                   <TooltipContainer>
                     <Button onClick={() => copyToClipboard(shortEmbedUrl, flash)}>
@@ -169,7 +169,7 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
       <Modal isOpen={sourceModalOpen} width='80%' height='80%' onBackgroundClick={closeModals}>
         <ModalContainer>
           <Textarea defaultValue={rawSource}></Textarea>
-          <Tooltip text={`Copied to clipboard`} position='bottom'>
+          <Tooltip content={`Copied to clipboard`} position='top' distance={60}>
             {({ tooltipElement, flash }) => (
               <TooltipContainer>
                 <Button onClick={() => copyToClipboard(rawSource, flash)}>

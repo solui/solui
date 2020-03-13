@@ -67,7 +67,7 @@
     "prop-types": "^15.7.2",
     "react-dom": "^16.12.0",
     "react-svg": "^10.0.20",
-    "react-tooltip": "^3.11.1",
+    "react-tippy": "^1.3.4",
     "react-use": "^12.9.1",
     "styled-components": "^4.4.1",
     "styled-react-modal": "^2.0.0",

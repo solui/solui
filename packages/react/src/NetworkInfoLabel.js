@@ -21,7 +21,7 @@ const Container = styled.div`
  * @return {ReactElement}
  */
 const NetworkInfoLabel = ({ className, network: { id, name } }) => (
-  <Tooltip text={`Connected to network: ${name} (${id})`} position='bottom'>
+  <Tooltip content={`Connected to network: ${name} (${id})`} position='bottom'>
     {({ tooltipElement, show, hide }) => (
       <Container
         className={className}
