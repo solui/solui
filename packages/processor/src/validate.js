@@ -5,9 +5,12 @@ import {
   toDecimalVal,
   deriveDecimalVal,
   hash,
+  promiseSerial,
 } from '@solui/utils'
 
-import { getDeployedBytecode } from './utils'
+import { getDeployedBytecode, isArrayFieldType } from './utils'
+
+
 
 export const checkIdIsValid = (ctx, id) => {
   if (!id) {
@@ -170,43 +173,61 @@ export const checkValueIsRelatedToOtherFieldValue = async (ctx, value, { field }
   }
 }
 
-const VALIDATION_TYPES_FOR_ARRAYS = {
-  length: true
+const _validateSingleValue = async (ctx, value, config) => {
+  const promises = config.validation.map(({ type, ...vConfig }) => {
+    switch (type) {
+      case 'allowedTypes':
+        return checkAddressIsValid(ctx, value, { allowedTypes: vConfig })
+      case 'length':
+        return checkLengthIsValid(ctx, value, { length: vConfig })
+      case 'range':
+        return checkNumberIsInRange(ctx, value, {
+          scale: config.scale,
+          range: vConfig,
+        })
+      case 'compareToField':
+        return checkValueIsRelatedToOtherFieldValue(ctx, value, { field: vConfig })
+      case 'matchesBytecode':
+        return checkAddressIsContractWithBytecode(ctx, value, vConfig)
+      default:
+        break
+    }
+  })
+
+  await Promise.all(promises)
 }
 
+const _validateArrayValue = async (ctx, value, config) => {
+  if (!Array.isArray(value)) {
+    ctx.errors().add(ctx.id, 'must be an array')
+    return
+  } else {
+    const promises = config.validation.map(({ type, ...vConfig }) => {
+      switch (type) {
+        case 'arrayLength':
+          return checkLengthIsValid(ctx, value, { length: vConfig })
+        default:
+          break
+      }
+    })
+
+    await Promise.all(promises)
+
+    await promiseSerial(value, async (v, i) => {
+      const vCtx = ctx.createChildContext(i)
+      await _validateInputValue(vCtx, v, config)
+    })
+  }
+}
 
 export const validateInputValue = async (ctx, value, config) => {
   if (!_.get(config.validation, 'length')) {
     return
   }
 
-  const isArrayType = config.type.endsWith('[]')
-
-  const promises = config.validation.map(({ type, ...vConfig }) => {
-    if (isArrayType && !VALIDATION_TYPES_FOR_ARRAYS[type]) {
-      ctx.errors().add(ctx.id, `unsupported validation type for array: ${type}`)
-    } else {
-      switch (type) {
-        case 'allowedTypes':
-          if (isArrayType) {
-          }
-          return checkAddressIsValid(ctx, value, { allowedTypes: vConfig })
-        case 'length':
-          return checkLengthIsValid(ctx, value, { length: vConfig })
-        case 'range':
-          return checkNumberIsInRange(ctx, value, {
-            scale: config.scale,
-            range: vConfig,
-          })
-        case 'compareToField':
-          return checkValueIsRelatedToOtherFieldValue(ctx, value, { field: vConfig })
-        case 'matchesBytecode':
-          return checkAddressIsContractWithBytecode(ctx, value, vConfig)
-        default:
-          return null
-      }
-    }
-  })
-
-  await Promise.all(promises)
+  if (isArrayFieldType(config.type)) {
+    await _validateArrayValue(ctx, value, config)
+  } else {
+    await _validateSingleValue(ctx, value, config)
+  }
 }

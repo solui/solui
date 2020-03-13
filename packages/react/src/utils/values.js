@@ -3,6 +3,8 @@ import React from 'react'
 
 import { _, toDecimalVal, deriveDecimalVal } from '@solui/utils'
 
+const isArrayFieldType = type => type.endsWith('[]')
+
 /**
  * Get meta string to display to user based on input's value and configuration.
  *
@@ -13,7 +15,9 @@ import { _, toDecimalVal, deriveDecimalVal } from '@solui/utils'
  * @return {InputMeta}
  */
 export const getMetaTextForInput = ({ type, value, config }) => {
-  const tips = []
+  const tips = [
+    [ 'Type:', <code>{type}</code>]
+  ]
 
   let metaText
 
@@ -39,34 +43,34 @@ export const getMetaTextForInput = ({ type, value, config }) => {
 
   const validations = _.get(config, 'validation', [])
 
-  if (validations.length) {
-    tips.push([ <p><em>Rules:</em></p> ])
+  const valueTips = []
 
+  if (validations.length) {
     validations.forEach(({ type: vType, ...vConfig }) => {
       switch (vType) {
         case 'length':
-          tips.push([
+          valueTips.push([
             `Length:`,
             <code>{`${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`}</code>
           ])
           break
         case 'range':
-          tips.push([
+          valueTips.push([
             `Range:`,
             <code>{`${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`}</code>
           ])
           break
         case 'allowedTypes':
           const aT = [ vConfig.contract ? 'Contract' : '', vConfig.eoa ? 'Externally-owned account' : '' ]
-          tips.push([`Allowed types:`, aT.filter(v => !!v).join(', ')])
+          valueTips.push([`Allowed types:`, aT.filter(v => !!v).join(', ')])
           break
         case 'matchesBytecode':
-          tips.push([`Bytecode matches:`, vConfig.contract])
+          valueTips.push([`Bytecode matches:`, vConfig.contract])
           break
         case 'compareToField':
           switch (vConfig.operation) {
             case 'notEqual':
-              tips.push([`Matches field:`, vConfig.field])
+              valueTips.push([`Matches field:`, vConfig.field])
               break
           }
           break
@@ -74,13 +78,44 @@ export const getMetaTextForInput = ({ type, value, config }) => {
     })
   }
 
+  let valueTipsHeading = 'Rules:'
+
+  if (isArrayFieldType(type)) {
+    valueTipsHeading = 'List item rules:'
+
+    const listTips = []
+
+    validations.forEach(({ type: vType, ...vConfig }) => {
+      switch (vType) {
+        case 'arrayLength':
+          listTips.push([
+            `Length:`,
+            <code>{`${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`}</code>
+          ])
+          break
+      }
+    })
+
+    if (listTips.length) {
+      tips.push(<p><em>List rules:</em></p>)
+      tips.push(...listTips)
+    }
+
+    tips.push(<p><em>List format:</em></p>)
+    tips.push('Please enter comma-separated values!')
+  }
+
+  if (valueTips.length) {
+    tips.push(<p><em>{valueTipsHeading}</em></p>)
+    tips.push(...valueTips)
+  }
+
   return {
     metaText,
     tooltip: (
       <ul>
-        <li>Type: <code>{type}</code></li>
-        {tips.map(t => (
-          <li key={t[0]}>{t[0]} <strong>{t[1]}</strong></li>
+        {tips.map((t, i) => (
+          <li key={i}>{Array.isArray(t) ? <span>{t[0]} <strong>{t[1]}</strong></span> : t}</li>
         ))}
       </ul>
     )

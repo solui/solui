@@ -127,3 +127,5 @@ export const reportExecutionFailure = (progressCallback, msg) => {
     progressCallback('failure', msg)
   }
 }
+
+export const isArrayFieldType = type => type.endsWith('[]')

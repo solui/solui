@@ -12,7 +12,6 @@ import {
   checkTitleIsValid,
   checkImageIsValid,
 } from './validate'
-
 import { RootContext } from './context'
 import { process as processPanel } from './panels'
 import { processList as processConstants } from './constants'
