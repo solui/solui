@@ -49,6 +49,21 @@ const MetaText = styled.p`
   margin-top: 0.2rem;
 `
 
+const TooltipContent = styled.div`
+  text-align: left;
+  strong {
+    font-weight: bolder;
+  }
+  ul {
+    list-style: none;
+    display: block;
+    li {
+      display: block;
+      margin: 0.5em 0;
+    }
+  }
+`
+
 /**
  * Render an input field.
  * @return {ReactElement}
@@ -62,11 +77,11 @@ const Field = ({
   validationStatus,
 }) => {
   const { metaText, tooltip } = useMemo(() => {
-    const { metaText: mt, tips } = getMetaTextForInput({ type, value, config })
+    const { metaText: mt, tooltip: tt } = getMetaTextForInput({ type, value, config })
 
     return {
       metaText: mt,
-      tooltip: tips.length ? tips.join('\n') : '',
+      tooltip: tt,
     }
   }, [ type, value, config ])
 
@@ -74,7 +89,12 @@ const Field = ({
     <Container className={className}>
       <Label>
         {title}
-        {tooltip ? <FieldTooltip tooltip={tooltip} icon={{ name: 'info' }} /> : null}
+        {tooltip ? (
+          <FieldTooltip
+            tooltip={<TooltipContent>{tooltip}</TooltipContent>}
+            icon={{ name: 'info' }}
+          />
+        ) : null}
       </Label>
       <TextInput
         name={name}

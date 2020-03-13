@@ -1,3 +1,6 @@
+/* eslint-disable-next-line import/no-extraneous-dependencies */
+import React from 'react'
+
 import { _, toDecimalVal, deriveDecimalVal } from '@solui/utils'
 
 /**
@@ -11,6 +14,7 @@ import { _, toDecimalVal, deriveDecimalVal } from '@solui/utils'
  */
 export const getMetaTextForInput = ({ type, value, config }) => {
   const tips = []
+
   let metaText
 
   switch (type) {
@@ -19,7 +23,7 @@ export const getMetaTextForInput = ({ type, value, config }) => {
       const scale = _.get(config, 'scale')
 
       if (unit) {
-        tips.push(`Unit: ${unit}`)
+        tips.push(<span>Unit: <strong>{unit}</strong></span>)
       }
 
       if (scale) {
@@ -33,7 +37,17 @@ export const getMetaTextForInput = ({ type, value, config }) => {
       // do nothing
   }
 
-  return { metaText, tips }
+  return {
+    metaText,
+    tooltip: (
+      <ul>
+        <li>Type: <strong>{type}</strong></li>
+        {tips.map(t => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
+    )
+  }
 }
 
 
@@ -80,5 +94,5 @@ export const getRenderableValuesForOutput = ({ type, value, config }) => {
 /**
  * @typedef {Object} InputMeta
  * @property {String} metaText User-friendly help display string.
- * @property {Array} tips User-friendly input tips.
+ * @property {ReactElement} tooltip Tooltip to show user.
  */

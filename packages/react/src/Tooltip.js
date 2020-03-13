@@ -11,6 +11,8 @@ export default class Tooltip extends Component {
   render () {
     const { content, children, ...props } = this.props
 
+    const html = (typeof content === 'string') ? <span>{content}</span> : content
+
     return (
       children({
         flash: this.flash,
@@ -18,9 +20,10 @@ export default class Tooltip extends Component {
         hide: this.hide,
         tooltipElement: (
           <DefaultTooltip
+            useContext={true}
             id={this.id}
             open={this.state.show}
-            html={<div><p>{content}</p></div>}
+            html={html}
             duration={200}
             {...props}
           />
