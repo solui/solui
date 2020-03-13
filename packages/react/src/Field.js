@@ -54,6 +54,12 @@ const TooltipContent = styled.div`
   strong {
     font-weight: bolder;
   }
+  em {
+    font-style: italic;
+  }
+  p {
+    margin-top: 2em;
+  }
   ul {
     list-style: none;
     display: block;

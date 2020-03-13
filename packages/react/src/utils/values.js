@@ -23,12 +23,12 @@ export const getMetaTextForInput = ({ type, value, config }) => {
       const scale = _.get(config, 'scale')
 
       if (unit) {
-        tips.push(<span>Unit: <strong>{unit}</strong></span>)
+        tips.push([ `Unit:`, unit ])
       }
 
       if (scale) {
         const realVal = deriveDecimalVal(value, { scale })
-        metaText = `Real value: ${realVal ? realVal.toString(10) : ''}`
+        metaText = `Final value: ${realVal ? realVal.toString(10) : ''}`
       }
 
       break
@@ -37,13 +37,44 @@ export const getMetaTextForInput = ({ type, value, config }) => {
       // do nothing
   }
 
+  const validations = _.get(config, 'validation', [])
+
+  if (validations.length) {
+    tips.push([ <p><em>Rules:</em></p> ])
+
+    validations.forEach(({ type: vType, ...vConfig }) => {
+      switch (vType) {
+        case 'length':
+          tips.push([ `Length:`, `${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}` ])
+          break
+        case 'range':
+          tips.push([`Range:`, `${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`])
+          break
+        case 'allowedTypes':
+          const aT = [ vConfig.contract ? 'Contract' : '', vConfig.eoa ? 'Externally-owned account' : '' ]
+          tips.push([`Allowed types:`, aT.filter(v => !!v).join(', ')])
+          break
+        case 'matchesBytecode':
+          tips.push([`Must be contract:`, vConfig.contract])
+          break
+        case 'compareToField':
+          switch (vConfig.operation) {
+            case 'notEqual':
+              tips.push([`Must match field:`, vConfig.field])
+              break
+          }
+          break
+      }
+    })
+  }
+
   return {
     metaText,
     tooltip: (
       <ul>
         <li>Type: <strong>{type}</strong></li>
         {tips.map(t => (
-          <li key={t}>{t}</li>
+          <li key={t[0]}>{t[0]} <strong>{t[1]}</strong></li>
         ))}
       </ul>
     )
