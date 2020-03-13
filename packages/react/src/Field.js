@@ -51,8 +51,8 @@ const MetaText = styled.p`
 
 const TooltipContent = styled.div`
   text-align: left;
-  strong {
-    font-weight: bolder;
+  code {
+    font-family: monospace;
   }
   em {
     font-style: italic;

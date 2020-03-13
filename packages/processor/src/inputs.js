@@ -7,51 +7,39 @@ import {
 import { validateInputValue } from './validate'
 import { resolveValue } from './utils'
 
-const _process = async (ctx, name, config) => ctx.callbacks().processInput(ctx.id, name, config)
+const process = async (ctx, name, config) => {
+  const result = await ctx.callbacks().processInput(ctx.id, name, config)
+
+  if (result) {
+    await validateInputValue(ctx, result, config)
+  }
+
+  return result
+}
 
 const INPUTS = {
-  address: {
-    process: async (ctx, name, config) => {
-      const result = await ctx.callbacks().processInput(ctx.id, name, config)
-
-      if (result) {
-        await validateInputValue(ctx, result, config)
-      }
-
-      return result
-    },
-  },
   int: {
     process: async (ctx, name, config) => {
-      const result = await ctx.callbacks().processInput(ctx.id, name, config)
+      const result = await process(ctx, name, config)
 
-      let realVal
-
-      if (result) {
-        await validateInputValue(ctx, result, config)
-        realVal = deriveDecimalVal(result, config)
-      }
-
-      return realVal ? realVal.toString(10) : undefined
-    },
-  },
-  bool: {
-    process: _process
-  },
-  string: {
-    process: async (ctx, name, config) => {
-      const result = await ctx.callbacks().processInput(ctx.id, name, config)
+      let finalVal
 
       if (result) {
         await validateInputValue(ctx, result, config)
+        finalVal = deriveDecimalVal(result, config)
       }
 
-      return result
+      return finalVal ? finalVal.toString(10) : undefined
     },
   },
-  bytes32: {
-    process: _process
-  },
+  address: { process },
+  bool: { process },
+  string: { process },
+  bytes32: { process },
+  'int[]': { process },
+  'bytes32[]': { process },
+  'bool[]': { process },
+  'address[]': { process },
 }
 
 export const processList = async (parentCtx, inputs) => (

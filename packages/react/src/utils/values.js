@@ -45,22 +45,28 @@ export const getMetaTextForInput = ({ type, value, config }) => {
     validations.forEach(({ type: vType, ...vConfig }) => {
       switch (vType) {
         case 'length':
-          tips.push([ `Length:`, `${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}` ])
+          tips.push([
+            `Length:`,
+            <code>{`${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`}</code>
+          ])
           break
         case 'range':
-          tips.push([`Range:`, `${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`])
+          tips.push([
+            `Range:`,
+            <code>{`${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`}</code>
+          ])
           break
         case 'allowedTypes':
           const aT = [ vConfig.contract ? 'Contract' : '', vConfig.eoa ? 'Externally-owned account' : '' ]
           tips.push([`Allowed types:`, aT.filter(v => !!v).join(', ')])
           break
         case 'matchesBytecode':
-          tips.push([`Must be contract:`, vConfig.contract])
+          tips.push([`Bytecode matches:`, vConfig.contract])
           break
         case 'compareToField':
           switch (vConfig.operation) {
             case 'notEqual':
-              tips.push([`Must match field:`, vConfig.field])
+              tips.push([`Matches field:`, vConfig.field])
               break
           }
           break
@@ -72,7 +78,7 @@ export const getMetaTextForInput = ({ type, value, config }) => {
     metaText,
     tooltip: (
       <ul>
-        <li>Type: <strong>{type}</strong></li>
+        <li>Type: <code>{type}</code></li>
         {tips.map(t => (
           <li key={t[0]}>{t[0]} <strong>{t[1]}</strong></li>
         ))}

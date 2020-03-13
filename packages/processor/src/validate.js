@@ -81,7 +81,7 @@ export const checkAddressIsContractWithBytecode = async (ctx, value, { contract 
   }
 }
 
-export const checkStringIsValid = async (ctx, value, { length } = {}) => {
+export const checkLengthIsValid = async (ctx, value, { length } = {}) => {
   try {
     const minLen = parseInt(_.get(length, 'min'), 10)
     const maxLen = parseInt(_.get(length, 'max'), 10)
@@ -117,7 +117,7 @@ export const checkStringIsValid = async (ctx, value, { length } = {}) => {
   }
 }
 
-export const checkNumberIsValid = async (
+export const checkNumberIsInRange = async (
   ctx,
   value,
   { scale, range } = {},
@@ -170,29 +170,41 @@ export const checkValueIsRelatedToOtherFieldValue = async (ctx, value, { field }
   }
 }
 
+const VALIDATION_TYPES_FOR_ARRAYS = {
+  length: true
+}
+
 
 export const validateInputValue = async (ctx, value, config) => {
   if (!_.get(config.validation, 'length')) {
     return
   }
 
+  const isArrayType = config.type.endsWith('[]')
+
   const promises = config.validation.map(({ type, ...vConfig }) => {
-    switch (type) {
-      case 'allowedTypes':
-        return checkAddressIsValid(ctx, value, { allowedTypes: vConfig })
-      case 'length':
-        return checkStringIsValid(ctx, value, { length: vConfig })
-      case 'range':
-        return checkNumberIsValid(ctx, value, {
-          scale: config.scale,
-          range: vConfig,
-        })
-      case 'compareToField':
-        return checkValueIsRelatedToOtherFieldValue(ctx, value, { field: vConfig })
-      case 'matchesBytecode':
-        return checkAddressIsContractWithBytecode(ctx, value, vConfig)
-      default:
-        return null
+    if (isArrayType && !VALIDATION_TYPES_FOR_ARRAYS[type]) {
+      ctx.errors().add(ctx.id, `unsupported validation type for array: ${type}`)
+    } else {
+      switch (type) {
+        case 'allowedTypes':
+          if (isArrayType) {
+          }
+          return checkAddressIsValid(ctx, value, { allowedTypes: vConfig })
+        case 'length':
+          return checkLengthIsValid(ctx, value, { length: vConfig })
+        case 'range':
+          return checkNumberIsInRange(ctx, value, {
+            scale: config.scale,
+            range: vConfig,
+          })
+        case 'compareToField':
+          return checkValueIsRelatedToOtherFieldValue(ctx, value, { field: vConfig })
+        case 'matchesBytecode':
+          return checkAddressIsContractWithBytecode(ctx, value, vConfig)
+        default:
+          return null
+      }
     }
   })
 
