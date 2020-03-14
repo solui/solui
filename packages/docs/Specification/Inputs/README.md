@@ -21,8 +21,7 @@ inputs are rendered in the order in which they're defined in a panel.
           "helpText": "...",
           "unit": "...",
           "scale": "...",
-          "validation": [ ... ],
-          "render": "..."
+          "validation": [ ... ]
         },
         ...
       ]
@@ -189,19 +188,3 @@ Example:
 }
 ```
 
-
-**render** _(optional)_
-
-[Input rendering "hints"](../InputRendering) for the UI renderer. Note that rendering hints are _advisory_, i.e. depending on
-the platform, the renderer does not have to honour these hints and may instead choose to render a field in its own
-particular way.
-
-Example:
-
-```js
-{
-  "render": {
-    "multiline": "true"
-  }
-}
-```

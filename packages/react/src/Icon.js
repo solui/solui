@@ -20,6 +20,7 @@ import {
   faClock,
   faPlus,
   faMinus,
+  faExpandAlt,
 } from '@fortawesome/free-solid-svg-icons'
 
 config.autoAddCss = false
@@ -40,6 +41,7 @@ library.add(
   faClock,
   faPlus,
   faMinus,
+  faExpandAlt,
 )
 
 const MAP = {
@@ -59,6 +61,7 @@ const MAP = {
     'clock',
     'plus',
     'minus',
+    'expand-alt',
   ],
 }
 

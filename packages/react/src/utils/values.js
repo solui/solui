@@ -3,7 +3,7 @@ import React from 'react'
 
 import { _, toDecimalVal, deriveDecimalVal } from '@solui/utils'
 
-const isArrayFieldType = type => type.endsWith('[]')
+export const isArrayFieldType = type => type.endsWith('[]')
 
 /**
  * Get meta string to display to user based on input's value and configuration.
@@ -70,7 +70,7 @@ export const getMetaTextForInput = ({ type, value, config }) => {
         case 'compareToField':
           switch (vConfig.operation) {
             case 'notEqual':
-              valueTips.push([`Matches field:`, vConfig.field])
+              valueTips.push([`Does not match field:`, vConfig.field])
               break
           }
           break

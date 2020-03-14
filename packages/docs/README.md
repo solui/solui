@@ -18,7 +18,6 @@
   * [Panels](Specification/Panels)
   * [Inputs](Specification/Inputs)
   * [Input validation](Specification/InputValidation)
-  * [Input rendering](Specification/InputRendering)
   * [Execs](Specification/Execs)
   * [Outputs](Specification/Outputs)
   * [Environment](Specification/EnvVars)

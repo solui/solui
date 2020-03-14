@@ -84,7 +84,7 @@ export const checkAddressIsContractWithBytecode = async (ctx, value, { contract 
   }
 }
 
-export const checkLengthIsValid = async (ctx, value, { length } = {}) => {
+export const _checkLengthIsValid = async (ctx, value, { length } = {}, inputLabel, itemLabel) => {
   try {
     const minLen = parseInt(_.get(length, 'min'), 10)
     const maxLen = parseInt(_.get(length, 'max'), 10)
@@ -108,16 +108,28 @@ export const checkLengthIsValid = async (ctx, value, { length } = {}) => {
       throw new Error(`length config: max must be greater than or equal to min`)
     }
 
+    if (minLenValid && maxLenValid && minLen === maxLen && minLen !== value.length) {
+      throw new Error(`${inputLabel} must contain exactly ${minLen} ${itemLabel}`)
+    }
+
     if (minLenValid && minLen > value.length) {
-      throw new Error(`input must be atleast ${minLen} characters long`)
+      throw new Error(`${inputLabel} must contain atleast ${minLen} ${itemLabel}`)
     }
 
     if (maxLenValid && maxLen < value.length) {
-      throw new Error(`input must be no more than ${maxLen} characters long`)
+      throw new Error(`${inputLabel} must contain no more than ${maxLen} ${itemLabel}`)
     }
   } catch (err) {
     ctx.errors().add(ctx.id, err.message)
   }
+}
+
+export const checkValueLengthIsValid = async (ctx, value, { length } = {}) => {
+  return _checkLengthIsValid(ctx, value, { length }, 'input', 'characters')
+}
+
+export const checkArrayLengthIsValid = async (ctx, value, { length } = {}) => {
+  return _checkLengthIsValid(ctx, value, { length }, 'list', 'items')
 }
 
 export const checkNumberIsInRange = async (
@@ -179,7 +191,7 @@ const _validateSingleValue = async (ctx, value, config) => {
       case 'allowedTypes':
         return checkAddressIsValid(ctx, value, { allowedTypes: vConfig })
       case 'length':
-        return checkLengthIsValid(ctx, value, { length: vConfig })
+        return checkValueLengthIsValid(ctx, value, { length: vConfig })
       case 'range':
         return checkNumberIsInRange(ctx, value, {
           scale: config.scale,
@@ -205,7 +217,7 @@ const _validateArrayValue = async (ctx, value, config) => {
     const promises = config.validation.map(({ type, ...vConfig }) => {
       switch (type) {
         case 'arrayLength':
-          return checkLengthIsValid(ctx, value, { length: vConfig })
+          return checkArrayLengthIsValid(ctx, value, { length: vConfig })
         default:
           break
       }

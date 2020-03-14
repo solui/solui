@@ -1,15 +1,26 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
-import React, { useMemo } from 'react'
+import React, { Fragment, useMemo, useState, useCallback } from 'react'
 import styled from '@emotion/styled'
 import { flex } from '@solui/styles'
 
 import ErrorBox from './ErrorBox'
+import { Modal } from './Modal'
 import IconButton from './IconButton'
 import TextInput from './TextInput'
-import { getMetaTextForInput } from './utils'
+import ListInput from './ListInput'
+import { isArrayFieldType, getMetaTextForInput } from './utils'
 
 const Container = styled.div`
   ${flex({ justify: 'flex-start', align: 'flex-start' })};
+`
+
+const InputContainer = styled.div`
+  ${flex({ direction: 'row', justify: 'space-around', align: 'center' })};
+  width: 100%;
+`
+
+const StyledTextInput = styled(TextInput)`
+  flex: 1;
 `
 
 const Label = styled.label`
@@ -27,6 +38,11 @@ const StyledErrorBox = styled(ErrorBox)`
 `
 
 const FieldTooltip = styled(IconButton)`
+  margin-left: 0.5rem;
+`
+
+const OpenLargeEditorButton = styled(IconButton)`
+  flex: 0;
   margin-left: 0.5rem;
 `
 
@@ -70,6 +86,39 @@ const TooltipContent = styled.div`
   }
 `
 
+const ModalContainer = styled.div`
+  ${flex({ direction: 'column', justify: 'flex-start', align: 'flex-start' })};
+  width: 100%;
+  height: 100%;
+`
+
+const StyledListInput = styled(ListInput)`
+  flex: 1;
+  width: 100%;
+  ${({ theme }) => theme.font('body')};
+  font-size: 110%;
+`
+
+
+const FieldFrame = ({ title, tooltip, metaText, helpText, validationStatus, children }) => (
+  <Fragment>
+    <Label>
+      {title}
+      {tooltip ? (
+        <FieldTooltip
+          tooltip={<TooltipContent>{tooltip}</TooltipContent>}
+          icon={{ name: 'info' }}
+        />
+      ) : null}
+    </Label>
+    {children}
+    {metaText ? <MetaText>{metaText}</MetaText> : null}
+    {helpText ? <HelpText>{helpText}</HelpText> : null}
+    {validationStatus.error ? <StyledErrorBox error={validationStatus.error} /> : null}
+  </Fragment>
+)
+
+
 /**
  * Render an input field.
  * @return {ReactElement}
@@ -82,6 +131,12 @@ const Field = ({
   config: { title, type, helpText, placeholder, ...config },
   validationStatus,
 }) => {
+  const [ largeEditorOpen, setLargeEditorOpen ] = useState(false)
+
+  const toggleLargeEditor = useCallback(() => {
+    setLargeEditorOpen(!largeEditorOpen)
+  }, [ largeEditorOpen ])
+
   const { metaText, tooltip } = useMemo(() => {
     const { metaText: mt, tooltip: tt } = getMetaTextForInput({ type, value, config })
 
@@ -91,28 +146,47 @@ const Field = ({
     }
   }, [ type, value, config ])
 
+  const frameProps = {
+    title, tooltip, metaText, helpText, validationStatus
+  }
+
   return (
     <Container className={className}>
-      <Label>
-        {title}
-        {tooltip ? (
-          <FieldTooltip
-            tooltip={<TooltipContent>{tooltip}</TooltipContent>}
-            icon={{ name: 'info' }}
+      <FieldFrame {...frameProps}>
+        <InputContainer>
+          <StyledTextInput
+            name={name}
+            onChange={onChange}
+            value={value}
+            placeholder={placeholder}
+            type={type}
+            {...validationStatus}
           />
-        ) : null}
-      </Label>
-      <TextInput
-        name={name}
-        onChange={onChange}
-        value={value}
-        placeholder={placeholder}
-        type={type}
-        {...validationStatus}
-      />
-      {metaText ? <MetaText>{metaText}</MetaText> : null}
-      {helpText ? <HelpText>{helpText}</HelpText> : null}
-      {validationStatus.error ? <StyledErrorBox error={validationStatus.error} /> : null}
+          {isArrayFieldType(type) ? (
+            <OpenLargeEditorButton
+              tooltip='Open large editor'
+              icon={{ name: 'expand-alt' }}
+              onClick={toggleLargeEditor}
+            />
+          ) : null}
+        </InputContainer>
+      </FieldFrame>
+
+      <Modal isOpen={largeEditorOpen} width='80%' height='80%' onBackgroundClick={toggleLargeEditor}>
+        <ModalContainer>
+          <FieldFrame {...frameProps}>
+            <StyledListInput
+              name={name}
+              onChange={onChange}
+              value={value}
+              placeholder={placeholder}
+              type={type}
+              {...validationStatus}
+            />
+          </FieldFrame>
+        </ModalContainer>
+      </Modal>
+
     </Container>
   )
 }
