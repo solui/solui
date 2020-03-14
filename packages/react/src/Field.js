@@ -96,7 +96,6 @@ const StyledListInput = styled(ListInput)`
   flex: 1;
   width: 100%;
   ${({ theme }) => theme.font('body')};
-  font-size: 110%;
 `
 
 
