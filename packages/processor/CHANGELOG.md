@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/solui/solui/compare/v1.7.1...v1.8.0) (2020-03-15)
+
+
+### Features
+
+* array inputs and outputs, success and failure messages,  ([2ac6e83](https://github.com/solui/solui/commit/2ac6e83559da404193cb815299062ce3c5d9f0a1)), closes [#30](https://github.com/solui/solui/issues/30) [#30](https://github.com/solui/solui/issues/30) [#7](https://github.com/solui/solui/issues/7)
+
+
+
+
+
 # [1.7.0](https://github.com/solui/solui/compare/v1.6.0...v1.7.0) (2020-02-17)
 
 
