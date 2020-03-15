@@ -67,6 +67,9 @@ The input type. At present this must be one of:
 * `bytes32`
 * `int`
 * `string`
+* `int[]`
+* `bytes32[]`
+* `address[]`
 
 Example:
 
@@ -75,6 +78,9 @@ Example:
   "type": "bytes32"
 }
 ```
+
+The types suffixed with `[]` are [list input types](../ListInputs) and specify lists of values.
+
 
 
 **placeholder** _(optional)_

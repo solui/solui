@@ -35,6 +35,7 @@ The `type` parameter specifies the input validation type:
 * `allowedTypes`
 * `compareToField`
 * `matchesBytecode`
+* `listSize`
 
 Example:
 
@@ -55,7 +56,7 @@ Example:
 
 ```js
 {
-  /* string must between 1 and 23 characters in length */
+  /* string must be between 1 and 23 characters in length */
   "type": "length",
   "min": "1",
   "max": "23"
@@ -66,7 +67,7 @@ Example with just `min`:
 
 ```js
 {
-  /* string must atleast 5 characters in length */
+  /* string must be atleast 5 characters in length */
   "type": "length",
   "min": "5"
 }
@@ -76,7 +77,7 @@ Example with just `max`:
 
 ```js
 {
-  /* string must no more than 17 characters in length */
+  /* string must be no more than 17 characters in length */
   "type": "length",
   "max": "17"
 }
@@ -186,3 +187,40 @@ Example:
   "contract": "ERC20"
 }
 ```
+
+**Validation: listSize**
+
+This validation only applies to [list inputs](../ListInputs). It works the same as the `length`
+validator in that it can be used to specify a minimum and/or maximim array size.
+
+Example:
+
+```js
+{
+  /* list must be between 1 and 23 items in length */
+  "type": "listSize",
+  "min": "1",
+  "max": "23"
+}
+```
+
+Example with just `min`:
+
+```js
+{
+  /* list must be atleast 5 items in length */
+  "type": "listSize",
+  "min": "5"
+}
+```
+
+Example with just `max`:
+
+```js
+{
+  /* list must be no more than 17 items in length */
+  "type": "listSize",
+  "max": "17"
+}
+```
+
