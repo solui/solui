@@ -28,21 +28,20 @@ Outputs specify results to display to the user once panel has succesfully execut
 
 Note that outputs are only displayed once all [Execution steps](../Execs) have been completed.
 
-## Reference
+## Reference
 
 **type**
 
 The output type. This is to help the renderer figure out how best to display the output value. At present this must be one of:
 
 * `address`
-* `address[]`
 * `bool`
-* `bool[]`
 * `bytes32`
-* `bytes32[]`
 * `int`
-* `int[]`
 * `string`
+* `address[]`
+* `bytes32[]`
+* `int[]`
 
 Example:
 
@@ -52,8 +51,11 @@ Example:
 }
 ```
 
-_Note: If you specify an array type (i.e. with the `[]` suffix) then the each value within the returned array will be rendered
-one after another, and the other output formatting options will be applied to each and every value in turn._
+If you specify an array type (i.e. with the `[]` suffix) then the each value within the
+returned list will be rendered one after another, and the other output formatting options
+will be applied to each and every value in turn:
+
+![Array output](../../images/ArrayOutputValue.png)
 
 
 **title**
