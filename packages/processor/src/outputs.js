@@ -1,4 +1,5 @@
 import { resolveValue } from './utils'
+import { createChildContextFrom } from './context'
 
 const OUTPUT_TYPES = {
   address: true,
@@ -8,7 +9,6 @@ const OUTPUT_TYPES = {
   int: true,
   'bytes32[]': true,
   'int[]': true,
-  'bool[]': true,
   'address[]': true,
 }
 
@@ -20,10 +20,10 @@ const process = (ctx, config) => {
   const { type, value, title } = config
 
   if (!type || !value || !title) {
-    ctx.errors().add(ctx.id, `output type, value and title must be specified`)
+    ctx.recordError(`output type, value and title must be specified`)
   } else {
     if (!OUTPUT_TYPES[type]) {
-      ctx.errors().add(ctx.id, `output type is not valid: ${type}`)
+      ctx.recordError(`output type is not valid: ${type}`)
     }
 
     let resolvedValue
@@ -31,7 +31,7 @@ const process = (ctx, config) => {
     try {
       resolvedValue = resolveValue(ctx, value)
     } catch (err) {
-      ctx.errors().add(ctx.id, `output value is not valid: ${value}`)
+      ctx.recordError(`output value is not valid: ${value}`)
     }
 
     ctx.outputs().set(ctx.id, {
@@ -43,7 +43,7 @@ const process = (ctx, config) => {
 
 export const processList = async (parentCtx, outputs) => {
   return Promise.all((outputs || []).map(async (outputConfig, ouputIndex) => {
-    const ctx = parentCtx.createChildContext(`output[${ouputIndex}]`)
+    const ctx = createChildContextFrom(parentCtx, `output[${ouputIndex}]`)
     return process(ctx, outputConfig)
   }))
 }

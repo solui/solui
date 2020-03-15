@@ -1,4 +1,7 @@
-import { _ } from '@solui/utils'
+import {
+  _,
+  deriveDecimalVal,
+} from '@solui/utils'
 
 export const extractChildById = (array, needle) => (array || []).find(({ id }) => id === needle)
 
@@ -82,6 +85,32 @@ export const resolveValue = (ctx, val, { throwIfNotReference = false } = {}) => 
   }
 }
 
+const _finalizeSingleInputValue = (ctx, value, config) => {
+  const { type } = config
+
+  switch (type) {
+    case 'int':
+      const fv = deriveDecimalVal(value, config)
+      return (fv ? fv.toString(10) : fv)
+    case 'bool':
+      return ['true', '1'].includes(value.toLowerCase()) ? true : false
+    default:
+      return value
+  }
+}
+
+export const finalizeInputValue = (ctx, value, config) => {
+  const { type } = config
+
+  if (isArrayFieldType(type)) {
+    const scalarType = extractScalarTypeFromArrayFieldType(type)
+
+    return value.map(v => _finalizeSingleInputValue(ctx, v, { ...config, type: scalarType }))
+  } else {
+    return _finalizeSingleInputValue(ctx, value, config)
+  }
+}
+
 export const methodArgExists = (methodAbi, argId) => (
   !!methodAbi.inputs.find(({ name }) => name === argId)
 )
@@ -129,3 +158,6 @@ export const reportExecutionFailure = (progressCallback, msg) => {
 }
 
 export const isArrayFieldType = type => type.endsWith('[]')
+
+export const extractScalarTypeFromArrayFieldType = type => type.endsWith('[]') ? type.substr(0, type.indexOf('[')) : type
+

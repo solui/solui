@@ -6,47 +6,48 @@ import {
   deriveDecimalVal,
   hash,
   promiseSerial,
+  isEthereumAddress,
 } from '@solui/utils'
 
 import { getDeployedBytecode, isArrayFieldType } from './utils'
-
+import { createArrayItemContextFrom } from './context'
 
 
 export const checkIdIsValid = (ctx, id) => {
   if (!id) {
-    ctx.errors().add(ctx.id, 'id must be set')
+    ctx.recordError('id must be set')
     return
   }
 
   if (id.length < 3 || id.length > 32) {
-    ctx.errors().add(ctx.id, 'id must be between 3 and 32 characters in length')
+    ctx.recordError('id must be between 3 and 32 characters in length')
   }
 
   if (/[^A-Za-z0-9-]/g.exec(id)) {
-    ctx.errors().add(ctx.id, 'id must only contain alphanumeric characters and hyphen (-)')
+    ctx.recordError('id must only contain alphanumeric characters and hyphen (-)')
   }
 }
 
 export const checkVersionIsValid = (ctx, version) => {
   if (1 !== version) {
-    ctx.errors().add(ctx.id, 'version must be 1')
+    ctx.recordError('version must be 1')
   }
 }
 
 export const checkTitleIsValid = (ctx, title) => {
   if (!title) {
-    ctx.errors().add(ctx.id, 'title must be set')
+    ctx.recordError('title must be set')
     return
   }
 
   if (3 > title.length || 256 < title.length) {
-    ctx.errors().add(ctx.id, 'title must be between 3 and 256 characters in length')
+    ctx.recordError('title must be between 3 and 256 characters in length')
   }
 }
 
 export const checkImageIsValid = (ctx, img) => {
   if (!_.get(img, 'url') || typeof img.url !== 'string') {
-    ctx.errors().add(ctx.id, 'image must be valid')
+    ctx.recordError('image must be valid')
   }
 }
 
@@ -57,7 +58,7 @@ export const checkAddressIsValid = async (ctx, value, { allowedTypes } = {}) => 
       allowEoa: !!allowedTypes.eoa
     })
   } catch (err) {
-    ctx.errors().add(ctx.id, err.message)
+    ctx.recordError(err.message)
   }
 }
 
@@ -80,7 +81,7 @@ export const checkAddressIsContractWithBytecode = async (ctx, value, { contract 
       throw new Error(`must have same bytecode as ${contract}`)
     }
   } catch (err) {
-    ctx.errors().add(ctx.id, err.message)
+    ctx.recordError(err.message)
   }
 }
 
@@ -120,7 +121,7 @@ export const _checkLengthIsValid = async (ctx, value, { length } = {}, inputLabe
       throw new Error(`${inputLabel} must contain no more than ${maxLen} ${itemLabel}`)
     }
   } catch (err) {
-    ctx.errors().add(ctx.id, err.message)
+    ctx.recordError(err.message)
   }
 }
 
@@ -161,7 +162,7 @@ export const checkNumberIsInRange = async (
       throw new Error(`input must be less than or equal to ${max}`)
     }
   } catch (err) {
-    ctx.errors().add(ctx.id, err.message)
+    ctx.recordError(err.message)
   }
 }
 
@@ -180,7 +181,7 @@ export const checkValueIsRelatedToOtherFieldValue = async (ctx, value, { field }
           throw new Error(`invalid operation in config: ${field.operation}`)
       }
     } catch (err) {
-      ctx.errors().add(ctx.id, err.message)
+      ctx.recordError(err.message)
     }
   }
 }
@@ -211,12 +212,12 @@ const _validateSingleValue = async (ctx, value, config) => {
 
 const _validateArrayValue = async (ctx, value, config) => {
   if (!Array.isArray(value)) {
-    ctx.errors().add(ctx.id, 'must be an array')
+    ctx.recordError('must be an array')
     return
   } else {
     const promises = config.validation.map(({ type, ...vConfig }) => {
       switch (type) {
-        case 'arrayLength':
+        case 'listSize':
           return checkArrayLengthIsValid(ctx, value, { length: vConfig })
         default:
           break
@@ -226,8 +227,8 @@ const _validateArrayValue = async (ctx, value, config) => {
     await Promise.all(promises)
 
     await promiseSerial(value, async (v, i) => {
-      const vCtx = ctx.createChildContext(i)
-      await _validateInputValue(vCtx, v, config)
+      const vCtx = createArrayItemContextFrom(ctx, i)
+      await _validateSingleValue(vCtx, v, config)
     })
   }
 }

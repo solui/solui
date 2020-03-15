@@ -1,44 +1,32 @@
 import {
   _,
   promiseSerial,
-  deriveDecimalVal,
 } from '@solui/utils'
 
 import { validateInputValue } from './validate'
-import { resolveValue } from './utils'
+import { resolveValue, finalizeInputValue } from './utils'
+import { createChildContextFrom } from './context'
 
 const process = async (ctx, name, config) => {
   const result = await ctx.callbacks().processInput(ctx.id, name, config)
 
   if (result) {
     await validateInputValue(ctx, result, config)
+
+    return finalizeInputValue(ctx, result, config)
   }
 
-  return result
+  return undefined
 }
 
 const INPUTS = {
-  int: {
-    process: async (ctx, name, config) => {
-      const result = await process(ctx, name, config)
-
-      let finalVal
-
-      if (result) {
-        await validateInputValue(ctx, result, config)
-        finalVal = deriveDecimalVal(result, config)
-      }
-
-      return finalVal ? finalVal.toString(10) : undefined
-    },
-  },
+  int: { process },
   address: { process },
   bool: { process },
   string: { process },
   bytes32: { process },
   'int[]': { process },
   'bytes32[]': { process },
-  'bool[]': { process },
   'address[]': { process },
 }
 
@@ -47,20 +35,20 @@ export const processList = async (parentCtx, inputs) => (
     const name = _.get(inputConfig, 'name')
 
     if (!name) {
-      parentCtx.errors().add(parentCtx.id, `input is missing name`)
+      parentCtx.recordError(`input is missing name`)
       return
     }
 
-    const ctx = parentCtx.createChildContext(`input[${name}]`)
+    const ctx = createChildContextFrom(parentCtx, `input[${name}]`)
 
     const { title, type, initialValue } = inputConfig
 
     if (!title) {
-      ctx.errors().add(ctx.id, `must have a title`)
+      ctx.recordError(`must have a title`)
     }
 
     if (!INPUTS[type]) {
-      ctx.errors().add(ctx.id, `must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
+      ctx.recordError(`must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
     }
 
 
@@ -70,7 +58,7 @@ export const processList = async (parentCtx, inputs) => (
         inputConfig.resolvedInitialValue = resolveValue(ctx, initialValue)
       }
     } catch (err) {
-      ctx.errors().add(ctx.id, `initial value is invalid: ${err.message}`)
+      ctx.recordError(`initial value is invalid: ${err.message}`)
     }
 
     const res = await INPUTS[type].process(ctx, name, inputConfig)

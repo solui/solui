@@ -87,7 +87,7 @@ export const getMetaTextForInput = ({ type, value, config }) => {
 
     validations.forEach(({ type: vType, ...vConfig }) => {
       switch (vType) {
-        case 'arrayLength':
+        case 'listSize':
           listTips.push([
             `Length:`,
             <code>{`${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`}</code>
@@ -161,6 +161,7 @@ export const getRenderableValuesForOutput = ({ type, value, config }) => {
       return [ value ]
   }
 }
+
 
 
 /**

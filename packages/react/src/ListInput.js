@@ -2,6 +2,14 @@
 import React, { forwardRef, useMemo, useState, useCallback, Fragment } from 'react'
 import styled from '@emotion/styled'
 import { flex } from '@solui/styles'
+import { _ } from '@solui/utils'
+
+import {
+  ARRAY_INPUT_TYPE_COMMA,
+  ARRAY_INPUT_TYPE_LINE,
+  decodeArrayInputFromUser,
+  encodeArrayInputForUser
+} from './utils/arrayInputs'
 
 const Container = styled.div`
   ${flex({ justify: 'flex-start', align: 'stretch' })};
@@ -49,8 +57,6 @@ const RadioButtonContainer = styled.div`
   }
 `
 
-const INPUT_TYPE_COMMA = 'COMMA'
-const INPUT_TYPE_LINE = 'LINE'
 
 
 const RadioButton = ({ label, onSelect, value, selectedValue, ...props }) => (
@@ -78,34 +84,14 @@ const ListInput = forwardRef(({
   error,
   placeholder = '',
 }, ref) => {
-  const [ inputType, setInputType ] = useState(INPUT_TYPE_COMMA)
+  const [ inputType, setInputType ] = useState(ARRAY_INPUT_TYPE_COMMA)
 
   const onTextChange = useCallback(({ currentTarget: { value: inputValue } }) => {
-    let decodedValue
-
-    switch (inputType) {
-      case INPUT_TYPE_COMMA:
-        decodedValue = inputValue.split(',').map(v => v.trim())
-        break
-      case INPUT_TYPE_LINE:
-        decodedValue = inputValue.split("\n")
-        break
-    }
-
-    onChange(decodedValue)
+    onChange(decodeArrayInputFromUser(inputValue, inputType))
   }, [ onChange, inputType ])
 
   const displayValue = useMemo(() => {
-    const sanitizedValue = value || []
-
-    switch (inputType) {
-      case INPUT_TYPE_COMMA:
-        return sanitizedValue.join(',')
-        break
-      case INPUT_TYPE_LINE:
-        return sanitizedValue.join("\n")
-        break
-    }
+    return encodeArrayInputForUser(value, inputType)
   }, [ inputType, value ])
 
   return (
@@ -113,14 +99,14 @@ const ListInput = forwardRef(({
       <RadioButtons>
         <RadioButton
           name="inputType"
-          value={INPUT_TYPE_COMMA}
+          value={ARRAY_INPUT_TYPE_COMMA}
           selectedValue={inputType}
           onSelect={setInputType}
           label='Comma-separated items'
         />
         <RadioButton
           name="inputType"
-          value={INPUT_TYPE_LINE}
+          value={ARRAY_INPUT_TYPE_LINE}
           selectedValue={inputType}
           onSelect={setInputType}
           label='One item per line'

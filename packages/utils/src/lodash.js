@@ -7,6 +7,7 @@ import mapKeys from 'lodash.mapkeys'
 import mapValues from 'lodash.mapvalues'
 import pick from 'lodash.pick'
 import snakeCase from 'lodash.snakecase'
+import trimStr from 'lodash.trim'
 
 /**
  * [Lodash](https://lodash.com) utility belt, with additional methods from [rambda](https://www.npmjs.com/package/rambda).
@@ -28,4 +29,5 @@ export const _ = {
   mapValues,
   pick,
   snakeCase,
+  trimStr,
 }

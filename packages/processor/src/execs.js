@@ -1,6 +1,7 @@
 import { _, promiseSerial } from '@solui/utils'
 
 import { resolveValue, methodArgExists, getBytecode, getAbi, getMethod } from './utils'
+import { createChildContextFrom } from './context'
 
 const validateContract = (ctx, config) => {
   // check contract
@@ -9,10 +10,10 @@ const validateContract = (ctx, config) => {
   let foundError = false
 
   if (!contract) {
-    ctx.errors().add(ctx.id, `must have a contract`)
+    ctx.recordError(`must have a contract`)
     foundError = true
   } else if (ctx.artifacts() && !ctx.artifacts()[contract]) {
-    ctx.errors().add(ctx.id, `must have a contract present in the artifacts list`)
+    ctx.recordError(`must have a contract present in the artifacts list`)
     foundError = true
   }
 
@@ -26,27 +27,27 @@ const validateContractMethod = (ctx, config) => {
 
   if (!method) {
     foundError = true
-    ctx.errors().add(ctx.id, `must have a method`)
+    ctx.recordError(`must have a method`)
   } else {
     if (ctx.artifacts()) {
       const methodAbi = getMethod(ctx, contract, method)
 
       if (!methodAbi) {
         foundError = true
-        ctx.errors().add(ctx.id, `must specify a valid contract method`)
+        ctx.recordError(`must specify a valid contract method`)
       } else {
         // check arg mappings
         _.each(args, (inputId, argId) => {
           if (!methodArgExists(methodAbi, argId)) {
             foundError = true
-            ctx.errors().add(ctx.id, `method ${method} does not have arg: ${argId}`)
+            ctx.recordError(`method ${method} does not have arg: ${argId}`)
           }
 
           try {
             resolveValue(ctx, inputId)
           } catch (err) {
             foundError = true
-            ctx.errors().add(ctx.id, `method argument ${argId} maps from an invalid value: ${inputId}`)
+            ctx.recordError(`method argument ${argId} maps from an invalid value: ${inputId}`)
           }
         })
 
@@ -54,13 +55,13 @@ const validateContractMethod = (ctx, config) => {
         if ('deploy' !== type) {
           if (!address) {
             foundError = true
-            ctx.errors().add(ctx.id, `must specify contract address mapping`)
+            ctx.recordError(`must specify contract address mapping`)
           } else {
             try {
               resolveValue(ctx, address)
             } catch (err) {
               foundError = true
-              ctx.errors().add(ctx.id, `contract address maps from an invalid value: ${address}`)
+              ctx.recordError(`contract address maps from an invalid value: ${address}`)
             }
           }
         }
@@ -100,7 +101,7 @@ const EXECS = {
       const bytecode = getBytecode(ctx, contract)
 
       if (!bytecode) {
-        ctx.errors().add(ctx.id, `is a deployment but matching artifact is missing bytecode`)
+        ctx.recordError(`is a deployment but matching artifact is missing bytecode`)
       } else {
         // prep
         const { abi, args } = prepareContractCall(ctx, { ...config, method: 'constructor' })
@@ -133,7 +134,7 @@ const EXECS = {
       const { contract, saveResultAsInput, method, address } = config
 
       if (!saveResultAsInput) {
-        ctx.errors().add(ctx.id, `must save its result into a param`)
+        ctx.recordError(`must save its result into a param`)
       }
 
       // prep
@@ -143,7 +144,7 @@ const EXECS = {
       try {
         contractAddress = resolveValue(ctx, address)
       } catch (err) {
-        ctx.errors().add(ctx.id, `contract address value is invalid: ${address}`)
+        ctx.recordError(`contract address value is invalid: ${address}`)
       }
 
       // do it!
@@ -171,7 +172,7 @@ const EXECS = {
       const { contract, method, address, saveResultAsInput } = config
 
       if (saveResultAsInput) {
-        ctx.errors().add(ctx.id, `must not save its result into a param`)
+        ctx.recordError(`must not save its result into a param`)
       }
 
       // prep
@@ -181,7 +182,7 @@ const EXECS = {
       try {
         contractAddress = resolveValue(ctx, address)
       } catch (err) {
-        ctx.errors().add(ctx.id, `contract address value is invalid: ${address}`)
+        ctx.recordError(`contract address value is invalid: ${address}`)
       }
 
       // do it!
@@ -200,16 +201,16 @@ const EXECS = {
 
 export const processList = async (parentCtx, execs) => (
   promiseSerial(execs || [], async (execConfig, execIndex) => {
-    const ctx = parentCtx.createChildContext(`exec[${execIndex}]`)
+    const ctx = createChildContextFrom(parentCtx, `exec[${execIndex}]`)
 
     if (_.isEmpty(execConfig)) {
-      ctx.errors().add(ctx.id, `must not be empty`)
+      ctx.recordError(`must not be empty`)
     } else {
       // check execution step type
       const { type } = execConfig
 
       if (!EXECS[type]) {
-        ctx.errors().add(ctx.id, `must have a valid type: ${Object.keys(EXECS).join(', ')}`)
+        ctx.recordError(`must have a valid type: ${Object.keys(EXECS).join(', ')}`)
       } else {
         // eslint-disable-next-line no-await-in-loop
         await EXECS[type].process(ctx, execConfig)

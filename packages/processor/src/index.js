@@ -54,7 +54,7 @@ export const process = async ({ spec, artifacts, network }, callbacks = {}) => {
   await processConstants(ctx, constants)
 
   if (_.isEmpty(panels)) {
-    ctx.errors().add(ctx.id, 'must have at least one panel')
+    ctx.recordError('must have at least one panel')
   }
 
   if (!ctx.errors().notEmpty) {
@@ -66,9 +66,9 @@ export const process = async ({ spec, artifacts, network }, callbacks = {}) => {
       const panelId = _.get(panelConfig, 'id')
 
       if (!panelId) {
-        ctx.errors().add(ctx.id, `panel missing id`)
+        ctx.recordError(`panel missing id`)
       } else if (existingPanels[panelId]) {
-        ctx.errors().add(ctx.id, `duplicate panel id: ${panelId}`)
+        ctx.recordError(`duplicate panel id: ${panelId}`)
       } else {
         existingPanels[panelId] = true
         await processPanel(ctx, panelId, panelConfig)
@@ -172,7 +172,7 @@ export const validatePanel = async ({ artifacts, spec, panelId, inputs, network 
       await processConstants(ctx, spec.constants)
       await processPanel(ctx, panelId, panelConfig)
     } catch (err) {
-      ctx.errors().add(ctx.id, `error validating panel: ${err}`)
+      ctx.recordError(`error validating panel: ${err}`)
     }
 
     if (ctx.errors().notEmpty) {
@@ -282,7 +282,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, network, 
       await processConstants(ctx, spec.constants)
       await processPanel(ctx, panelId, panelConfig)
     } catch (err) {
-      ctx.errors().add(ctx.id, `error executing panel: ${err.message}`)
+      ctx.recordError(`error executing panel: ${err.message}`)
     }
 
     if (ctx.errors().notEmpty) {
