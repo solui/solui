@@ -4,13 +4,15 @@ import {
   checkIdIsValid,
 } from './validate'
 
+import { createChildContextFrom } from './context'
+
 export const process = async (parentCtx, id, config) => {
-  const ctx = parentCtx.createChildContext(`constant[${id}]`)
+  const ctx = createChildContextFrom(parentCtx, `constant[${id}]`)
 
   checkIdIsValid(ctx, id)
 
   if (ctx.constants().has(id)) {
-    ctx.errors().add(ctx.id, `duplicate definition`)
+    ctx.recordError(`duplicate definition`)
   } else {
     let errored = false
 
@@ -22,22 +24,22 @@ export const process = async (parentCtx, id, config) => {
         break
       case 'object':
         if (!Object.keys(config).includes('default')) {
-          ctx.errors().add(ctx.id, 'must contain "default" key')
+          ctx.recordError('must contain "default" key')
           errored = true
         } else {
           Object.keys(config).forEach(k => {
             if (typeof k !== 'string') {
-              ctx.errors().add(ctx.id, 'must only contain string keys')
+              ctx.recordError('must only contain string keys')
               errored = true
             } else if (typeof config[k] !== 'string') {
-              ctx.errors().add(ctx.id, 'must only contain string values')
+              ctx.recordError('must only contain string values')
               errored = true
             }
           })
         }
         break
       default:
-        ctx.errors().add(ctx.id, 'must either be a string or a mapping')
+        ctx.recordError('must either be a string or a mapping')
         errored = true
     }
 

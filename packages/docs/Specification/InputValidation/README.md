@@ -26,14 +26,16 @@ Input validations define validation checks to be performed on input field values
   ]
 }
 ```
-
-## Reference
+## Reference
 
 The `type` parameter specifies the input validation type:
 
 * `length`
 * `range`
 * `allowedTypes`
+* `compareToField`
+* `matchesBytecode`
+* `listSize`
 
 Example:
 
@@ -43,7 +45,7 @@ Example:
 }
 ```
 
-Additional attributes depend on the validation `type`.
+Additional attributes depend on this parameter.
 
 **Validation: length**
 
@@ -54,7 +56,7 @@ Example:
 
 ```js
 {
-  /* string must between 1 and 23 characters in length */
+  /* string must be between 1 and 23 characters in length */
   "type": "length",
   "min": "1",
   "max": "23"
@@ -65,7 +67,7 @@ Example with just `min`:
 
 ```js
 {
-  /* string must atleast 5 characters in length */
+  /* string must be atleast 5 characters in length */
   "type": "length",
   "min": "5"
 }
@@ -75,7 +77,7 @@ Example with just `max`:
 
 ```js
 {
-  /* string must no more than 17 characters in length */
+  /* string must be no more than 17 characters in length */
   "type": "length",
   "max": "17"
 }
@@ -143,3 +145,82 @@ Examples:
   "eoa": true
 }
 ```
+
+**Validation: compareToField**
+
+This validation specifies how the value of the input must relate to the value of another input in the
+same panel.
+
+It requires two config parameters:
+
+* `field` - name of other input field within the same panel.
+* `operation` - the type of comparision to make. Must be one of:
+  - `notEqual`: _input value must NOT equal other input field's value_
+
+Example:
+
+```js
+{
+  "type": "compareToField",
+  "field": "field1",
+  "operation": "notEqual",
+}
+```
+
+**Validation: matchesBytecode**
+
+This validation specifies that the value should be the address of an on-chain contract which has the same
+bytecode as the contract specified in the validation config.
+
+This is useful in Dapps where e.g. a user may deploys a contract via one panel and then interacts with
+the deployed contract from another panel.
+
+It requires one parameter:
+
+* `contract` - canonical name of contract from the artifacts list.
+
+Example:
+
+```js
+{
+  "type": "matchesBytecode",
+  "contract": "ERC20"
+}
+```
+
+**Validation: listSize**
+
+This validation only applies to [list inputs](../ListInputs). It works the same as the `length`
+validator in that it can be used to specify a minimum and/or maximim array size.
+
+Example:
+
+```js
+{
+  /* list must be between 1 and 23 items in length */
+  "type": "listSize",
+  "min": "1",
+  "max": "23"
+}
+```
+
+Example with just `min`:
+
+```js
+{
+  /* list must be atleast 5 items in length */
+  "type": "listSize",
+  "min": "5"
+}
+```
+
+Example with just `max`:
+
+```js
+{
+  /* list must be no more than 17 items in length */
+  "type": "listSize",
+  "max": "17"
+}
+```
+

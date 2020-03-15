@@ -4,6 +4,8 @@ import styled from '@emotion/styled'
 import { flex, boxShadow, smoothTransitions } from '@solui/styles'
 
 import { useExecutionHistory } from './hooks'
+import AlertBox from './AlertBox'
+import ErrorBox from './ErrorBox'
 import PanelInputs from './PanelInputs'
 import Image from './Image'
 import { useInput } from './hooks'
@@ -141,7 +143,12 @@ export const Panel = ({
     clearPreviousResults()
     setIsExecuting(true)
 
-    const execHistoryItem = { inputs, inputValues: inputValue }
+    const execHistoryItem = {
+      inputs,
+      inputValues: inputValue,
+      successMsgs: [],
+      failureMsgs: [],
+    }
 
     try {
       const value = await onExecute({
@@ -153,15 +160,21 @@ export const Panel = ({
               execHistoryItem.tx = obj
               setTx(obj)
               break
+            case 'success':
+              execHistoryItem.successMsgs.push(obj)
+              break
+            case 'failure':
+              execHistoryItem.failureMsgs.push(obj)
+              break
             default:
             // do nothing
           }
         }
       })
-      setExecResult({ value })
+      setExecResult({ value, meta: execHistoryItem })
       saveExecutionToHistory({ ...execHistoryItem, outputValues: value })
     } catch (error) {
-      setExecResult({ error })
+      setExecResult({ error, meta: execHistoryItem })
       saveExecutionToHistory({ ...execHistoryItem, error })
     } finally {
       setIsExecuting(false)
@@ -220,7 +233,9 @@ export const Panel = ({
         </Actions>
 
         {execResult ? (
-          <StyledResult result={execResult} />
+          <React.Fragment>
+            <StyledResult result={execResult} />
+          </React.Fragment>
         ) : null}
 
         {tx ? (

@@ -8,7 +8,17 @@ import IconButton from './IconButton'
 import CopyToClipboardButton from './CopyToClipboardButton'
 import { NetworkContext } from './contexts'
 
-const Span = styled.span``
+const Container = styled.span`
+  display: inline-block;
+`
+
+const Val = styled.span`
+  word-break: break-word;
+`
+
+const BytesVal = styled(Val)`
+  word-break: break-all;
+`
 
 const StyledIconButton = styled(IconButton)`
   margin-left: 0.5rem;
@@ -19,11 +29,11 @@ const StyledCopyToClipboardButton = styled(CopyToClipboardButton)`
 `
 
 /**
- * Render a raw value.
+ * Render a single value.
  *
  * @return {ReactElement}
  */
-const Value = ({ value, ...config }) => {
+const SingleValue = ({ className, value, ...config }) => {
   const { type } = config
 
   const [ currentValueFormatIndex, setCurrentValueFormatIndex ] = useState(0)
@@ -35,15 +45,14 @@ const Value = ({ value, ...config }) => {
   const hasMoreThanOneValueFormat = useMemo(() => valueFormats.length > 1, [ valueFormats ])
 
   const valueFormatToRender = useMemo(() => {
-    if (currentValueFormatIndex >= valueFormats.length) {
-      currentValueFormatIndex = 0;
-    }
-    return valueFormats[currentValueFormatIndex]
-  }, [currentValueFormatIndex, valueFormats ])
+    const idx = (currentValueFormatIndex >= valueFormats.length) ? 0 : currentValueFormatIndex
+    return valueFormats[idx]
+  }, [ currentValueFormatIndex, valueFormats ])
 
   const showNextValueFormat = useCallback(() => {
-    setCurrentValueFormatIndex(currentValueFormatIndex >= valueFormats.length - 1 ? 0 : currentValueFormatIndex + 1)
-  }, [ currentValueFormatIndex , valueFormats ])
+    const idx = (currentValueFormatIndex >= valueFormats.length - 1) ? 0 : currentValueFormatIndex + 1
+    setCurrentValueFormatIndex(idx)
+  }, [ currentValueFormatIndex, valueFormats ])
 
   const actions = (
     <StyledCopyToClipboardButton value={valueFormatToRender} />
@@ -78,16 +87,56 @@ const Value = ({ value, ...config }) => {
       postValueContent = actions
   }
 
+  const Comp = (type.startsWith('bytes32') ? BytesVal : Val)
+
   return (
-    <Span>
+    <Container className={className}>
       {hasMoreThanOneValueFormat ? (
         <LinkButton title="Change format" onClick={showNextValueFormat}>{valueFormatToRender}</LinkButton>
-      ): (
-        <Span>{ valueFormatToRender }</Span>
+      ) : (
+        <Comp>{ valueFormatToRender }</Comp>
       )}
       {postValueContent}
-    </Span>
+    </Container>
   )
+}
+
+const ArrayContainer = styled.div`
+  display: block;
+  max-height: 200px;
+  overflow: scroll;
+
+  & > span {
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+`
+
+const ArraySingleValue = styled(SingleValue)`
+  display: block;
+`
+
+const ArrayValue = ({ value, ...config }) => {
+  return (
+    <ArrayContainer>
+      {value.map((v, i) => {
+        return (
+          <ArraySingleValue key={i} value={v} {...config} />
+        )
+      })}
+    </ArrayContainer>
+  )
+}
+
+const Value = ({ value, ...config }) => {
+  if (Array.isArray(value)) {
+    return <ArrayValue value={value} {...config} />
+  } else {
+    return <SingleValue value={value} {...config} />
+  }
 }
 
 export default Value

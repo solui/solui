@@ -5,12 +5,15 @@ import { flex, media } from '@solui/styles'
 
 import { PanelBuilder } from './Panel'
 import Image from './Image'
-import { useEffectOnce } from 'react-use'
 
 const Container = styled.div`
   ${flex()}
   margin: 0;
   padding: 2rem;
+
+  ${media.when({ minW: 'mobile' })} {
+    max-width: 600px;
+  }
 `
 
 const Info = styled.div`
@@ -18,10 +21,6 @@ const Info = styled.div`
   text-align: center;
   margin: 0 auto 1rem;
   padding: 0 2rem;
-
-  ${media.when({ minW: 'mobile' })} {
-    max-width: 600px;
-  }
 `
 
 const MainImage = styled(Image)`
@@ -43,11 +42,8 @@ const Description = styled.p`
   line-height: 1.2em;
 `
 
-const Groups = styled.div`
+const Panels = styled.div`
   width: 100%;
-  ${media.when({ minW: 'mobile' })} {
-    max-width: 700px;
-  }
 `
 
 const PanelContainer = styled.li`
@@ -88,7 +84,7 @@ export const Interface = ({
         <Title>{title}</Title>
         <Description>{description}</Description>
       </Info>
-      <Groups>
+      <Panels>
         {panels.map(panel => (
           <PanelContainer key={panel.id}>
             {panel.buildContent({
@@ -99,7 +95,7 @@ export const Interface = ({
             })}
           </PanelContainer>
         ))}
-      </Groups>
+      </Panels>
     </Container>
   )
 }

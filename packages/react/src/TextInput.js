@@ -2,6 +2,14 @@
 import React, { forwardRef, useCallback, useMemo } from 'react'
 import styled from '@emotion/styled'
 
+import { isArrayFieldType } from './utils/values'
+
+import {
+  ARRAY_INPUT_TYPE_COMMA,
+  decodeArrayInputFromUser,
+  encodeArrayInputForUser
+} from './utils/arrayInputs'
+
 
 const Input = styled.input`
   ${({ theme }) => theme.font('body')};
@@ -35,10 +43,25 @@ const TextInput = forwardRef(({
   name,
   onChange,
   value,
+  type,
   error,
   placeholder = '',
 }, ref) => {
-  const onTextChange = useCallback(e => onChange(e.currentTarget.value), [ onChange ])
+  const onTextChange = useCallback(({ currentTarget: { value: inputValue } }) => {
+    if (isArrayFieldType(type)) {
+      onChange(decodeArrayInputFromUser(inputValue, ARRAY_INPUT_TYPE_COMMA))
+    } else {
+      onChange(inputValue)
+    }
+  }, [type])
+
+  const displayValue = useMemo(() => {
+    if (isArrayFieldType(type)) {
+      return encodeArrayInputForUser(value, ARRAY_INPUT_TYPE_COMMA)
+    } else {
+      return value
+    }
+  }, [type, value])
 
   return (
     <Input
@@ -47,7 +70,7 @@ const TextInput = forwardRef(({
       type='text'
       name={name}
       onChange={onTextChange}
-      value={value}
+      value={displayValue}
       placeholder={placeholder}
       hasError={!!error}
     />

@@ -1,4 +1,9 @@
+/* eslint-disable-next-line import/no-extraneous-dependencies */
+import React from 'react'
+
 import { _, toDecimalVal, deriveDecimalVal } from '@solui/utils'
+
+export const isArrayFieldType = type => type.endsWith('[]')
 
 /**
  * Get meta string to display to user based on input's value and configuration.
@@ -10,7 +15,10 @@ import { _, toDecimalVal, deriveDecimalVal } from '@solui/utils'
  * @return {InputMeta}
  */
 export const getMetaTextForInput = ({ type, value, config }) => {
-  const tips = []
+  const tips = [
+    [ 'Type:', <code>{type}</code>]
+  ]
+
   let metaText
 
   switch (type) {
@@ -19,12 +27,12 @@ export const getMetaTextForInput = ({ type, value, config }) => {
       const scale = _.get(config, 'scale')
 
       if (unit) {
-        tips.push(`Unit: ${unit}`)
+        tips.push([ `Unit:`, unit ])
       }
 
       if (scale) {
         const realVal = deriveDecimalVal(value, { scale })
-        metaText = `Real value: ${realVal ? realVal.toString(10) : ''}`
+        metaText = `Final value: ${realVal ? realVal.toString(10) : ''}`
       }
 
       break
@@ -33,7 +41,85 @@ export const getMetaTextForInput = ({ type, value, config }) => {
       // do nothing
   }
 
-  return { metaText, tips }
+  const validations = _.get(config, 'validation', [])
+
+  const valueTips = []
+
+  if (validations.length) {
+    validations.forEach(({ type: vType, ...vConfig }) => {
+      switch (vType) {
+        case 'length':
+          valueTips.push([
+            `Length:`,
+            <code>{`${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`}</code>
+          ])
+          break
+        case 'range':
+          valueTips.push([
+            `Range:`,
+            <code>{`${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`}</code>
+          ])
+          break
+        case 'allowedTypes':
+          const aT = [ vConfig.contract ? 'Contract' : '', vConfig.eoa ? 'Externally-owned account' : '' ]
+          valueTips.push([`Allowed types:`, aT.filter(v => !!v).join(', ')])
+          break
+        case 'matchesBytecode':
+          valueTips.push([`Bytecode matches:`, vConfig.contract])
+          break
+        case 'compareToField':
+          switch (vConfig.operation) {
+            case 'notEqual':
+              valueTips.push([`Does not match field:`, vConfig.field])
+              break
+          }
+          break
+      }
+    })
+  }
+
+  let valueTipsHeading = 'Rules:'
+
+  if (isArrayFieldType(type)) {
+    valueTipsHeading = 'List item rules:'
+
+    const listTips = []
+
+    validations.forEach(({ type: vType, ...vConfig }) => {
+      switch (vType) {
+        case 'listSize':
+          listTips.push([
+            `Length:`,
+            <code>{`${vConfig.min ? `≥${vConfig.min} ` : ''}${vConfig.max ? `≤${vConfig.max}` : ''}`}</code>
+          ])
+          break
+      }
+    })
+
+    if (listTips.length) {
+      tips.push(<p><em>List rules:</em></p>)
+      tips.push(...listTips)
+    }
+
+    tips.push(<p><em>List format:</em></p>)
+    tips.push('Please enter comma-separated values!')
+  }
+
+  if (valueTips.length) {
+    tips.push(<p><em>{valueTipsHeading}</em></p>)
+    tips.push(...valueTips)
+  }
+
+  return {
+    metaText,
+    tooltip: (
+      <ul>
+        {tips.map((t, i) => (
+          <li key={i}>{Array.isArray(t) ? <span>{t[0]} <strong>{t[1]}</strong></span> : t}</li>
+        ))}
+      </ul>
+    )
+  }
 }
 
 
@@ -53,9 +139,10 @@ export const getRenderableValuesForOutput = ({ type, value, config }) => {
   }
 
   switch (type) {
-    case 'bool':
+    case 'bool': {
       return [ value ? 'TRUE' : 'FALSE' ]
-    case 'int':
+    }
+    case 'int': {
       const v = []
 
       const unit = _.get(config, 'unit')
@@ -69,14 +156,16 @@ export const getRenderableValuesForOutput = ({ type, value, config }) => {
       v.push(value)
 
       return v
+    }
     default:
       return [ value ]
   }
 }
 
 
+
 /**
  * @typedef {Object} InputMeta
  * @property {String} metaText User-friendly help display string.
- * @property {Array} tips User-friendly input tips.
+ * @property {ReactElement} tooltip Tooltip to show user.
  */

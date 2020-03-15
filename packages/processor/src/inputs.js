@@ -1,57 +1,33 @@
 import {
   _,
   promiseSerial,
-  deriveDecimalVal,
 } from '@solui/utils'
 
 import { validateInputValue } from './validate'
-import { resolveValue } from './utils'
+import { resolveValue, finalizeInputValue } from './utils'
+import { createChildContextFrom } from './context'
 
-const _process = async (ctx, name, config) => ctx.callbacks().processInput(ctx.id, name, config)
+const process = async (ctx, name, config) => {
+  const result = await ctx.callbacks().processInput(ctx.id, name, config)
+
+  if (result) {
+    await validateInputValue(ctx, result, config)
+
+    return finalizeInputValue(ctx, result, config)
+  }
+
+  return undefined
+}
 
 const INPUTS = {
-  address: {
-    process: async (ctx, name, config) => {
-      const result = await ctx.callbacks().processInput(ctx.id, name, config)
-
-      if (result) {
-        await validateInputValue(ctx, result, config)
-      }
-
-      return result
-    },
-  },
-  int: {
-    process: async (ctx, name, config) => {
-      const result = await ctx.callbacks().processInput(ctx.id, name, config)
-
-      let realVal
-
-      if (result) {
-        await validateInputValue(ctx, result, config)
-        realVal = deriveDecimalVal(result, config)
-      }
-
-      return realVal ? realVal.toString(10) : undefined
-    },
-  },
-  bool: {
-    process: _process
-  },
-  string: {
-    process: async (ctx, name, config) => {
-      const result = await ctx.callbacks().processInput(ctx.id, name, config)
-
-      if (result) {
-        await validateInputValue(ctx, result, config)
-      }
-
-      return result
-    },
-  },
-  bytes32: {
-    process: _process
-  },
+  int: { process },
+  address: { process },
+  bool: { process },
+  string: { process },
+  bytes32: { process },
+  'int[]': { process },
+  'bytes32[]': { process },
+  'address[]': { process },
 }
 
 export const processList = async (parentCtx, inputs) => (
@@ -59,20 +35,20 @@ export const processList = async (parentCtx, inputs) => (
     const name = _.get(inputConfig, 'name')
 
     if (!name) {
-      parentCtx.errors().add(parentCtx.id, `input is missing name`)
+      parentCtx.recordError(`input is missing name`)
       return
     }
 
-    const ctx = parentCtx.createChildContext(`input[${name}]`)
+    const ctx = createChildContextFrom(parentCtx, `input[${name}]`)
 
     const { title, type, initialValue } = inputConfig
 
     if (!title) {
-      ctx.errors().add(ctx.id, `must have a title`)
+      ctx.recordError(`must have a title`)
     }
 
     if (!INPUTS[type]) {
-      ctx.errors().add(ctx.id, `must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
+      ctx.recordError(`must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
     }
 
 
@@ -82,7 +58,7 @@ export const processList = async (parentCtx, inputs) => (
         inputConfig.resolvedInitialValue = resolveValue(ctx, initialValue)
       }
     } catch (err) {
-      ctx.errors().add(ctx.id, `initial value is invalid: ${err.message}`)
+      ctx.recordError(`initial value is invalid: ${err.message}`)
     }
 
     const res = await INPUTS[type].process(ctx, name, inputConfig)

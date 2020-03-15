@@ -58,9 +58,18 @@ const DEFAULT_CALLBACKS = {
 }
 
 class Context {
-  constructor (id, parentContext) {
+  constructor(parentContext, id) {
     this._parentContext = parentContext
-    this._id = parentContext ? `${parentContext.id}.${id}` : id
+
+    if (!id && !parentContext) {
+      throw new Error(`Context: either id or parentContext must be set`)
+    } else {
+      if (!id) {
+        this._id = parentContext.id
+      } else {
+        this._id = parentContext ? `${parentContext.id}.${id}` : id
+      }
+    }
 
     ;[
       'inputs',
@@ -84,21 +93,11 @@ class Context {
     this._id = val
   }
 
-  createChildContext (id) {
-    return new Context(id, this)
+  recordError (msg) {
+    this.errors().add(this.id, msg)
   }
 }
 
-class PanelContext extends Context {
-  constructor (id, parentContext) {
-    super(id, parentContext)
-    this._inputs = new Map()
-  }
-
-  createChildContext (id) {
-    return new Context(id, this)
-  }
-}
 
 /**
  * Processor context object.
@@ -109,7 +108,7 @@ class PanelContext extends Context {
  */
 export class RootContext extends Context {
   constructor (id, { network = {}, artifacts, callbacks }) {
-    super(id)
+    super(null, id)
     this._network = network
     this._artifacts = artifacts
     this._errors = new ProcessingErrors()
@@ -117,8 +116,39 @@ export class RootContext extends Context {
     this._outputs = new Map()
     this._constants = new Map()
   }
+}
 
-  createPanelContext (id) {
-    return new PanelContext(id, this)
+
+class PanelContext extends Context {
+  constructor(parentContext, id) {
+    super(parentContext, id)
+    this._inputs = new Map()
   }
+}
+
+
+class ArrayItemContext extends Context {
+  constructor(parentContext, itemIndex) {
+    super(parentContext, null)
+    this.itemNum = parseInt(itemIndex, 10) + 1
+  }
+
+  recordError(msg) {
+    super.recordError(`item ${this.itemNum}: ${msg}`)
+  }
+}
+
+
+export const createChildContextFrom = (ctx, id) => {
+  return new Context(ctx, id)
+}
+
+
+export const createPanelContextFrom = (ctx, id) => {
+  return new PanelContext(ctx, id)
+}
+
+
+export const createArrayItemContextFrom = (ctx, id) => {
+  return new ArrayItemContext(ctx, id)
 }

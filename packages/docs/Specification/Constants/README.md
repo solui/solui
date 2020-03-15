@@ -41,7 +41,7 @@ The _value_ of a constant can be specified as either:
 * A fixed string
 * A mapping of network id to strings
 
-The above example uses a fixed stirng representation:
+The above example uses a fixed string representation:
 
 ```js
 "constants": {

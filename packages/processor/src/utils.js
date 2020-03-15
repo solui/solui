@@ -1,35 +1,76 @@
-import { _, getAccount } from '@solui/utils'
+import {
+  _,
+  deriveDecimalVal,
+} from '@solui/utils'
 
 export const extractChildById = (array, needle) => (array || []).find(({ id }) => id === needle)
+
+const extractRefTypeNameAndSubPath = v => {
+  const extractorRegex = new RegExp(`\\[(.+?)\\]`, 'gmi')
+
+  const refType = [
+    'input',
+    'constant',
+    'env'
+  ].find(k => {
+    const r = new RegExp(`@${k}\\[.+\\]`)
+    return !!r.exec(v)
+  })
+
+  if (!refType) {
+    return {}
+  }
+
+  const refPath = []
+  let s
+  do {
+    s = _.get(extractorRegex.exec(v), '1')
+    if (s) {
+      refPath.push(s)
+    }
+    // only inputs support nested values at the moment
+    if ('input' !== refType) {
+      break
+    }
+  } while (s)
+
+  return { type: refType, name: refPath[0], subPath: refPath.slice(1) }
+}
+
+const getValAtPath = (v, pathArray) => {
+  if (pathArray.length) {
+    return _.get(v, pathArray.join('.'))
+  } else {
+    return v
+  }
+}
 
 export const resolveValue = (ctx, val, { throwIfNotReference = false } = {}) => {
   val = val || ''
 
-  const inputName = _.get(val.match(/@input\[(.+)\]/), '1')
-  const constantName = _.get(val.match(/@constant\[(.+)\]/), '1')
-  const envName = _.get(val.match(/@env\[(.+)\]/), '1')
+  const { type, name, subPath } = extractRefTypeNameAndSubPath(val)
 
-  if (inputName) {
-    if (!ctx.inputs().has(inputName)) {
-      throw new Error(`input not found: ${inputName}`)
+  if ('input' === type) {
+    if (!ctx.inputs().has(name)) {
+      throw new Error(`input not found: ${name}`)
     }
 
-    return ctx.inputs().get(inputName)
-  } else if (constantName) {
-    if (!ctx.constants().has(constantName)) {
-      throw new Error(`constant not found: ${constantName}`)
+    return getValAtPath(ctx.inputs().get(name), subPath)
+  } else if ('constant' === type) {
+    if (!ctx.constants().has(name)) {
+      throw new Error(`constant not found: ${name}`)
     }
 
-    const def = ctx.constants().get(constantName)
+    const def = ctx.constants().get(name)
 
     // get value for network we're on or just return the default
     const { id = 'default' } = ctx.network()
 
-    return def[id]
-  } else if (envName) {
+    return getValAtPath(def[id], subPath)
+  } else if ('env' === type) {
     // only "account" is supported right now
-    if (envName !== 'account') {
-      throw new Error(`invalid env var: ${envName}`)
+    if (name !== 'account') {
+      throw new Error(`invalid env var: ${name}`)
     }
 
     const { account = '' } = ctx.network()
@@ -41,6 +82,32 @@ export const resolveValue = (ctx, val, { throwIfNotReference = false } = {}) => 
     } else {
       return val
     }
+  }
+}
+
+const _finalizeSingleInputValue = (ctx, value, config) => {
+  const { type } = config
+
+  switch (type) {
+    case 'int':
+      const fv = deriveDecimalVal(value, config)
+      return (fv ? fv.toString(10) : fv)
+    case 'bool':
+      return ['true', '1'].includes(value.toLowerCase()) ? true : false
+    default:
+      return value
+  }
+}
+
+export const finalizeInputValue = (ctx, value, config) => {
+  const { type } = config
+
+  if (isArrayFieldType(type)) {
+    const scalarType = extractScalarTypeFromArrayFieldType(type)
+
+    return value.map(v => _finalizeSingleInputValue(ctx, v, { ...config, type: scalarType }))
+  } else {
+    return _finalizeSingleInputValue(ctx, value, config)
   }
 }
 
@@ -58,6 +125,11 @@ export const getBytecode = (ctx, contractId) => {
   return bytecode
 }
 
+export const getDeployedBytecode = (ctx, contractId) => {
+  const { deployedBytecode } = ctx.artifacts()[contractId]
+  return deployedBytecode
+}
+
 export const getMethod = (ctx, contractId, methodName) => {
   const { abi } = ctx.artifacts()[contractId]
   return abi.find(def => (
@@ -68,8 +140,24 @@ export const getMethod = (ctx, contractId, methodName) => {
 }
 
 export const reportTransactionProgress = (progressCallback, tx) => {
-  if (progressCallback) {
+  if (progressCallback && tx) {
     progressCallback('tx', tx)
   }
 }
+
+export const reportExecutionSuccess = (progressCallback, msg) => {
+  if (progressCallback && msg) {
+    progressCallback('success', msg)
+  }
+}
+
+export const reportExecutionFailure = (progressCallback, msg) => {
+  if (progressCallback && msg) {
+    progressCallback('failure', msg)
+  }
+}
+
+export const isArrayFieldType = type => type.endsWith('[]')
+
+export const extractScalarTypeFromArrayFieldType = type => type.endsWith('[]') ? type.substr(0, type.indexOf('[')) : type
 

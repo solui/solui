@@ -3,6 +3,8 @@ import { _, promiseSerial, createErrorWithDetails, getContractDeployer, getContr
 import {
   extractChildById,
   reportTransactionProgress,
+  reportExecutionFailure,
+  reportExecutionSuccess,
 } from './utils'
 import {
   checkIdIsValid,
@@ -10,7 +12,6 @@ import {
   checkTitleIsValid,
   checkImageIsValid,
 } from './validate'
-
 import { RootContext } from './context'
 import { process as processPanel } from './panels'
 import { processList as processConstants } from './constants'
@@ -53,7 +54,7 @@ export const process = async ({ spec, artifacts, network }, callbacks = {}) => {
   await processConstants(ctx, constants)
 
   if (_.isEmpty(panels)) {
-    ctx.errors().add(ctx.id, 'must have at least one panel')
+    ctx.recordError('must have at least one panel')
   }
 
   if (!ctx.errors().notEmpty) {
@@ -65,9 +66,9 @@ export const process = async ({ spec, artifacts, network }, callbacks = {}) => {
       const panelId = _.get(panelConfig, 'id')
 
       if (!panelId) {
-        ctx.errors().add(ctx.id, `panel missing id`)
+        ctx.recordError(`panel missing id`)
       } else if (existingPanels[panelId]) {
-        ctx.errors().add(ctx.id, `duplicate panel id: ${panelId}`)
+        ctx.recordError(`duplicate panel id: ${panelId}`)
       } else {
         existingPanels[panelId] = true
         await processPanel(ctx, panelId, panelConfig)
@@ -171,7 +172,7 @@ export const validatePanel = async ({ artifacts, spec, panelId, inputs, network 
       await processConstants(ctx, spec.constants)
       await processPanel(ctx, panelId, panelConfig)
     } catch (err) {
-      ctx.errors().add(ctx.id, `error validating panel: ${err}`)
+      ctx.recordError(`error validating panel: ${err}`)
     }
 
     if (ctx.errors().notEmpty) {
@@ -219,7 +220,29 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, network, 
       network,
       callbacks: {
         processInput: id => inputs[id],
-        sendTransaction: async (id, { contract, abi, method, address, args }) => {
+        deployContract: async (id, { contract, abi, bytecode, args, successMessage, failureMessage }) => {
+          try {
+            await node.askWalletOwnerForPermissionToViewAccounts()
+
+            const deployer = await getContractDeployer({ abi, bytecode, node })
+
+            const inst = await deployer.deploy(...args)
+
+            reportTransactionProgress(progressCallback, inst.deployTransaction)
+
+            await inst.deployed()
+
+            reportExecutionSuccess(progressCallback, successMessage)
+
+            return inst.address
+          } catch (err) {
+            console.warn(err)
+            reportExecutionFailure(progressCallback, failureMessage)
+            ctx.errors().add(id, `error deploying ${contract}: ${err.message}`)
+            return null
+          }
+        },
+        sendTransaction: async (id, { contract, abi, method, address, args, successMessage, failureMessage }) => {
           try {
             await node.askWalletOwnerForPermissionToViewAccounts()
 
@@ -231,8 +254,11 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, network, 
 
             await tx.wait()
 
+            reportExecutionSuccess(progressCallback, successMessage)
+
             return true
           } catch (err) {
+            reportExecutionFailure(progressCallback, failureMessage)
             ctx.errors().add(id, `error calling ${contract}.${method}: ${err.message}`)
             return null
           }
@@ -249,25 +275,6 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, network, 
             return null
           }
         },
-        deployContract: async (id, { contract, abi, bytecode, args }) => {
-          try {
-            await node.askWalletOwnerForPermissionToViewAccounts()
-
-            const deployer = await getContractDeployer({ abi, bytecode, node })
-
-            const inst = await deployer.deploy(...args)
-
-            reportTransactionProgress(progressCallback, inst.deployTransaction)
-
-            await inst.deployed()
-
-            return inst.address
-          } catch (err) {
-            console.warn(err)
-            ctx.errors().add(id, `error deploying ${contract}: ${err.message}`)
-            return null
-          }
-        }
       }
     })
 
@@ -275,7 +282,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, network, 
       await processConstants(ctx, spec.constants)
       await processPanel(ctx, panelId, panelConfig)
     } catch (err) {
-      ctx.errors().add(ctx.id, `error executing panel: ${err.message}`)
+      ctx.recordError(`error executing panel: ${err.message}`)
     }
 
     if (ctx.errors().notEmpty) {
