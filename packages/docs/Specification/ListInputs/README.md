@@ -1,4 +1,10 @@
-List inputs define fields which hold a list of items.
+List inputs define fields which hold a list of items. They are specified by using of the following input types:
+
+* `int[]`
+* `bytes32[]`
+* `address[]`
+
+The UI will render a list input field as follows:
 
 ![List input](../../images/ListInput.png)
 
