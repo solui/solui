@@ -55,7 +55,7 @@ For example, ids for the following spec will be:
             "_symbol": "symbol",
             "_initialSupply": "initialSupply"
           },
-          "saveResultAs": "contractAddress"
+          "saveResultAsInput": "contractAddress"
         }
       ],
       "outputs": [
