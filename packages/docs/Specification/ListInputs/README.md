@@ -14,6 +14,29 @@ switch between the two:
 
 ![List input modal](../../images/ListInputModal.png)
 
+## Referencing items
+
+When defining [execution tasks](../Execs) it's possible to refer to individual items within a list using _subscripts_:
+
+```js
+{
+  "inputs": [
+    {
+      name: "premiumPayments",
+      type: "int[]", ...
+    },
+    ...
+  ],
+  "execs": [
+    {
+      ...,
+      "payment1": "@input[premiumPayments][0]"
+      "payment2": "@input[premiumPayments][1]"
+    }
+  ]
+}
+```
+
 ## Validation
 
 The standard [validation](../InputValidation) rules also apply to list items.

@@ -28,8 +28,9 @@ const extractRefTypeNameAndSubPath = v => {
     if (s) {
       refPath.push(s)
     }
-    // only inputs support nested values at the moment
-    if ('input' !== refType) {
+
+    // only inputs and constants support nested values at the moment
+    if ('input' !== refType && 'constant' !== refType) {
       break
     }
   } while (s)
@@ -66,7 +67,7 @@ export const resolveValue = (ctx, val, { throwIfNotReference = false } = {}) => 
     // get value for network we're on or just return the default
     const { id = 'default' } = ctx.network()
 
-    return getValAtPath(def[id], subPath)
+    return getValAtPath(def[id] || def.default, subPath)
   } else if ('env' === type) {
     // only "account" is supported right now
     if (name !== 'account') {

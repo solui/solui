@@ -89,6 +89,24 @@ Example (address is specified as a user input field):
 }
 ```
 
+
+Example (referring to the first item in [list input](../ListInputs) field):
+
+```js
+{
+  "inputs": [
+    { name: "premiumPayments", type: "int[]", ... },
+    ...
+  ],
+  "execs": [
+    {
+      ...,
+      "address": "@input[premiumPayments][0]"
+    }
+  ]
+}
+```
+
 Example (address is specified as a named constant):
 
 ```js

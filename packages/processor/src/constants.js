@@ -17,11 +17,6 @@ export const process = async (parentCtx, id, config) => {
     let errored = false
 
     switch (typeof config) {
-      case 'string':
-        config = {
-          default: config
-        }
-        break
       case 'object':
         if (!Object.keys(config).includes('default')) {
           ctx.recordError('must contain "default" key')
@@ -29,17 +24,14 @@ export const process = async (parentCtx, id, config) => {
         } else {
           Object.keys(config).forEach(k => {
             if (typeof k !== 'string') {
-              ctx.recordError('must only contain string keys')
-              errored = true
-            } else if (typeof config[k] !== 'string') {
-              ctx.recordError('must only contain string values')
+              ctx.recordError('network ids must be string')
               errored = true
             }
           })
         }
         break
       default:
-        ctx.recordError('must either be a string or a mapping')
+        ctx.recordError('must be a mapping from network id -> value')
         errored = true
     }
 
