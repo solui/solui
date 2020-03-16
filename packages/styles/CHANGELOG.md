@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.9.0](https://github.com/solui/solui/compare/v1.8.0...v1.9.0) (2020-03-16)
+
+
+### Features
+
+* option dropdowns for inputs ([41390f8](https://github.com/solui/solui/commit/41390f83507873d039dcd1e07b9cb4723cda47f1))
+
+
+
+
+
 # [1.7.0](https://github.com/solui/solui/compare/v1.6.0...v1.7.0) (2020-02-17)
 
 

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.9.0](https://github.com/solui/solui/compare/v1.8.0...v1.9.0) (2020-03-16)
+
+
+### Bug Fixes
+
+* remove border radius for max visibility area ([6fa3745](https://github.com/solui/solui/commit/6fa374523ea0b6a25882f42001ce326230f2a3f1))
+
+
+### Features
+
+* option dropdowns for inputs ([41390f8](https://github.com/solui/solui/commit/41390f83507873d039dcd1e07b9cb4723cda47f1))
+
+
+
+
+
 # [1.8.0](https://github.com/solui/solui/compare/v1.7.1...v1.8.0) (2020-03-15)
 
 
