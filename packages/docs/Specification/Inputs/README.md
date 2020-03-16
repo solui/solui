@@ -16,6 +16,7 @@ inputs are rendered in the order in which they're defined in a panel.
           "name": "...",
           "title": "...",
           "initialValue": "...",
+          "options": "...",
           "type": "...",
           "placeholder": "...",
           "helpText": "...",
@@ -138,6 +139,69 @@ Example using an environment variable:
 ```js
 {
   "initialValue": "@env[account]"
+}
+```
+
+**options** _(optional)_
+
+Display a dropdown of values for the user to select from, though they can still edit the input field
+manually.
+
+![Options](../../images/Options.png)
+
+Options are specifed as one of:
+
+  * A named [constant](../Constants).
+  * An array of labels and values.
+
+Example using an array of labels and values:
+
+```js
+{
+  "options": [
+    {
+      "label": "Token 1",
+      "value": "TOK1"
+    },
+    {
+      "label": "Token 2",
+      "value": "TOK2"
+    }
+  ]
+}
+```
+
+Example using a constant:
+
+```js
+{
+  "constants": {
+    "tokenNames": {
+      "default": [
+        {
+          "label": "Token 1",
+          "value": "TOK1"
+        },
+        {
+          "label": "Token 2",
+          "value": "TOK2"
+        }
+      ]
+    }
+  },
+  "panels": [
+    ...,
+    {
+      ...,
+      "inputs": [
+        ...,
+        {
+          ...,
+          "options": "@constant[tokenNames]"
+        }
+      ]
+    }
+  ]
 }
 ```
 
