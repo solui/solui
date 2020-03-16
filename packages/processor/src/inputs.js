@@ -3,7 +3,7 @@ import {
   promiseSerial,
 } from '@solui/utils'
 
-import { validateInputValue } from './validate'
+import { validateInputValue, checkOptionsAreValid } from './validate'
 import { resolveValue, finalizeInputValue } from './utils'
 import { createChildContextFrom } from './context'
 
@@ -41,7 +41,7 @@ export const processList = async (parentCtx, inputs) => (
 
     const ctx = createChildContextFrom(parentCtx, `input[${name}]`)
 
-    const { title, type, initialValue } = inputConfig
+    const { title, type, initialValue, options } = inputConfig
 
     if (!title) {
       ctx.recordError(`must have a title`)
@@ -51,7 +51,6 @@ export const processList = async (parentCtx, inputs) => (
       ctx.recordError(`must have a valid type: ${Object.keys(INPUTS).join(', ')}`)
     }
 
-
     // resolve initial value
     try {
       if (!_.isEmpty(initialValue)) {
@@ -59,6 +58,21 @@ export const processList = async (parentCtx, inputs) => (
       }
     } catch (err) {
       ctx.recordError(`initial value is invalid: ${err.message}`)
+    }
+
+    // resolve options
+    try {
+      if (!_.isEmpty(options)) {
+        inputConfig.resolvedOptions = resolveValue(ctx, options)
+          .reduce((m, { value: v, label: l }) => {
+            m[v] = l
+            return m
+          }, {})
+
+        checkOptionsAreValid(ctx, inputConfig.resolvedOptions)
+      }
+    } catch (err) {
+      ctx.recordError(`options are invalid: ${err.message}`)
     }
 
     const res = await INPUTS[type].process(ctx, name, inputConfig)

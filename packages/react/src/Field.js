@@ -6,6 +6,7 @@ import { flex } from '@solui/styles'
 import ErrorBox from './ErrorBox'
 import { Modal } from './Modal'
 import IconButton from './IconButton'
+import Dropdown from './Dropdown'
 import TextInput from './TextInput'
 import ListInput from './ListInput'
 import { isArrayFieldType, getMetaTextForInput } from './utils'
@@ -16,6 +17,7 @@ const Container = styled.div`
 
 const InputContainer = styled.div`
   ${flex({ direction: 'row', justify: 'space-around', align: 'center' })};
+  position: relative;
   width: 100%;
 `
 
@@ -41,9 +43,14 @@ const FieldTooltip = styled(IconButton)`
   margin-left: 0.5rem;
 `
 
-const OpenLargeEditorButton = styled(IconButton)`
-  flex: 0;
-  margin-left: 0.5rem;
+const FieldEmbeddedButtonsContainer = styled.div`
+  ${flex({ direction: 'row', justify: 'space-around', align: 'center' })};
+  position: absolute;
+  right: 10px;
+`
+
+const FieldEmbeddedButton = styled(IconButton)`
+  background-color: ${({ theme }) => theme.inputBgColor};
 `
 
 const HelpText = styled.p`
@@ -127,7 +134,7 @@ const Field = ({
   name,
   value,
   onChange,
-  config: { title, type, helpText, placeholder, ...config },
+  config: { title, type, resolvedOptions, helpText, placeholder, ...config },
   validationStatus,
 }) => {
   const [ largeEditorOpen, setLargeEditorOpen ] = useState(false)
@@ -145,6 +152,10 @@ const Field = ({
     }
   }, [ type, value, config ])
 
+  const showEmbeddedButtons = useMemo(() => {
+    return resolvedOptions || isArrayFieldType(type)
+  }, [ type, resolvedOptions ])
+
   const frameProps = {
     title, tooltip, metaText, helpText, validationStatus
   }
@@ -161,12 +172,24 @@ const Field = ({
             type={type}
             {...validationStatus}
           />
-          {isArrayFieldType(type) ? (
-            <OpenLargeEditorButton
-              tooltip='Open large editor'
-              icon={{ name: 'expand-alt' }}
-              onClick={toggleLargeEditor}
-            />
+
+          {showEmbeddedButtons ? (
+            <FieldEmbeddedButtonsContainer>
+              {resolvedOptions ? (
+                <Dropdown
+                  options={resolvedOptions}
+                  selectedOption={value}
+                  onSelect={onChange}
+                />
+              ) : null}
+              {isArrayFieldType(type) ? (
+                <FieldEmbeddedButton
+                  tooltip='Open larger editor'
+                  icon={{ name: 'expand-alt' }}
+                  onClick={toggleLargeEditor}
+                />
+              ) : null}
+            </FieldEmbeddedButtonsContainer>
           ) : null}
         </InputContainer>
       </FieldFrame>

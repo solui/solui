@@ -22,7 +22,7 @@ export default class Tooltip extends Component {
           <DefaultTooltip
             useContext={true}
             id={this.id}
-            open={this.state.show}
+            open={html ? this.state.show : false}
             html={html}
             duration={200}
             {...props}

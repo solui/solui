@@ -28,6 +28,26 @@ export const checkIdIsValid = (ctx, id) => {
   }
 }
 
+export const checkOptionsAreValid = (ctx, options) => {
+  if (typeof options !== 'object') {
+    ctx.recordError('options must be an object')
+  }
+
+  const keys = Object.keys(options)
+
+  if (!keys.length) {
+    ctx.recordError('options must not be empty')
+  }
+
+  const hasBadValue = keys.find(value => {
+    return (typeof options[value] !== 'string')
+  })
+
+  if (hasBadValue) {
+    ctx.recordError('options must specify string labels')
+  }
+}
+
 export const checkVersionIsValid = (ctx, version) => {
   if (1 !== version) {
     ctx.recordError('version must be 1')

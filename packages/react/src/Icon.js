@@ -21,6 +21,7 @@ import {
   faPlus,
   faMinus,
   faExpandAlt,
+  faCaretDown,
 } from '@fortawesome/free-solid-svg-icons'
 
 config.autoAddCss = false
@@ -42,6 +43,7 @@ library.add(
   faPlus,
   faMinus,
   faExpandAlt,
+  faCaretDown,
 )
 
 const MAP = {
@@ -62,6 +64,7 @@ const MAP = {
     'plus',
     'minus',
     'expand-alt',
+    'caret-down',
   ],
 }
 

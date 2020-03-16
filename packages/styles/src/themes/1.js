@@ -70,6 +70,13 @@ export default {
   menuShadowColor: grey,
   menuItemHoverTextColor: white,
   menuItemHoverBgColor: primary,
+  // dropdown component
+  dropdownBorderColor: grey,
+  dropdownItemBgColor: white,
+  dropdownItemTextColor: black,
+  dropdownItemMetaTextColor: grey,
+  dropdownSelectedItemBgColor: lightGrey,
+  dropdownSelectedItemTextColor: black,
   // button component
   buttonBorderColor: transparent,
   buttonBgColor: primary,
