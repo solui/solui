@@ -1,6 +1,8 @@
 import gql from 'graphql-tag'
 
-import { PublishResultFragment, LoginResultFragment } from './fragments'
+import { PublishResultFragment, PublishToChainResultFragment, LoginResultFragment } from './fragments'
+
+
 
 /**
  * Publish package.
@@ -26,6 +28,18 @@ export const LoginMutation = gql`
   mutation login ($challenge: String!, $signature: String!, $loginToken: String) {
     login(challenge: $challenge, signature: $signature, loginToken: $loginToken) @disableAuth {
       ...LoginResultFragment
+    }
+  }
+`
+
+
+
+export const PublishToChainMutation = gql`
+  ${PublishToChainResultFragment}
+
+  mutation publish ($bundle: PublishToChainInput!) @client {
+    result: publishToChain(bundle: $bundle) @client {
+      ...PublishToChainResultFragment
     }
   }
 `

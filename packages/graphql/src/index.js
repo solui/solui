@@ -32,7 +32,7 @@ const cache = new InMemoryCache({ fragmentMatcher })
  *
  * @return {ApolloClient}
  */
-export const createApolloClient = ({ endpoint, authTokenImplementation, name, version }) => {
+export const createApolloClient = ({ endpoint, authTokenImplementation, name, version, ...extraClientOptions }) => {
   const authToken = new AuthToken(authTokenImplementation)
 
   const client = new ApolloClient({
@@ -41,6 +41,7 @@ export const createApolloClient = ({ endpoint, authTokenImplementation, name, ve
     link: createLinks({ cache, endpoint, authToken }),
     name,
     version,
+    ...extraClientOptions,
   })
 
   client.authToken = authToken

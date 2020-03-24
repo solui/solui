@@ -22,6 +22,7 @@ import {
   faMinus,
   faExpandAlt,
   faCaretDown,
+  faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons'
 
 config.autoAddCss = false
@@ -44,6 +45,7 @@ library.add(
   faMinus,
   faExpandAlt,
   faCaretDown,
+  faCheckCircle,
 )
 
 const MAP = {
@@ -65,6 +67,7 @@ const MAP = {
     'minus',
     'expand-alt',
     'caret-down',
+    'check-circle',
   ],
 }
 

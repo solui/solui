@@ -2,7 +2,10 @@ import ReactDOM from 'react-dom'
 import React, { useMemo } from 'react'
 import qs from 'query-string'
 import { useAsync } from 'react-async-hook'
+
 import { AppContainer } from '@solui/react'
+import "@solui/react/dist/tooltip.css"
+
 import { _ } from '@solui/utils'
 import {
   process as processSpec,
@@ -10,6 +13,7 @@ import {
   validatePanel,
   executePanel,
 } from '@solui/processor'
+
 
 const fetchSpec = async url => {
   if (!url) {

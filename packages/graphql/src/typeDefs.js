@@ -21,6 +21,7 @@ export const getTypeDefs = () => gql`
     title: String!
     description: String!
     created: DateTime!
+    bytecodeHashes: [String]!
   }
 
   type Package {
@@ -35,11 +36,18 @@ export const getTypeDefs = () => gql`
     packages: [Package]!
   }
 
+  type PublishFinalize {
+    finalizeUrl: String!
+  }
+
   type PublishSuccess {
-    id: ID!
     cid: String!
     url: String!
     shortUrl: String!
+  }
+
+  type PublishToChainSuccess {
+    dappId: String!
   }
 
   type ErrorDetails {
@@ -56,27 +64,44 @@ export const getTypeDefs = () => gql`
     artifacts: JSON!
   }
 
+  input PublishToChainInput {
+    cid: String!
+    bytecodeHashes: [String!]!
+  }
+
   type AuthToken {
     token: String!
     expires: DateTime!
   }
 
-  union PublishResult = PublishSuccess | Error
+  type DappChainInfo {
+    exists: Boolean!
+    numContracts: Int
+    publisher: String
+    date: DateTime
+  }
+
+  union PublishResult = PublishSuccess | PublishFinalize | Error
+  union PublishToChainResult = PublishToChainSuccess | Error
   union ProfileResult = User | Error
   union LoginResult = AuthToken | Error
   union PackageResult = Package | Error
   union PackageListResult = PackageList | Error
   union AuthTokenResult = AuthToken | Error
+  union DappChainInfoResult = DappChainInfo | Error
 
   type Query {
     getMyPackages: PackageListResult!
     getPackage(id: ID!): PackageResult!
+    getPackageByRelease(id: ID!): PackageResult!
     getAuthToken(loginToken: String!): AuthTokenResult!
     getMyProfile: ProfileResult!
+    getDappInfoFromChain(dappId: String!): DappChainInfoResult!
   }
 
   type Mutation {
     publish(bundle: PublishInput!): PublishResult!
+    publishToChain(bundle: PublishToChainInput!): PublishToChainResult!
     login(challenge: String!, signature: String!, loginToken: String): LoginResult!
   }
 `
@@ -101,7 +126,22 @@ export const getFragmentMatcherConfig = () => ({
         name: 'PublishResult',
         possibleTypes: [
           {
+            name: 'PublishFinalize'
+          },
+          {
             name: 'PublishSuccess'
+          },
+          {
+            name: 'Error'
+          },
+        ]
+      },
+      {
+        kind: 'UNION',
+        name: 'PublishToChainResult',
+        possibleTypes: [
+          {
+            name: 'PublishToChainSuccess'
           },
           {
             name: 'Error'
@@ -150,6 +190,18 @@ export const getFragmentMatcherConfig = () => ({
         possibleTypes: [
           {
             name: 'AuthToken'
+          },
+          {
+            name: 'Error'
+          },
+        ]
+      },
+      {
+        kind: 'UNION',
+        name: 'DappChainInfoResult',
+        possibleTypes: [
+          {
+            name: 'DappChainInfo'
           },
           {
             name: 'Error'

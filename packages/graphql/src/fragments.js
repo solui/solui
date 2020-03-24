@@ -14,6 +14,8 @@ export const ErrorFragment = gql`
 `
 
 
+
+
 /**
  * Auth token.
  * @type {Fragment}
@@ -88,6 +90,7 @@ export const ReleaseFragment = gql`
     title
     description
     created
+    bytecodeHashes
   }
 `
 
@@ -165,6 +168,9 @@ export const PackageResultFragment = gql`
   }
 `
 
+
+
+
 /**
  * Package result.
  * @type {Fragment}
@@ -184,13 +190,25 @@ export const PackageListResultFragment = gql`
 `
 
 
+
+
+/**
+ * Publish finalization.
+ * @type {Fragment}
+ */
+export const PublishFinalizeFragment = gql`
+  fragment PublishFinalizeFragment on PublishFinalize {
+    finalizeUrl
+  }
+`
+
+
 /**
  * Publish success.
  * @type {Fragment}
  */
 export const PublishSuccessFragment = gql`
   fragment PublishSuccessFragment on PublishSuccess {
-    id
     cid
     url
     shortUrl
@@ -204,10 +222,14 @@ export const PublishSuccessFragment = gql`
  * @type {Fragment}
  */
 export const PublishResultFragment = gql`
+  ${PublishFinalizeFragment}
   ${PublishSuccessFragment}
   ${ErrorFragment}
 
   fragment PublishResultFragment on PublishResult {
+    ...on PublishFinalize {
+      ...PublishFinalizeFragment
+    }
     ...on PublishSuccess {
       ...PublishSuccessFragment
     }
@@ -218,5 +240,67 @@ export const PublishResultFragment = gql`
 `
 
 
+/**
+ * Publish-to-chain success.
+ * @type {Fragment}
+ */
+export const PublishToChainSuccessFragment = gql`
+  fragment PublishToChainSuccessFragment on PublishToChainSuccess {
+    dappId
+  }
+`
 
 
+
+/**
+ * Publish-to-chain result.
+ * @type {Fragment}
+ */
+export const PublishToChainResultFragment = gql`
+  ${PublishToChainSuccessFragment}
+  ${ErrorFragment}
+
+  fragment PublishToChainResultFragment on PublishToChainResult {
+    ...on PublishToChainSuccess {
+      ...PublishToChainSuccessFragment
+    }
+    ...on Error {
+      ...ErrorFragment
+    }
+  }
+`
+
+
+
+/**
+ * DappChainInfo.
+ * @type {Fragment}
+ */
+export const DappChainInfoFragment = gql`
+  fragment DappChainInfoFragment on DappChainInfo {
+    exists
+    numContracts
+    publisher
+    date
+  }
+`
+
+
+
+/**
+ * DappChainInfoResult.
+ * @type {Fragment}
+ */
+export const DappChainInfoResultFragment = gql`
+  ${DappChainInfoFragment}
+  ${ErrorFragment}
+
+  fragment DappChainInfoResultFragment on DappChainInfoResult {
+    ...on DappChainInfo {
+      ...DappChainInfoFragment
+    }
+    ...on Error {
+      ...ErrorFragment
+    }
+  }
+`

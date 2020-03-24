@@ -12,6 +12,8 @@ import artifacts from './artifacts.json'
 /* eslint-enable import/no-extraneous-dependencies */
 
 import { AppContainer } from '@solui/react'
+import "@solui/react/dist/tooltip.css"
+
 import {
   process as processSpec,
   assertSpecValid as validateSpec,
