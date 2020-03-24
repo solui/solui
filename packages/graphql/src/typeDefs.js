@@ -75,9 +75,10 @@ export const getTypeDefs = () => gql`
   }
 
   type DappChainInfo {
-    numContracts: Int!
-    publisher: String!
-    date: DateTime!
+    exists: Boolean!
+    numContracts: Int
+    publisher: String
+    date: DateTime
   }
 
   union PublishResult = PublishSuccess | PublishFinalize | Error

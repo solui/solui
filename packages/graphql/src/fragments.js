@@ -278,6 +278,7 @@ export const PublishToChainResultFragment = gql`
  */
 export const DappChainInfoFragment = gql`
   fragment DappChainInfoFragment on DappChainInfo {
+    exists
     numContracts
     publisher
     date
