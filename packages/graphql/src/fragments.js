@@ -14,6 +14,8 @@ export const ErrorFragment = gql`
 `
 
 
+
+
 /**
  * Auth token.
  * @type {Fragment}
@@ -230,6 +232,71 @@ export const PublishResultFragment = gql`
     }
     ...on PublishSuccess {
       ...PublishSuccessFragment
+    }
+    ...on Error {
+      ...ErrorFragment
+    }
+  }
+`
+
+
+/**
+ * Publish-to-chain success.
+ * @type {Fragment}
+ */
+export const PublishToChainSuccessFragment = gql`
+  fragment PublishToChainSuccessFragment on PublishToChainSuccess {
+    dappId
+  }
+`
+
+
+
+/**
+ * Publish-to-chain result.
+ * @type {Fragment}
+ */
+export const PublishToChainResultFragment = gql`
+  ${PublishToChainSuccessFragment}
+  ${ErrorFragment}
+
+  fragment PublishToChainResultFragment on PublishToChainResult {
+    ...on PublishToChainSuccess {
+      ...PublishToChainSuccessFragment
+    }
+    ...on Error {
+      ...ErrorFragment
+    }
+  }
+`
+
+
+
+/**
+ * DappChainInfo.
+ * @type {Fragment}
+ */
+export const DappChainInfoFragment = gql`
+  fragment DappChainInfoFragment on DappChainInfo {
+    numContracts
+    publisher
+    date
+  }
+`
+
+
+
+/**
+ * DappChainInfoResult.
+ * @type {Fragment}
+ */
+export const DappChainInfoResultFragment = gql`
+  ${DappChainInfoFragment}
+  ${ErrorFragment}
+
+  fragment DappChainInfoResultFragment on DappChainInfoResult {
+    ...on DappChainInfo {
+      ...DappChainInfoFragment
     }
     ...on Error {
       ...ErrorFragment

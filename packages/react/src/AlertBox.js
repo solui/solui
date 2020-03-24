@@ -30,7 +30,7 @@ const Details = styled.div`
   line-height: 1.2em;
 `
 
-const Msg = styled.p`
+const Msg = styled.div`
   font-size: 100%;
 `
 

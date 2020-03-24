@@ -46,6 +46,10 @@ export const getTypeDefs = () => gql`
     shortUrl: String!
   }
 
+  type PublishToChainSuccess {
+    dappId: String!
+  }
+
   type ErrorDetails {
     code: String
     message: String
@@ -60,17 +64,30 @@ export const getTypeDefs = () => gql`
     artifacts: JSON!
   }
 
+  input PublishToChainInput {
+    cid: String!
+    bytecodeHashes: [String!]!
+  }
+
   type AuthToken {
     token: String!
     expires: DateTime!
   }
 
+  type DappChainInfo {
+    numContracts: Int!
+    publisher: String!
+    date: DateTime!
+  }
+
   union PublishResult = PublishSuccess | PublishFinalize | Error
+  union PublishToChainResult = PublishToChainSuccess | Error
   union ProfileResult = User | Error
   union LoginResult = AuthToken | Error
   union PackageResult = Package | Error
   union PackageListResult = PackageList | Error
   union AuthTokenResult = AuthToken | Error
+  union DappChainInfoResult = DappChainInfo | Error
 
   type Query {
     getMyPackages: PackageListResult!
@@ -78,10 +95,12 @@ export const getTypeDefs = () => gql`
     getPackageByRelease(id: ID!): PackageResult!
     getAuthToken(loginToken: String!): AuthTokenResult!
     getMyProfile: ProfileResult!
+    getDappInfoFromChain(dappId: String!): DappChainInfoResult!
   }
 
   type Mutation {
     publish(bundle: PublishInput!): PublishResult!
+    publishToChain(bundle: PublishToChainInput!): PublishToChainResult!
     login(challenge: String!, signature: String!, loginToken: String): LoginResult!
   }
 `
@@ -110,6 +129,18 @@ export const getFragmentMatcherConfig = () => ({
           },
           {
             name: 'PublishSuccess'
+          },
+          {
+            name: 'Error'
+          },
+        ]
+      },
+      {
+        kind: 'UNION',
+        name: 'PublishToChainResult',
+        possibleTypes: [
+          {
+            name: 'PublishToChainSuccess'
           },
           {
             name: 'Error'
@@ -158,6 +189,18 @@ export const getFragmentMatcherConfig = () => ({
         possibleTypes: [
           {
             name: 'AuthToken'
+          },
+          {
+            name: 'Error'
+          },
+        ]
+      },
+      {
+        kind: 'UNION',
+        name: 'DappChainInfoResult',
+        possibleTypes: [
+          {
+            name: 'DappChainInfo'
           },
           {
             name: 'Error'

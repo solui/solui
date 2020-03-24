@@ -1,6 +1,12 @@
 import gql from 'graphql-tag'
 
-import { PackageResultFragment, PackageListResultFragment, UserProfileFragment, AuthTokenResultFragment } from './fragments'
+import {
+  PackageResultFragment,
+  PackageListResultFragment,
+  UserProfileFragment,
+  AuthTokenResultFragment,
+  DappChainInfoResultFragment,
+} from './fragments'
 
 /**
  * Get my packages.
@@ -86,6 +92,22 @@ export const GetMyProfileWithoutAuth = gql`
   query GetMyProfile {
     me: getMyProfile {
       ...UserProfileFragment
+    }
+  }
+`
+
+
+
+/**
+ * Get dapp info from on-chain repo.
+ * @type {Query}
+ */
+export const GetDappInfoFromChain = gql`
+  ${DappChainInfoResultFragment}
+
+  query GetDappInfoFromChain ($dappId: String!) @client {
+    result: getDappInfoFromChain(dappId: $dappId) @client {
+      ...DappChainInfoResultFragment
     }
   }
 `
