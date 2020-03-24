@@ -7,7 +7,7 @@ import { _, hash, uploadDataToIpfs } from '@solui/utils'
 import { getUsedContracts, assertSpecValid } from '@solui/processor'
 
 import { getApiClient } from './client'
-import { logInfo, logTrace, logWarn } from './utils'
+import { logInfo, logTrace, logWarn, sleep } from './utils'
 import config from './config'
 
 
@@ -98,12 +98,34 @@ export const publish = async ({ spec, artifacts, customIpfs, customFolder }) => 
 
     const client = getApiClient()
 
-    const ret = await client.safeMutate({
+    let ret = await client.safeMutate({
       mutation: PublishMutation,
       variables: {
         bundle: dataToPublish
       }
     })
+
+    const { finalizeUrl } = _.get(ret, 'data.result', {})
+
+    if (finalizeUrl) {
+      logInfo(`Please follow this link to complete publication:`, finalizeUrl)
+
+      let published = false
+
+      // keep checking until the item is fully published
+      while (!published) {
+        await sleep(5)
+
+        ret = await client.safeMutate({
+          mutation: PublishMutation,
+          variables: {
+            bundle: dataToPublish
+          }
+        })
+
+        published = !!_.get(ret, 'data.result.url')
+      }
+    }
 
     const { cid, url, shortUrl } = _.get(ret, 'data.result', {})
 

@@ -3,8 +3,6 @@ import React, { Component } from 'react'
 
 import { Tooltip as DefaultTooltip } from 'react-tippy'
 
-import './tooltip.css'
-
 export default class Tooltip extends Component {
   state = {}
 

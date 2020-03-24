@@ -32,6 +32,21 @@ export const GetPackageQuery = gql`
 
 
 /**
+ * Get a release.
+ * @type {Query}
+ */
+export const GetPackageByReleaseQuery = gql`
+  ${PackageResultFragment}
+
+  query getPackageByRelease ($id: ID!) {
+    result: getPackageByRelease(id: $id) {
+      ...PackageResultFragment
+    }
+  }
+`
+
+
+/**
  * Get authentication token.
  * @type {Query}
  */

@@ -88,6 +88,7 @@ export const ReleaseFragment = gql`
     title
     description
     created
+    bytecodeHashes
   }
 `
 
@@ -165,6 +166,9 @@ export const PackageResultFragment = gql`
   }
 `
 
+
+
+
 /**
  * Package result.
  * @type {Fragment}
@@ -184,13 +188,25 @@ export const PackageListResultFragment = gql`
 `
 
 
+
+
+/**
+ * Publish finalization.
+ * @type {Fragment}
+ */
+export const PublishFinalizeFragment = gql`
+  fragment PublishFinalizeFragment on PublishFinalize {
+    finalizeUrl
+  }
+`
+
+
 /**
  * Publish success.
  * @type {Fragment}
  */
 export const PublishSuccessFragment = gql`
   fragment PublishSuccessFragment on PublishSuccess {
-    id
     cid
     url
     shortUrl
@@ -204,10 +220,14 @@ export const PublishSuccessFragment = gql`
  * @type {Fragment}
  */
 export const PublishResultFragment = gql`
+  ${PublishFinalizeFragment}
   ${PublishSuccessFragment}
   ${ErrorFragment}
 
   fragment PublishResultFragment on PublishResult {
+    ...on PublishFinalize {
+      ...PublishFinalizeFragment
+    }
     ...on PublishSuccess {
       ...PublishSuccessFragment
     }
@@ -216,7 +236,3 @@ export const PublishResultFragment = gql`
     }
   }
 `
-
-
-
-

@@ -21,6 +21,7 @@ export const getTypeDefs = () => gql`
     title: String!
     description: String!
     created: DateTime!
+    bytecodeHashes: [String]!
   }
 
   type Package {
@@ -35,8 +36,11 @@ export const getTypeDefs = () => gql`
     packages: [Package]!
   }
 
+  type PublishFinalize {
+    finalizeUrl: String!
+  }
+
   type PublishSuccess {
-    id: ID!
     cid: String!
     url: String!
     shortUrl: String!
@@ -61,7 +65,7 @@ export const getTypeDefs = () => gql`
     expires: DateTime!
   }
 
-  union PublishResult = PublishSuccess | Error
+  union PublishResult = PublishSuccess | PublishFinalize | Error
   union ProfileResult = User | Error
   union LoginResult = AuthToken | Error
   union PackageResult = Package | Error
@@ -71,6 +75,7 @@ export const getTypeDefs = () => gql`
   type Query {
     getMyPackages: PackageListResult!
     getPackage(id: ID!): PackageResult!
+    getPackageByRelease(id: ID!): PackageResult!
     getAuthToken(loginToken: String!): AuthTokenResult!
     getMyProfile: ProfileResult!
   }
@@ -100,6 +105,9 @@ export const getFragmentMatcherConfig = () => ({
         kind: 'UNION',
         name: 'PublishResult',
         possibleTypes: [
+          {
+            name: 'PublishFinalize'
+          },
           {
             name: 'PublishSuccess'
           },
