@@ -116,6 +116,7 @@ const Dropdown = ({ className, options, selectedOption, onSelect }) => {
     <Container className={className} ref={containerRef}>
       <IconButton
         icon={{ name: 'caret-down' }}
+        tooltip='Toggle dropdown'
         onClick={toggleMenu}
       />
       {ReactDOM.createPortal(
