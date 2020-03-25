@@ -60,6 +60,8 @@ export default {
   modalOverlayBgColor: 'rgba(0, 0, 0, 0.8)',
   modalBgColor: white,
   modalTextColor: black,
+  // account info
+  accountInfoTextColor: darkGrey,
   // network info component
   networkInfoIconColor: grey,
   networkInfoTextColor: darkGrey,

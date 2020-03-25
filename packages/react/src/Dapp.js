@@ -38,7 +38,7 @@ const Preamble = styled.div`
 `
 
 const TopBar = styled.div`
-  ${flex({ direction: 'row', justify: 'space-between', align: 'center' })};
+  ${flex({ direction: 'row', justify: 'flex-end', align: 'center' })};
   padding: 0.5rem;
   text-align: right;
 `
@@ -64,16 +64,6 @@ const Credit = styled.p`
     hoverBgColor: theme.creditAnchorHoverBgColor,
     borderBottomColor: theme.creditAnchorBorderBottomColor,
   })};
-`
-
-const AccountInfo = styled.div`
-  ${flex({ direction: 'row', justify: 'flex-start', align: 'center' })};
-  font-size: 0.7rem;
-`
-
-const AccountIcon = styled(Identicon)`
-  width: 24px;
-  height: 24px;
 `
 
 /**
@@ -181,10 +171,6 @@ const Dapp = ({
     content = (
       <div>
         <TopBar>
-          <AccountInfo>
-            <AccountIcon hash={account} tooltip={`Your address: ${account}`} />
-            {account.substr(0, 9)}...
-          </AccountInfo>
           <NetworkInfoLabel network={network} />
         </TopBar>
         {/* eslint-disable-next-line no-nested-ternary */}
