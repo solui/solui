@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/solui/solui/compare/v1.10.1...v1.11.0) (2020-03-25)
+
+
+### Features
+
+* enable hiding of tooltip on identicon ([0b9faf8](https://github.com/solui/solui/commit/0b9faf86933b2d9846fe634ba24cd731b0fa58fd))
+
+
+
+
+
 ## [1.10.1](https://github.com/solui/solui/compare/v1.10.0...v1.10.1) (2020-03-25)
 
 **Note:** Version bump only for package root
