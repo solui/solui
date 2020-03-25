@@ -17,6 +17,7 @@ export const getTypeDefs = () => gql`
 
   type Release {
     id: ID!
+    publisher: User!
     cid: String!
     title: String!
     description: String!
@@ -24,16 +25,8 @@ export const getTypeDefs = () => gql`
     bytecodeHashes: [String]!
   }
 
-  type Package {
-    id: ID!
-    name: String!
-    owner: User!
-    created: DateTime!
-    latestRelease: Release!
-  }
-
-  type PackageList {
-    packages: [Package]!
+  type ReleaseList {
+    releases: [Release]!
   }
 
   type PublishFinalize {
@@ -85,15 +78,14 @@ export const getTypeDefs = () => gql`
   union PublishToChainResult = PublishToChainSuccess | Error
   union ProfileResult = User | Error
   union LoginResult = AuthToken | Error
-  union PackageResult = Package | Error
-  union PackageListResult = PackageList | Error
+  union ReleaseResult = Release | Error
+  union ReleaseListResult = ReleaseList | Error
   union AuthTokenResult = AuthToken | Error
   union DappChainInfoResult = DappChainInfo | Error
 
   type Query {
-    getMyPackages: PackageListResult!
-    getPackage(id: ID!): PackageResult!
-    getPackageByRelease(id: ID!): PackageResult!
+    getMyReleases: ReleaseListResult!
+    getRelease(id: ID!): ReleaseResult!
     getAuthToken(loginToken: String!): AuthTokenResult!
     getMyProfile: ProfileResult!
     getDappInfoFromChain(dappId: String!): DappChainInfoResult!
@@ -162,10 +154,10 @@ export const getFragmentMatcherConfig = () => ({
       },
       {
         kind: 'UNION',
-        name: 'PackageResult',
+        name: 'ReleaseResult',
         possibleTypes: [
           {
-            name: 'Package'
+            name: 'Release'
           },
           {
             name: 'Error'
@@ -174,10 +166,10 @@ export const getFragmentMatcherConfig = () => ({
       },
       {
         kind: 'UNION',
-        name: 'PackageListResult',
+        name: 'ReleaseListResult',
         possibleTypes: [
           {
-            name: 'PackageList'
+            name: 'ReleaseList'
           },
           {
             name: 'Error'

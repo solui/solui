@@ -72,6 +72,7 @@
     "lodash.pick": "^4.4.0",
     "lodash.snakecase": "^4.1.1",
     "lodash.trim": "^4.5.1",
+    "lodash.truncate": "^4.4.2",
     "open": "^6.4.0",
     "qs": "^6.9.1",
     "rambda": "^3.2.1",

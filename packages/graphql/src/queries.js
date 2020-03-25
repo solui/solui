@@ -1,8 +1,8 @@
 import gql from 'graphql-tag'
 
 import {
-  PackageResultFragment,
-  PackageListResultFragment,
+  ReleaseResultFragment,
+  ReleaseListResultFragment,
   UserProfileFragment,
   AuthTokenResultFragment,
   DappChainInfoResultFragment,
@@ -12,12 +12,12 @@ import {
  * Get my packages.
  * @type {Query}
  */
-export const GetMyPackagesQuery = gql`
-  ${PackageListResultFragment}
+export const GetMyReleasesQuery = gql`
+  ${ReleaseListResultFragment}
 
-  query getMyPackages {
-    result: getMyPackages @requireAuth {
-      ...PackageListResultFragment
+  query getMyReleases {
+    result: getMyReleases @requireAuth {
+      ...ReleaseListResultFragment
     }
   }
 `
@@ -26,27 +26,12 @@ export const GetMyPackagesQuery = gql`
  * Get a package.
  * @type {Query}
  */
-export const GetPackageQuery = gql`
-  ${PackageResultFragment}
+export const GetReleaseQuery = gql`
+  ${ReleaseResultFragment}
 
-  query getPackage ($id: ID!) {
-    result: getPackage(id: $id) {
-      ...PackageResultFragment
-    }
-  }
-`
-
-
-/**
- * Get a release.
- * @type {Query}
- */
-export const GetPackageByReleaseQuery = gql`
-  ${PackageResultFragment}
-
-  query getPackageByRelease ($id: ID!) {
-    result: getPackageByRelease(id: $id) {
-      ...PackageResultFragment
+  query getRelease ($id: ID!) {
+    result: getRelease(id: $id) {
+      ...ReleaseResultFragment
     }
   }
 `

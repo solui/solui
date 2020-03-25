@@ -80,12 +80,17 @@ export const LoginResultFragment = gql`
 
 
 /**
- * Package release.
+ * Release.
  * @type {Fragment}
  */
 export const ReleaseFragment = gql`
+  ${UserFragment}
+
   fragment ReleaseFragment on Release {
     id
+    publisher {
+      ...UserFragment
+    }
     cid
     title
     description
@@ -93,28 +98,6 @@ export const ReleaseFragment = gql`
     bytecodeHashes
   }
 `
-
-/**
- * Package.
- * @type {Fragment}
- */
-export const PackageFragment = gql`
-  ${UserFragment}
-  ${ReleaseFragment}
-
-  fragment PackageFragment on Package {
-    id
-    name
-    owner {
-      ...UserFragment
-    }
-    created
-    latestRelease {
-      ...ReleaseFragment
-    }
-  }
-`
-
 
 /**
  * Auth token result.
@@ -136,31 +119,30 @@ export const AuthTokenResultFragment = gql`
 
 
 /**
- * Package.
+ * Release list.
  * @type {Fragment}
  */
-export const PackageListFragment = gql`
-  ${PackageFragment}
+export const ReleaseListFragment = gql`
+  ${ReleaseFragment}
 
-  fragment PackageListFragment on PackageList {
-    packages {
-      ...PackageFragment
+  fragment ReleaseListFragment on ReleaseList {
+    releases {
+      ...ReleaseFragment
     }
   }
 `
 
-
 /**
- * Package result.
+ * Release result.
  * @type {Fragment}
  */
-export const PackageResultFragment = gql`
-  ${PackageFragment}
+export const ReleaseResultFragment = gql`
+  ${ReleaseFragment}
   ${ErrorFragment}
 
-  fragment PackageResultFragment on PackageResult {
-    ...on Package {
-      ...PackageFragment
+  fragment ReleaseResultFragment on ReleaseResult {
+    ...on Release {
+      ...ReleaseFragment
     }
     ...on Error {
       ...ErrorFragment
@@ -172,16 +154,16 @@ export const PackageResultFragment = gql`
 
 
 /**
- * Package result.
+ * Release list result.
  * @type {Fragment}
  */
-export const PackageListResultFragment = gql`
-  ${PackageListFragment}
+export const ReleaseListResultFragment = gql`
+  ${ReleaseListFragment}
   ${ErrorFragment}
 
-  fragment PackageListResultFragment on PackageListResult {
-    ...on PackageList {
-      ...PackageListFragment
+  fragment ReleaseListResultFragment on ReleaseListResult {
+    ...on ReleaseList {
+      ...ReleaseListFragment
     }
     ...on Error {
       ...ErrorFragment
