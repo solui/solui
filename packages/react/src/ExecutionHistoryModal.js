@@ -5,8 +5,6 @@ import { flex } from '@solui/styles'
 import { prettyDate } from '@solui/utils'
 
 import { Modal } from './Modal'
-import AlertBox from './AlertBox'
-import ErrorBox from './ErrorBox'
 import Result from './Result'
 import Tx from './Tx'
 import Icon from './Icon'

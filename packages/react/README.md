@@ -19,9 +19,6 @@ const React = require('react')
 const { process as processSpec, validateGroupInputs, validatePanel, executePanel } = require('@solui/processor')
 const { Dapp } = require('@solui/react')
 
-// if you're using the Tooltip component you will need to import its CSS
-import "@solui/react/dist/tooltip.css"
-
 export default ({ spec, artifacts, network }) => {
   return (
     <Dapp

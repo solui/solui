@@ -6,6 +6,7 @@ import { flex, boxShadow, childAnchors } from '@solui/styles'
 
 import { InterfaceBuilder } from './Interface'
 import ErrorBox from './ErrorBox'
+import Identicon from './Identicon'
 import Progress from './Progress'
 import Button from './Button'
 import NetworkInfoLabel from './NetworkInfoLabel'
@@ -37,7 +38,7 @@ const Preamble = styled.div`
 `
 
 const TopBar = styled.div`
-  ${flex({ direction: 'row', justify: 'flex-end', align: 'center' })};
+  ${flex({ direction: 'row', justify: 'space-between', align: 'center' })};
   padding: 0.5rem;
   text-align: right;
 `
@@ -65,6 +66,16 @@ const Credit = styled.p`
   })};
 `
 
+const AccountInfo = styled.div`
+  ${flex({ direction: 'row', justify: 'flex-start', align: 'center' })};
+  font-size: 0.7rem;
+`
+
+const AccountIcon = styled(Identicon)`
+  width: 24px;
+  height: 24px;
+`
+
 /**
  * Render a UI.
  * @return {ReactElement}
@@ -83,11 +94,11 @@ const Dapp = ({
   const [buildResult, setBuildResult] = useState()
 
   const [refreshCounter, setRefreshCounter] = useState(0)
-  const accountAvailable = useMemo(() => !!_.get(network, 'account'), [ network, refreshCounter ])
+  const account = useMemo(() => _.get(network, 'account'), [ network, refreshCounter ])
 
   // validate a panel's inputs
   const onValidatePanel = useCallback(async ({ panelId, inputs }) => {
-    if (!accountAvailable) {
+    if (!account) {
       throw new Error('Account not available')
     }
 
@@ -98,11 +109,11 @@ const Dapp = ({
       inputs,
       network,
     })
-  }, [ spec, artifacts, network, validatePanel, accountAvailable ])
+  }, [ spec, artifacts, network, validatePanel, account ])
 
   // execute a panel
   const onExecutePanel = useCallback(async ({ panelId, inputs, executionProgressCallback }) => {
-    if (!accountAvailable) {
+    if (!account) {
       throw new Error('Account not available')
     }
 
@@ -114,11 +125,11 @@ const Dapp = ({
       network,
       progressCallback: executionProgressCallback,
     })
-  }, [ spec, artifacts, network, executePanel, accountAvailable  ])
+  }, [ spec, artifacts, network, executePanel, account  ])
 
   // build interface
   useEffect(() => {
-    if (!accountAvailable) {
+    if (!account) {
       return
     }
 
@@ -146,7 +157,7 @@ const Dapp = ({
         setBuildResult({ error: err })
       }
     })()
-  }, [ onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec, network, accountAvailable ])
+  }, [ onValidatePanel, onExecutePanel, spec, artifacts, validateSpec, processSpec, network, account ])
 
   const enableAccountAccess = useCallback(async () => {
     await network.enableAccountAccess()
@@ -159,7 +170,7 @@ const Dapp = ({
     content = (
       <StyledProgress>Waiting for Ethereum network connection (please check your wallet / Metamask!)</StyledProgress>
     )
-  } else if (!accountAvailable) {
+  } else if (!account) {
     content = (
       <Preamble>
         <StyledProgress>We need your permission to know your Ethereum account address</StyledProgress>
@@ -170,6 +181,10 @@ const Dapp = ({
     content = (
       <div>
         <TopBar>
+          <AccountInfo>
+            <AccountIcon hash={account} tooltip={`Your address: ${account}`} />
+            {account.substr(0, 9)}...
+          </AccountInfo>
           <NetworkInfoLabel network={network} />
         </TopBar>
         {/* eslint-disable-next-line no-nested-ternary */}

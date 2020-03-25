@@ -4,7 +4,6 @@ import qs from 'query-string'
 import { useAsync } from 'react-async-hook'
 
 import { AppContainer } from '@solui/react'
-import "@solui/react/dist/tooltip.css"
 
 import { _ } from '@solui/utils'
 import {

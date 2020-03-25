@@ -7,6 +7,7 @@ import DateTime from './DateTime'
 import ErrorBox from './ErrorBox'
 import ExecutionHistoryModal from './ExecutionHistoryModal'
 import GlobalStyles from './GlobalStyles'
+import Identicon from './Identicon'
 import Icon from './Icon'
 import IconButton from './IconButton'
 import Image from './Image'
@@ -34,6 +35,7 @@ export {
   ErrorBox,
   ExecutionHistoryModal,
   GlobalStyles,
+  Identicon,
   Icon,
   IconButton,
   Image,

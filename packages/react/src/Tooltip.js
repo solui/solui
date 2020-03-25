@@ -1,45 +1,44 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
-import React, { Component } from 'react'
+import React, { useState, useCallback } from 'react'
+import { useTheme } from 'emotion-theming'
+import styled from '@emotion/styled'
+import Tippy from '@tippyjs/react/headless'
 
-import { Tooltip as DefaultTooltip } from 'react-tippy'
+const Container = styled.div`
+  background-color: ${({ theme }) => theme.tooltipBgColor};
+  color: ${({ theme }) => theme.tooltipTextColor};
+  padding: 1rem;
+  border-radius: 5px;
+`
 
-export default class Tooltip extends Component {
-  state = {}
+const Tooltip = ({ content, children }) => {
+  const theme = useTheme()
+  const [ visible, setVisible ] = useState()
+  const show = useCallback(() => setVisible(true), [])
+  const hide = useCallback(() => setVisible(false), [])
+  const flash = useCallback((timeMs = 2000) => {
+    show()
+    setTimeout(() => hide(), timeMs)
+  }, [])
 
-  render () {
-    const { content, children, ...props } = this.props
+  const html = (typeof content === 'string') ? <span>{content}</span> : content
 
-    const html = (typeof content === 'string') ? <span>{content}</span> : content
-
-    return (
-      children({
-        flash: this.flash,
-        show: this.show,
-        hide: this.hide,
-        tooltipElement: (
-          <DefaultTooltip
-            useContext={true}
-            id={this.id}
-            open={html ? this.state.show : false}
-            html={html}
-            duration={200}
-            {...props}
-          />
-        )
-      })
-    )
-  }
-
-  show = () => {
-    this.setState({ show: true })
-  }
-
-  hide = () => {
-    this.setState({ show: false })
-  }
-
-  flash = (timeMs = 2000) => {
-    this.show()
-    setTimeout(() => this.hide(), timeMs)
-  }
+  return (
+    children({
+      flash, show, hide,
+      tooltipElement: (
+        <Tippy
+          duration={200}
+          visible={(html ? visible : false)}
+          render={attrs => (
+            <Container {...attrs} theme={theme}>
+              {html}
+            </Container>
+          )}
+        ><span /></Tippy>
+      )
+    })
+  )
 }
+
+export default Tooltip

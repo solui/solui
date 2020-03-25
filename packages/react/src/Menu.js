@@ -141,8 +141,8 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
                 <TooltipContainer>
                   <Button onClick={() => copyToClipboard(embedUrl, flash)}>
                     Copy to clipboard
-                </Button>
-                  {tooltipElement}
+                    {tooltipElement}
+                  </Button>
                 </TooltipContainer>
               )}
             </Tooltip>
@@ -156,8 +156,8 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
                   <TooltipContainer>
                     <Button onClick={() => copyToClipboard(shortEmbedUrl, flash)}>
                       Copy to clipboard
-                </Button>
-                    {tooltipElement}
+                      {tooltipElement}
+                    </Button>
                   </TooltipContainer>
                 )}
               </Tooltip>
@@ -174,8 +174,8 @@ const Menu = ({ className, embedUrl, spec, artifacts }) => {
               <TooltipContainer>
                 <Button onClick={() => copyToClipboard(rawSource, flash)}>
                   Copy to clipboard
+                  {tooltipElement}
                 </Button>
-                {tooltipElement}
               </TooltipContainer>
             )}
           </Tooltip>

@@ -1,5 +1,5 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
-import React from 'react'
+import React, { forwardRef } from 'react'
 
 import { config, library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -86,8 +86,8 @@ const getCategory = name => Object.keys(MAP).find(c => MAP[c].includes(name))
  *
  * @return {ReactElement}
  */
-const Icon = ({ className, name, ...props }) => (
+const Icon = forwardRef(({ className, name, ...props }, ref) => (
   <FontAwesomeIcon className={className} icon={[ getCategory(name), name ]} {...props} />
-)
+))
 
 export default Icon
