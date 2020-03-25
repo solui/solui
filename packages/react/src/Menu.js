@@ -11,7 +11,7 @@ import Button from './Button'
 import Icon from './Icon'
 
 const Container = styled.div`
-  ${flex({ direction: 'row', justify: 'flex-start', align: 'center' })};
+  ${flex({ direction: 'row', justify: 'space-around', align: 'center' })};
 `
 
 const ModalContainer = styled.div`
@@ -40,7 +40,7 @@ const MenuButton = styled(Button)`
   background-color: ${({ theme }) => theme.menuButtonBgColor};
   border: none;
   cursor: pointer;
-  margin-right: 1rem;
+  padding: 0.6em 0.8em;
 `
 
 const ShareButton = styled(MenuButton)``
