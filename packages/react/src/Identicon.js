@@ -14,7 +14,7 @@ const Container = styled.div`
   }
 `
 
-const Identicon = ({ className, tooltip, hash }) => {
+const Identicon = ({ className, tooltip, hash, hideTooltip }) => {
   const imgCode = useMemo(() => {
     return new IdenticonCreator(hash, {
       size: 128,
@@ -23,7 +23,7 @@ const Identicon = ({ className, tooltip, hash }) => {
   }, [ hash ])
 
   return (
-    <Tooltip content={tooltip || hash}>
+    <Tooltip content={hideTooltip ? null : (tooltip || hash)}>
       {({ tooltipElement, show, hide }) => (
         <Container
           className={className}

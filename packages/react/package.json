@@ -7,7 +7,7 @@
   },
   "scripts": {
     "clean": "rm -rf ./dist && mkdir ./dist",
-    "compile": "cp ./src/*.css ./dist && babel ./src --out-dir ./dist",
+    "compile": "babel ./src --out-dir ./dist",
     "build": "npm run clean && npm run compile",
     "watch": "npm run clean && npm run compile -- --watch"
   },
