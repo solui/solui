@@ -70,7 +70,7 @@ export const getTypeDefs = () => gql`
   type DappChainInfo {
     exists: Boolean!
     numContracts: Int
-    publisher: String
+    publisher: EthereumAddress
     date: DateTime
   }
 

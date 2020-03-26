@@ -10,6 +10,7 @@ export const ERROR_CODES = Object.keys(codes).reduce((m, v) => {
 export const createErrorResponse = (code = ERROR_CODES.UNKNOWN, message) => {
   return {
     error: {
+      __typename: 'ErrorDetails',
       code,
       message: message || codes[code],
     }

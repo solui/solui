@@ -1,4 +1,5 @@
 import got from 'got'
+import open from 'open'
 import path from 'path'
 import fs from 'fs'
 import mkdirp from 'mkdirp'
@@ -109,6 +110,8 @@ export const publish = async ({ spec, artifacts, customIpfs, customFolder }) => 
 
     if (finalizeUrl) {
       logInfo(`Please follow this link to complete publication:`, finalizeUrl)
+
+      await open(finalizeUrl)
 
       let published = false
 

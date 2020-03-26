@@ -53,7 +53,6 @@ const _finalizeNetwork = async network => {
   // try getting account
   try {
     network.account = await node.getSigner(0).getAddress()
-    console.log(`User account: ${network.account}`)
   } catch (err) {
     console.log('Unable to automatically fetch account address, will need to ask user for permission!')
   }
@@ -69,6 +68,7 @@ const _finalizeNetwork = async network => {
     }
 
     network.account = await node.getSigner(0).getAddress()
+    console.log(`User account: ${network.account}`)
   }
 }
 
@@ -109,8 +109,24 @@ export const getNetworkInfoFromWeb3 = async web3 => {
   await _finalizeNetwork(network)
 
   return network
-
 }
+
+
+
+/**
+ * Get network information from given Ethereum JSON-RPC endpoint URL.
+ *
+ * @param  {String}  url Ethereum JSON-RPC endpoint URL.
+ * @return {Promise<NetworkInfo>}
+ */
+export const getNetworkInfoFromUrl = async url => {
+  const network = { node: new JsonRpcProvider(url) }
+
+  await _finalizeNetwork(network)
+
+  return network
+}
+
 
 
 /**
