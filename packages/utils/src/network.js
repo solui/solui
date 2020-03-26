@@ -14,7 +14,7 @@ const etherscanPrefix = {
   42: 'https://kovan.etherscan.io',
 }
 
-const getNetworkName = id => {
+export const getNetworkName = id => {
   switch (id) {
     case '1':
       return 'Mainnet'
