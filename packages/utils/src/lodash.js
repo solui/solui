@@ -32,4 +32,5 @@ export const _ = {
   snakeCase,
   trimStr,
   truncate,
+  truncateEthAddress: s => `${s.substr(0,10)}...${s.substr(-2)}`,
 }
