@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.13.0](https://github.com/solui/solui/compare/v1.12.0...v1.13.0) (2020-03-27)
+
+
+### Features
+
+* add truncateEthAddress() util ([53e562d](https://github.com/solui/solui/commit/53e562d71f8fdcb71249069c5f89b17883ae5162))
+
+
+
+
+
 ## [1.11.4](https://github.com/solui/solui/compare/v1.11.3...v1.11.4) (2020-03-26)
 
 **Note:** Version bump only for package @solui/utils
