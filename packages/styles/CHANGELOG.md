@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.12.0](https://github.com/solui/solui/compare/v1.11.4...v1.12.0) (2020-03-27)
+
+
+### Features
+
+* queries to fetch all dapps ([4a12527](https://github.com/solui/solui/commit/4a12527798a0963646406b4e4ecc6cd091144db1))
+
+
+
+
+
 ## [1.10.1](https://github.com/solui/solui/compare/v1.10.0...v1.10.1) (2020-03-25)
 
 **Note:** Version bump only for package @solui/styles
