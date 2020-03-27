@@ -129,6 +129,9 @@ export const ReleaseListFragment = gql`
     releases {
       ...ReleaseFragment
     }
+    page
+    totalResults
+    numPages
   }
 `
 

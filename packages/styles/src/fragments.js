@@ -37,6 +37,7 @@ export const absoluteCover = () => `
  */
 export const childAnchors = ({
   textColor,
+  bgColor = 'transparent',
   hoverTextColor,
   hoverBgColor,
   borderBottomColor,
@@ -44,11 +45,11 @@ export const childAnchors = ({
 }) => `
   a {
     color: ${selected ? hoverTextColor : textColor};
-    background-color: ${selected ? (hoverBgColor || textColor) : 'transparent'};
+    background-color: ${selected ? (hoverBgColor || textColor) : bgColor};
     border-bottom: 1px solid ${borderBottomColor || textColor};
     &:visited, &:link {
       color: ${textColor};
-      background-color: transparent;
+      background-color: ${bgColor};
       border-bottom: 1px solid ${borderBottomColor || textColor};
     }
     &:hover, &:active {

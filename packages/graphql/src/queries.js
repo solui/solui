@@ -6,24 +6,43 @@ import {
   UserProfileFragment,
   AuthTokenResultFragment,
   DappChainInfoResultFragment,
+  SearchByK
 } from './fragments'
 
+
+
 /**
- * Get my packages.
+ * Get all releases.
+ * @type {Query}
+ */
+export const GetAllReleases = gql`
+  ${ReleaseListResultFragment}
+
+  query getAllReleases ($paging: PagingInput!) {
+    result: getAllReleases (paging: $paging) {
+      ...ReleaseListResultFragment
+    }
+  }
+`
+
+
+
+/**
+ * Get my releases.
  * @type {Query}
  */
 export const GetMyReleasesQuery = gql`
   ${ReleaseListResultFragment}
 
-  query getMyReleases {
-    result: getMyReleases @requireAuth {
+  query getMyReleases ($paging: PagingInput!) {
+    result: getMyReleases (paging: $paging) @requireAuth {
       ...ReleaseListResultFragment
     }
   }
 `
 
 /**
- * Get a package.
+ * Get a release.
  * @type {Query}
  */
 export const GetReleaseQuery = gql`

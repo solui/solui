@@ -27,6 +27,9 @@ export const getTypeDefs = () => gql`
 
   type ReleaseList {
     releases: [Release]!
+    page: Int!
+    totalResults: Int!
+    numPages: Int!
   }
 
   type PublishFinalize {
@@ -50,6 +53,11 @@ export const getTypeDefs = () => gql`
 
   type Error {
     error: ErrorDetails
+  }
+
+  input PagingInput {
+    page: Int
+    resultsPerPage: Int
   }
 
   input PublishInput {
@@ -84,7 +92,8 @@ export const getTypeDefs = () => gql`
   union DappChainInfoResult = DappChainInfo | Error
 
   type Query {
-    getMyReleases: ReleaseListResult!
+    getAllReleases(paging: PagingInput!): ReleaseListResult!
+    getMyReleases(paging: PagingInput!): ReleaseListResult!
     getRelease(id: ID!): ReleaseResult!
     getAuthToken(loginToken: String!): AuthTokenResult!
     getMyProfile: ProfileResult!

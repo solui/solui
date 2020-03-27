@@ -6,8 +6,8 @@ import { prettyDate } from '@solui/utils'
  * Render a date-time value.
  * @return {ReactElement}
  */
-const DateTime = ({ className, dateTime }) => {
-  const dateTimeStr = useMemo(() => prettyDate(dateTime), [ dateTime ])
+const DateTime = ({ className, dateTime, withTime }) => {
+  const dateTimeStr = useMemo(() => prettyDate(dateTime, withTime ? 'MMM d, yyyy @ HH:mm' : null), [ dateTime ])
 
   return (
     <span className={className}>{dateTimeStr}</span>
