@@ -54,7 +54,7 @@ Example:
 
 Additional attributes depend on this parameter.
 
-**Validation: intToDateString**
+**Transformation: intToDateString**
 
 This treats a number value as a [blockchain-generated timestamp](https://solidity.readthedocs.io/en/v0.5.3/units-and-global-variables.html)
 and converts it to its string representation.
@@ -83,7 +83,7 @@ The value `1585167477` would now be transformed to `20:17`.
 
 _Note: full pattern information is available in the [date-fns/format]([date-fns library](https://date-fns.org/v1.30.1/docs/format)) docs_.
 
-**Validation: intToScaledIntString**
+**Transformation: intToScaledIntString**
 
 This scales a number value by the given scaling amount and returns a base-10 string representation. This means
 multiplying the input value by `10^scale` to obtain the final value.
@@ -99,7 +99,7 @@ Example (`10` -> `"10000"`):
 
 If outputting an ETH value (which gets returned as WEI from a contract call) then the scale should be set to `-18`.
 
-**Validation: stringToSpacedSuffixedString**
+**Transformation: stringToSpacedSuffixedString**
 
 This adds a suffix to a string value, leaving a space in between.
 
