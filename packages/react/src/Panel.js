@@ -72,7 +72,7 @@ const Content = styled.section`
 
 const Actions = styled.div`
   margin-top: 1rem;
-  ${flex({ direction: 'row', justify: 'space-between', align: 'center' })};
+  ${flex({ direction: 'row', justify: 'flex-start', align: 'center' })};
 `
 
 const StyledResult = styled(Result)`
@@ -88,6 +88,7 @@ const StyledTx = styled(Tx)`
 const HistoryButton = styled(IconButton)`
   padding: 0.4em 0.5em;
   border: none;
+  margin-left: 1rem;
 `
 
 /**
@@ -220,8 +221,8 @@ export const Panel = ({
             {isExecuting ? <Icon name='laugh-squint' spin /> : 'Execute'}
           </Button>
 
-          {(!isExecuting && !!executionHistory.length) ? (
-            <HistoryButton title='View execution history' icon={{ name: 'history' }} onClick={toggleExecutionHistoryModal} />
+          {(!isExecuting && executionHistory.length) ? (
+            <HistoryButton tooltip='View execution history' icon={{ name: 'history' }} onClick={toggleExecutionHistoryModal} />
           ) : null}
 
           <ExecutionHistoryModal

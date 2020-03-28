@@ -63,12 +63,12 @@ const Result = ({ className, result: { value, error, meta: { successMsgs, failur
     const sanitizedValue = (value || new Map())
 
     sanitizedValue.forEach((v, k) => {
-      const { title, result: actualValue, ...valueProps } = v
+      const { title, result, resultTransformed, ...valueProps } = v
 
       resultItems.push(
         <ResultItem key={k} moreThanOne={!!sanitizedValue.size}>
           <Title>{title}</Title>
-          <Value {...valueProps} value={actualValue} />
+          <Value {...valueProps} value={result} valueTransformed={resultTransformed} />
         </ResultItem>
       )
     })

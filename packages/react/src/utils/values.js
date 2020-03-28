@@ -122,6 +122,12 @@ export const getMetaTextForInput = ({ type, value, config }) => {
   }
 }
 
+const _sanitizeIfIntVal = value => {
+  if (value && value._hex) {
+    value = toDecimalVal(value).toString(10)
+  }
+  return value
+}
 
 /**
  * Get renderable values for given output value and config.
@@ -132,34 +138,26 @@ export const getMetaTextForInput = ({ type, value, config }) => {
  *
  * @return [String]
  */
-export const getRenderableValuesForOutput = ({ type, value, config }) => {
-  // if value is a big number then convert to a base-10 string
-  if (value && value._hex) {
-    value = toDecimalVal(value).toString(10)
+export const getRenderableValuesForOutput = ({ type, value, valueTransformed }) => {
+  const v = []
+
+  // show transformed value first!
+  if (typeof valueTransformed !== 'undefined') {
+    v.push(_sanitizeIfIntVal(valueTransformed))
   }
+
+  // if value is a big number then convert to a base-10 string
+  value = _sanitizeIfIntVal(value)
 
   switch (type) {
-    case 'bool': {
-      return [ value ? 'TRUE' : 'FALSE' ]
-    }
-    case 'int': {
-      const v = []
-
-      const unit = _.get(config, 'unit')
-      const scale = _.get(config, 'scale')
-
-      if (scale) {
-        const realNum = deriveDecimalVal(value, config)
-        v.push(`${realNum}${unit ? ` ${unit}` : ''}`)
-      }
-
-      v.push(value)
-
-      return v
-    }
+    case 'bool':
+      v.push( value ? 'TRUE' : 'FALSE' )
+      break
     default:
-      return [ value ]
+      v.push(value)
   }
+
+  return v
 }
 
 

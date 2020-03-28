@@ -19,8 +19,8 @@ export const checkIdIsValid = (ctx, id) => {
     return
   }
 
-  if (id.length < 3 || id.length > 32) {
-    ctx.recordError('id must be between 3 and 32 characters in length')
+  if (id.length < 3 || id.length > 64) {
+    ctx.recordError('id must be between 3 and 64 characters in length')
   }
 
   if (/[^A-Za-z0-9-]/g.exec(id)) {

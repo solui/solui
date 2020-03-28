@@ -33,14 +33,14 @@ const StyledCopyToClipboardButton = styled(CopyToClipboardButton)`
  *
  * @return {ReactElement}
  */
-const SingleValue = ({ className, value, ...config }) => {
+const SingleValue = ({ className, value, valueTransformed, ...config }) => {
   const { type } = config
 
   const [ currentValueFormatIndex, setCurrentValueFormatIndex ] = useState(0)
 
   const valueFormats = useMemo(() => {
-    return getRenderableValuesForOutput({ value, type, config })
-  }, [ value, type, config ])
+    return getRenderableValuesForOutput({ value, valueTransformed, type, config })
+  }, [ value, valueTransformed, type, config ])
 
   const hasMoreThanOneValueFormat = useMemo(() => valueFormats.length > 1, [ valueFormats ])
 

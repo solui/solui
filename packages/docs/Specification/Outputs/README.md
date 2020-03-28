@@ -10,14 +10,12 @@ Outputs specify results to display to the user once panel has succesfully execut
   "panels": [
     {
       ...,
-      "execs": [ ... ],
       "outputs": [
         {
           "title": "...",
           "type": "...",
           "value": "...",
-          "scale": "...",
-          "unit": "...",
+          "transform": [ ... ]
         },
         ...
       ]
@@ -57,6 +55,20 @@ will be applied to each and every value in turn:
 
 ![Array output](../../images/ArrayOutputValue.png)
 
+Also, if you are applying [transformations](../Transformations) then the type specified here must
+reflect the type of the final transformed value instead of the initial type. For example:
+
+```js
+{
+  "type": "string", // initial type is "int", but final transformed type is "string"
+  "transform": [
+    {
+      //
+      "type": "...converts ints to strings..."
+    }
+  ]
+}
+```
 
 **title**
 
@@ -92,7 +104,40 @@ Examples:
 }
 ```
 
+
+If a scale is set then the output value becomes clickable such that the user is able to
+cycle through the different formats (both scaled and unscaled):
+
+![Output value](../../images/OutputValue.png)
+
+**transform** _(optional)_
+
+One or more [transformations](../Transformations) to apply to the output value prior to rendering it. If using this then
+note that the `type` parameter must reflect the type of the final transformed value.
+
+Example:
+
+```js
+{
+  "transform": [
+    {
+      "type": "...",
+      ...
+    },
+    {
+      "type": "...",
+      ...
+    },
+    ...
+  ]
+}
+```
+
+## Deprecated properties
+
 **scale** _(optional)_
+
+_(This has been replaced by the `intToScaledIntString` [transformation](../Transformations))_.
 
 Applies to `type`: `int`
 
@@ -110,16 +155,13 @@ Example:
 }
 ```
 
-If a scale is set then the output value becomes clickable such that the user is able to
-cycle through the different formats (both scaled and unscaled):
-
-![Output value](../../images/OutputValue.png)
-
 **unit** _(optional)_
+
+_(This has been replaced by the `stringToSpacedSuffixedString` [transformation](../Transformations))_.
 
 Applies to `type`: `int`
 
-This is user-friendly text that gets shown next to the output value when the `scale` property is also set.
+This is user-friendly text that gets shown next to the output value when `scale` is also set.
 
 Example:
 
@@ -128,4 +170,3 @@ Example:
   "unit": "Tokens"
 }
 ```
-

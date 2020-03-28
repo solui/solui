@@ -27,7 +27,7 @@ It may also have user [input fields](../Inputs) to pass input arguments to the
 
 **id**
 
-This should be a human-readable and identifier for the panel, e.g. `deploy-token`. The supported characters are: `A-Z`, `a-z`, `0-9` and `-`. It must be between 3 and 32 characters in length.
+This should be a human-readable and identifier for the panel, e.g. `deploy-token`. The supported characters are: `A-Z`, `a-z`, `0-9` and `-`. It must be between 3 and 64 characters in length.
 
 This id must be unique amongst all the other panels in the spec.
 

@@ -1,9 +1,14 @@
 import {
   _,
   deriveDecimalVal,
+  slugify,
 } from '@solui/utils'
 
 export const extractChildById = (array, needle) => (array || []).find(({ id }) => id === needle)
+
+export const generateId = spec => {
+  return slugify(spec.title)
+}
 
 const extractRefTypeNameAndSubPath = v => {
   const extractorRegex = new RegExp(`\\[(.+?)\\]`, 'gmi')

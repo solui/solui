@@ -21,6 +21,7 @@
   * [List inputs](Specification/ListInputs)
   * [Execs](Specification/Execs)
   * [Outputs](Specification/Outputs)
+  * [Transformations](Specification/Transformations)
   * [Environment](Specification/EnvVars)
 * [Dapp interface](DappInterface)
   * [Menu](DappInterface/Menu)

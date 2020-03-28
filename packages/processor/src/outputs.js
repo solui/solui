@@ -1,5 +1,6 @@
 import { resolveValue } from './utils'
 import { createChildContextFrom } from './context'
+import { transformValue } from './transform'
 
 const OUTPUT_TYPES = {
   address: true,
@@ -17,7 +18,15 @@ const process = (ctx, config) => {
     return
   }
 
-  const { type, value, title } = config
+  const { type, value, title, transform = [] } = config
+
+  // handle deprecated properties: unit, scale
+  if (config.scale) {
+    if (config.unit) {
+      transform.unshift({ type: "stringToSpacedSuffixedString", suffix: config.unit })
+    }
+    transform.unshift({ type: "intToScaledIntString", scale: config.scale })
+  }
 
   if (!type || !value || !title) {
     ctx.recordError(`output type, value and title must be specified`)
@@ -26,17 +35,24 @@ const process = (ctx, config) => {
       ctx.recordError(`output type is not valid: ${type}`)
     }
 
-    let resolvedValue
+    let result
 
     try {
-      resolvedValue = resolveValue(ctx, value)
+      result = resolveValue(ctx, value)
     } catch (err) {
       ctx.recordError(`output value is not valid: ${value}`)
     }
 
+    let resultTransformed
+
+    if (typeof result !== 'undefined') {
+      resultTransformed = transformValue(ctx, result, transform)
+    }
+
     ctx.outputs().set(ctx.id, {
       ...config,
-      result: resolvedValue,
+      result,
+      resultTransformed,
     })
   }
 }

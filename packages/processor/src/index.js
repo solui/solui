@@ -1,16 +1,16 @@
-import { _, promiseSerial, createErrorWithDetails, getContractDeployer, getContractAt } from '@solui/utils'
+import { _, slugify, promiseSerial, createErrorWithDetails, getContractDeployer, getContractAt } from '@solui/utils'
 
 import {
   extractChildById,
   reportTransactionProgress,
   reportExecutionFailure,
   reportExecutionSuccess,
+  generateId,
 } from './utils'
 import {
-  checkIdIsValid,
   checkVersionIsValid,
-  checkTitleIsValid,
   checkImageIsValid,
+  checkTitleIsValid,
 } from './validate'
 import { RootContext } from './context'
 import { process as processPanel } from './panels'
@@ -33,19 +33,14 @@ export { RootContext }
  * @return {Promise<RootContext>}
  */
 export const process = async ({ spec, artifacts, network }, callbacks = {}) => {
-  const { id, version, title, description, image, constants, panels } = (spec || {})
+  const { version, title, description, image, constants, panels } = (spec || {})
 
   const ctx = new RootContext('<root>', { artifacts, callbacks, network })
 
-  checkIdIsValid(ctx, id)
-
-  // set to actual id if all ok!
-  if (!ctx.errors().notEmpty) {
-    ctx.id = id
-  }
+  checkTitleIsValid(ctx, title)
+  ctx.id = generateId(spec)
 
   checkVersionIsValid(ctx, version)
-  checkTitleIsValid(ctx, title)
 
   if (image) {
     await checkImageIsValid(ctx, image)
@@ -58,7 +53,7 @@ export const process = async ({ spec, artifacts, network }, callbacks = {}) => {
   }
 
   if (!ctx.errors().notEmpty) {
-    await ctx.callbacks().startUi(id, { title, description, image })
+    await ctx.callbacks().startUi(ctx.id, { title, description, image })
 
     const existingPanels = {}
 
@@ -75,7 +70,7 @@ export const process = async ({ spec, artifacts, network }, callbacks = {}) => {
       }
     })
 
-    await ctx.callbacks().endUi(id)
+    await ctx.callbacks().endUi(ctx.id)
   }
 
   return ctx
@@ -160,7 +155,7 @@ export const validatePanel = async ({ artifacts, spec, panelId, inputs, network 
       return
     }
 
-    const ctx = new RootContext(spec.id, {
+    const ctx = new RootContext(generateId(spec), {
       artifacts,
       network,
       callbacks: {
@@ -215,7 +210,7 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, network, 
       return
     }
 
-    const ctx = new RootContext(spec.id, {
+    const ctx = new RootContext(generateId(spec), {
       artifacts,
       network,
       callbacks: {

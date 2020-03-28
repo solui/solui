@@ -36,13 +36,13 @@ export const obfuscate = str => {
 /**
  * Slugify given string.
  *
- * Note that this concatenates a random suffix in each call in order to ensure
+ * Note that by default this concatenates a random suffix in each call in order to ensure
  * slugs are somewhat unique, and as such is not idempotent.
  *
  * @param  {String} str Input
  * @return {String}
  */
-export const slugify = str => slug(`${str} ${Math.random().toString(36).substr(2, 6)}`)
+export const slugify = str => slug(str)
 
 /**
  * Parse given query string.
