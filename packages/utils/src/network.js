@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { ContractFactory, Contract } from '@ethersproject/contracts'
+import { Wallet } from '@ethersproject/wallet'
 
 import { isEthereumAddress } from './validation'
 import { _ } from './lodash'
@@ -240,11 +241,16 @@ export const signMessage = async (node, msg) => {
  * @param {Object} params.abi contract ABI
  * @param {Node} params.node connection
  * @param {String} params.address on-chain address.
+ * @param {Boolean} params.useReadOnlySigner whether to use a read-only signer
  *
  * @return {Object}
  */
-export const getContractAt = async ({ abi, node, address }) => {
-  return new Contract(address, abi, node.getSigner(0))
+export const getContractAt = async ({ abi, node, address, useReadOnlySigner }) => {
+  if (useReadOnlySigner) {
+    return new Contract(address, abi, Wallet.createRandom().connect(node))
+  } else {
+    return new Contract(address, abi, node.getSigner(0))
+  }
 }
 
 /**
