@@ -17,7 +17,6 @@ The general structure of a spec is as follows:
 ```js
 {
   "version": ...,
-  "id": "...",
   "title": "...",
   "description": "...",
   "image": { ... },
@@ -38,20 +37,6 @@ Example:
 ```js
 {
   "version": 1,
-}
-```
-
-**id**
-
-This should be a human-readable and identifier for your spec, e.g. `erc20-manager`. The supported characters are: `A-Z`, `a-z`, `0-9` and `-`. It must be between 3 and 32 characters in length.
-
-If you decide to publish your spec to the solUI cloud then this id will also need to be unique relative to other Dapps you've already published.
-
-Example:
-
-```js
-{
-  "id": "erc20-token-ui",
 }
 ```
 

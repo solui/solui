@@ -55,7 +55,7 @@ export const publish = async ({ spec, artifacts, customIpfs, customFolder }) => 
   const dataToPublish = { spec, artifacts: artifactsToPublish }
 
   if (customFolder) {
-    logTrace(`Publishing Dapp ${spec.id} to folder: ${customFolder} ...`)
+    logTrace(`Publishing Dapp "${spec.title}" to folder: ${customFolder} ...`)
 
     // fetch renderer from IPFS
     const indexPage = await got(`${config.SOLUI_RENDERER_HOST}/index.html`)
@@ -83,7 +83,7 @@ export const publish = async ({ spec, artifacts, customIpfs, customFolder }) => 
 
     logInfo(`Output:`, customFolder)
   } else if (customIpfs) {
-    logTrace(`Publishing Dapp ${spec.id} to custom IPFS: ${customIpfs} ...`)
+    logTrace(`Publishing Dapp "${spec.title}" to custom IPFS: ${customIpfs} ...`)
 
     const [ { hash: cid } ] = await uploadDataToIpfs(
       JSON.stringify(dataToPublish),
@@ -95,7 +95,7 @@ export const publish = async ({ spec, artifacts, customIpfs, customFolder }) => 
     logInfo(`CID:`, cid)
     logInfo(`View:`, `${config.SOLUI_RENDERER_HOST}#l=<YOUR_IPFS_GATEWAY>/${cid}`)
   } else {
-    logTrace(`Publishing Dapp ${spec.id} to solUI cloud ...`)
+    logTrace(`Publishing Dapp "${spec.title}" to solUI cloud ...`)
 
     const client = getApiClient()
 

@@ -31,6 +31,19 @@ export const getNetworkName = id => {
   }
 }
 
+export const getNetworkName = id => {
+  switch (id) {
+    case '1':
+    case '3':
+    case '4':
+    case '5':
+    case '42':
+      return false
+    default:
+      return true
+  }
+}
+
 const normalizeNetworkId = i => `${i}`
 
 const _finalizeNetwork = async network => {
@@ -40,6 +53,7 @@ const _finalizeNetwork = async network => {
 
   network.id = normalizeNetworkId(info.chainId)
   network.name = getNetworkName(network.id)
+  network.isPrivate = isPrivate(network.id)
 
   network.getEtherscanLink = addr => {
     if (etherscanPrefix[network.id]) {
