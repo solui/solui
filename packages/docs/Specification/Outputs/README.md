@@ -105,11 +105,6 @@ Examples:
 ```
 
 
-If a scale is set then the output value becomes clickable such that the user is able to
-cycle through the different formats (both scaled and unscaled):
-
-![Output value](../../images/OutputValue.png)
-
 **transform** _(optional)_
 
 One or more [transformations](../Transformations) to apply to the output value prior to rendering it. If using this then
@@ -132,6 +127,11 @@ Example:
   ]
 }
 ```
+
+If transformations are set set then the output value becomes clickable so that the user is able to
+view both transformed and untransformed values:
+
+![Output value](../../images/OutputValue.png)
 
 ## Deprecated properties
 
