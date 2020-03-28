@@ -103,7 +103,7 @@ If outputting an ETH value (which gets returned as WEI from a contract call) the
 
 This adds a suffix to a string value, leaving a space in between.
 
-Example (`10` -> `10 eth`):
+Example (`"10"` -> `"10 eth"`):
 
 ```js
 {
