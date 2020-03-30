@@ -24,7 +24,7 @@ const StyledButton = styled.button`
 `
 
 /**
- * Render a button.
+ * Render a button that looks like a link.
  * @return {ReactElement}
  */
 const LinkButton = forwardRef(({ children, ...props }, ref) => (

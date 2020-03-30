@@ -42,6 +42,7 @@ export const childAnchors = ({
   hoverBgColor,
   borderBottomColor,
   selected,
+  extraStyles,
 }) => `
   a {
     color: ${selected ? hoverTextColor : textColor};
@@ -57,6 +58,7 @@ export const childAnchors = ({
       background-color: ${hoverBgColor || textColor};
       border-bottom: 1px solid ${borderBottomColor || textColor};
     }
+    ${extraStyles}
   }
 `
 
