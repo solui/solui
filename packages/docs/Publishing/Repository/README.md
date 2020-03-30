@@ -17,7 +17,7 @@ pattern._
 
 ## How it works
 
-When a solUI Dapp is [published to IPFS](../Overview) its resulting unique identifier is a content-addressable hash. And a
+When a solUI Dapp is [published to IPFS](../Publishing/Overview) its resulting unique identifier is a content-addressable hash. And a
 Dapp specification itself contains the ABIs and bytecodes of all the contracts interacted with by the Dapp.
 
 **This means we can perform a reverse lookup from contract to Dapp!**
