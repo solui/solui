@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.16.0](https://github.com/solui/solui/compare/v1.15.0...v1.16.0) (2020-03-30)
+
+
+### Features
+
+* ability to further customize child anchor styles ([a440395](https://github.com/solui/solui/commit/a440395164886d1afb8363e2de513df09ff41748))
+
+
+
+
+
 ## [1.14.2](https://github.com/solui/solui/compare/v1.14.1...v1.14.2) (2020-03-28)
 
 **Note:** Version bump only for package @solui/react
