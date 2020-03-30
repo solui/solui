@@ -28,6 +28,7 @@
   * [Execution replay](DappInterface/ExecutionReplay)
 * [Publishing](Publishing)
   * [Overview](Publishing/Overview)
+  * [On-chain repository](Publishing/Repository)
   * [Authentication](Publishing/Authentication)
   * [Sharing and embedding](Publishing/ShareAndEmbedding)
 * [Processor](Processor)

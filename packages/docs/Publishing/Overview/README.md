@@ -1,5 +1,6 @@
-All Dapps are published to and served from [IPFS](https://ipfs.io), a peer-to-peer decentralized network.
-This ensures that your Dapp will be available as long as at least one IPFS node has a copy of it.
+All Dapps are published to and served from [IPFS](https://ipfs.io), a peer-to-peer decentralized network which uses a
+[content-addressable identifier](https://en.wikipedia.org/wiki/Content-addressable_storage) to ensure Dapp integrity. It also ensures that your Dapp will be available as long as
+at least one IPFS node has a copy of it.
 
 ## Architecture
 
@@ -19,8 +20,9 @@ https://gateway.temporal.cloud/ipns/ui.solui.dev#l=<Your CID>
 
 ## solUI cloud
 
-The default [publish command](../../CommandLine/Publish) will upload your Dapp spec and associated contract artifacts via our backend server to our
-public IPFS cloud (hosted by [Temporal](https://temporal.cloud/)). Our IPFS node will ensure your Dapp always
+The default [publish command](../../CommandLine/Publish) will upload your Dapp spec and associated contract artifacts
+via our backend server to our public IPFS cloud (hosted by [Temporal](https://temporal.cloud/)). Our IPFS node will
+ensure your Dapp always
 remains accessible even if other nodes stop hosting it. Another benefit is that it saves you from having to
 host and manage an IPFS node yourself.
 
@@ -31,6 +33,9 @@ your published data.
 For example, after successfully [publishing  you will receive both a CID and a URL for viewing your Dapp, e.g:
 
 ![Publish to cloud](../../images/PublishCloud.png)
+
+In addition, the publishing process creates an entry in our [on-chain repository](../Repository) that maps the Dapp hash to the hashes of
+the contract bytecodes.
 
 _Note: publishing to our backend involves an [authentication step](../Authentication)_.
 
