@@ -40,6 +40,8 @@ The `type` parameter specifies the transformation type:
 
 * `intToDateString`
 * `intToScaledIntString`
+* `intToHexString`
+* `intToBinaryString`
 * `stringToSpacedSuffixedString`
 
 _Note: transformations are named in the format _`<inputType>...<outputType>`_ for ease of use_.
@@ -98,6 +100,30 @@ Example (`10` -> `"10000"`):
 ```
 
 If outputting an ETH value (which gets returned as WEI from a contract call) then the scale should be set to `-18`.
+
+**Transformation: intToHexString**
+
+This converts a number value to its hexadecimal string representation.
+
+Example (`255` -> `"FF"`):
+
+```js
+{
+  "type": "intToHexString"
+}
+```
+
+**Transformation: intToBinaryString**
+
+This converts a number value to its binary string representation.
+
+Example (`4` -> `"100"`):
+
+```js
+{
+  "type": "intToBinaryString"
+}
+```
 
 **Transformation: stringToSpacedSuffixedString**
 
