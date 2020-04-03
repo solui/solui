@@ -23,8 +23,8 @@ const Items = styled.ul`
   border: 1px solid ${({ theme }) => theme.dropdownBorderColor};
   background-color: ${({ theme }) => theme.dropdownItemBgColor};
   z-index: 3;
-  height: 200px;
-  min-width: 200px;
+  height: 300px;
+  min-width: 300px;
   overflow: scroll;
   position: absolute;
 
@@ -73,6 +73,10 @@ const ItemValue = styled.div`
   ${({ theme }) => theme.font('header')};
 `
 
+const StyledIconButton = styled(IconButton)`
+  background-color: ${({ theme }) => theme.dropdownButtonBgColor};
+`
+
 const Dropdown = ({ className, options, selectedOption, onSelect }) => {
   const [ open, setOpen ] = useState(false)
 
@@ -114,7 +118,7 @@ const Dropdown = ({ className, options, selectedOption, onSelect }) => {
 
   return (
     <Container className={className} ref={containerRef}>
-      <IconButton
+      <StyledIconButton
         icon={{ name: 'caret-down' }}
         tooltip='Toggle dropdown'
         onClick={toggleMenu}

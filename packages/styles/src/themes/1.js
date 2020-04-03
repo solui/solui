@@ -76,6 +76,7 @@ export default {
   tooltipBgColor: black,
   tooltipTextColor: white,
   // dropdown component
+  dropdownButtonBgColor: white,
   dropdownBorderColor: grey,
   dropdownItemBgColor: white,
   dropdownItemTextColor: black,

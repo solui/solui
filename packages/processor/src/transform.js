@@ -4,7 +4,7 @@ import {
   deriveDecimalVal,
 } from '@solui/utils'
 
-const intToDecimal = (value, scale = 1) => {
+const intToDecimal = (value, scale = 0) => {
   const d = deriveDecimalVal(value, { scale })
   if (!d) {
     throw new Error('invalid value')
@@ -20,6 +20,10 @@ export const transformValue = (ctx, value, transform = []) => {
   transform.forEach(t => {
     try {
       switch (t.type) {
+        case 'toMappedString': {
+          value = `${t.options[`${value}`]}`
+          break
+        }
         case 'stringToSpacedSuffixedString': {
           value = `${value} ${t.suffix}`
           break
