@@ -43,6 +43,7 @@ The `type` parameter specifies the transformation type:
 * `intToHexString`
 * `intToBinaryString`
 * `stringToSpacedSuffixedString`
+* `toMappedString`
 
 _Note: transformations are named in the format _`<inputType>...<outputType>`_ for ease of use_.
 
@@ -137,6 +138,28 @@ Example (`"10"` -> `"10 eth"`):
   "suffix": "eth"
 }
 ```
+
+
+**Transformation: toMappedString**
+
+This maps the value to an output string. The value is first stringified before the map lookup. Thus the map keys must be strings.
+
+Example (mapping ints to strings):
+
+```js
+{
+  "type": "toMappedString",
+  "options": {
+    "0": "Created",
+    "1": "Initial sale",
+    "2": "Active",
+    "3": "Matured",
+    "4": "Cancelled"
+  }
+}
+```
+
+
 
 
 
