@@ -1,6 +1,6 @@
 {
 	"name": "@solui/processor",
-	"version": "1.15.0",
+	"version": "1.17.0",
 	"description": "Parser and processor for UI specifications",
 	"publishConfig": {
 		"access": "public"

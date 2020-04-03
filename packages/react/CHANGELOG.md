@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.17.0](https://github.com/solui/solui/compare/v1.16.0...v1.17.0) (2020-04-03)
+
+
+### Features
+
+* mapping transform ([a421191](https://github.com/solui/solui/commit/a421191a554f357307655101c8a2afb562ae69c4))
+
+
+
+
+
 # [1.16.0](https://github.com/solui/solui/compare/v1.15.0...v1.16.0) (2020-03-30)
 
 
