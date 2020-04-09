@@ -19,7 +19,7 @@ export const recoverSigningAccount = (str, signature) => {
  *
  * @param  {*} data Input data. If not a `String` it will transform it via `JSON.stringify()` first.
  * @param {Boolean} omitPrefix If `true` then the the `0x` prefix will be omited from the final hash.
- * @param {Number} maxLen Truncate final output to given no. of characters. If omitted then no truncation occurs.
+ * @param {Number} maxLen If set then truncate final output to given no. of characters.
  * @return {String} Hex hash with the `0x` prefix.
  */
 export const hash = (data, { omitPrefix = false, maxLen = 0 } = {}) => {
