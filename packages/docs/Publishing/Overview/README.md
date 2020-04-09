@@ -58,12 +58,12 @@ You can also [publish to a local folder](../CommandLine/PublishFolder). No commu
 The local folder you publish to will eventually contain 3 files:
 
 ```
-index.html      <- HTML page
-index.js        <- solUI renderer
-dapp.json       <- your Dapp specification + artifacts
+index.html          <- HTML page
+index.js            <- solUI renderer
+dapp-<hash>.json    <- your Dapp specification + artifacts (the <hash> is there to avoid browser cacheing of older versions of the dapp)
 ```
 
- You could then upload this folder to a to static web host such as [Github pages](https://pages.github.com/) and have total control over the hosting of your Dapp.
+You could then upload this folder to a to static web host such as [Github pages](https://pages.github.com/) and have total control over the hosting of your Dapp.
 
 
 

@@ -65,11 +65,13 @@ export const publish = async ({ spec, artifacts, customIpfs, customFolder }) => 
     logTrace(`Ensuring folder exists ...`)
     mkdirp.sync(customFolder)
 
+    const dappFileName = `dapp-${hash(dataToPublish, { omitPrefix: true, maxLen: 10 })}.json`
+
     // put path to Dapp json into html
     const htmlStr = indexPage.body.replace(
       '<script',
       `<script type="text/javascript">
-        window.location.hash='#l=./dapp.json';
+        window.location.hash='#l=./${dappFileName}';
       </script><script`
     )
 
@@ -77,7 +79,7 @@ export const publish = async ({ spec, artifacts, customIpfs, customFolder }) => 
     logTrace(`Writing output ...`)
     fs.writeFileSync(path.join(customFolder, 'index.html'), htmlStr, 'utf-8')
     fs.writeFileSync(path.join(customFolder, 'index.js'), jsScript.body, 'utf-8')
-    fs.writeFileSync(path.join(customFolder, 'dapp.json'), JSON.stringify(dataToPublish), 'utf-8')
+    fs.writeFileSync(path.join(customFolder, dappFileName), JSON.stringify(dataToPublish), 'utf-8')
 
     logTrace('Published successfully!')
 

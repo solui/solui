@@ -18,10 +18,14 @@ export const recoverSigningAccount = (str, signature) => {
  * Calculate Keccak256 hash of given data.
  *
  * @param  {*} data Input data. If not a `String` it will transform it via `JSON.stringify()` first.
+ * @param {Boolean} omitPrefix If `true` then the the `0x` prefix will be omited from the final hash.
+ * @param {Number} maxLen Truncate final output to given no. of characters. If omitted then no truncation occurs.
  * @return {String} Hex hash with the `0x` prefix.
  */
-export const hash = data => {
+export const hash = (data, { omitPrefix = false, maxLen = 0 } = {}) => {
   const str = typeof data !== 'string' ? JSON.stringify(data) : data
   const bytes = toUtf8Bytes(str)
-  return keccak256(bytes)
+  const h = keccak256(bytes)
+  const prefixed = omitPrefix ? h.substr(2) : h
+  return maxLen ? prefixed.substr(0, maxLen) : prefixed
 }
