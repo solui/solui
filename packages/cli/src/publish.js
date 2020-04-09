@@ -59,26 +59,32 @@ export const publish = async ({ spec, artifacts, customIpfs, customFolder }) => 
 
     // fetch renderer from IPFS
     const indexPage = await got(`${config.SOLUI_RENDERER_HOST}/index.html`)
-    const jsScript = await got(`${config.SOLUI_RENDERER_HOST}/index.js`)
+    const { body: rendererJs } = await got(`${config.SOLUI_RENDERER_HOST}/index.js`)
 
     // create folder if necessary
     logTrace(`Ensuring folder exists ...`)
     mkdirp.sync(customFolder)
 
+    const rendererFileName = `renderer-${hash(rendererJs, { omitPrefix: true })}.js`
     const dappFileName = `dapp-${hash(dataToPublish, { omitPrefix: true, maxLen: 10 })}.json`
 
     // put path to Dapp json into html
-    const htmlStr = indexPage.body.replace(
-      '<script',
-      `<script type="text/javascript">
-        window.location.hash='#l=./${dappFileName}';
-      </script><script`
-    )
+    const htmlStr = indexPage.body
+      .replace(
+        '<script',
+        `<script type="text/javascript">
+          window.location.hash='#l=./${dappFileName}';
+        </script><script`
+      )
+      .replace(
+        'src="index.js"',
+        `src="${rendererFileName}"`,
+      )
 
     // write files
     logTrace(`Writing output ...`)
     fs.writeFileSync(path.join(customFolder, 'index.html'), htmlStr, 'utf-8')
-    fs.writeFileSync(path.join(customFolder, 'index.js'), jsScript.body, 'utf-8')
+    fs.writeFileSync(path.join(customFolder, rendererFileName), rendererJs, 'utf-8')
     fs.writeFileSync(path.join(customFolder, dappFileName), JSON.stringify(dataToPublish), 'utf-8')
 
     logTrace('Published successfully!')
