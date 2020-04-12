@@ -1,6 +1,6 @@
 {
 	"name": "@solui/processor",
-	"version": "1.18.2",
+	"version": "1.19.0",
 	"description": "Parser and processor for UI specifications",
 	"publishConfig": {
 		"access": "public"
@@ -52,6 +52,6 @@
 		"eslint-plugin-standard": "^4.0.1"
 	},
 	"dependencies": {
-		"@solui/utils": "^1.18.2"
+		"@solui/utils": "^1.19.0"
 	}
 }
