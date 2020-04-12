@@ -7,9 +7,10 @@ import {
   hash,
   promiseSerial,
   isEthereumAddress,
+  isBytes32,
 } from '@solui/utils'
 
-import { getDeployedBytecode, isArrayFieldType } from './utils'
+import { getDeployedBytecode, isArrayFieldType, extractScalarTypeFromArrayFieldType } from './utils'
 import { createArrayItemContextFrom } from './context'
 
 
@@ -207,7 +208,32 @@ export const checkValueIsRelatedToOtherFieldValue = async (ctx, value, { field }
 }
 
 const _validateSingleValue = async (ctx, value, config) => {
-  const promises = config.validation.map(({ type, ...vConfig }) => {
+  // basic validations!
+  switch (config.type) {
+    case 'address': {
+      if (!isEthereumAddress(value)) {
+        ctx.recordError('must be an address')
+        return
+      }
+      break
+    }
+    case 'int': {
+      if (!deriveDecimalVal(value, { scale: config.scale })) {
+        ctx.recordError('must be a number')
+        return
+      }
+      break
+    }
+    case 'bytes32': {
+      if (!isBytes32(value)) {
+        ctx.recordError('must be a bytes32 value (0x...)')
+        return
+      }
+      break
+    }
+  }
+
+  const promises = _.get(config, 'validation', []).map(({ type, ...vConfig }) => {
     switch (type) {
       case 'allowedTypes':
         return checkAddressIsValid(ctx, value, { allowedTypes: vConfig })
@@ -235,7 +261,7 @@ const _validateArrayValue = async (ctx, value, config) => {
     ctx.recordError('must be an array')
     return
   } else {
-    const promises = config.validation.map(({ type, ...vConfig }) => {
+    const promises = _.get(config, 'validation', []).map(({ type, ...vConfig }) => {
       switch (type) {
         case 'listSize':
           return checkArrayLengthIsValid(ctx, value, { length: vConfig })
@@ -248,16 +274,16 @@ const _validateArrayValue = async (ctx, value, config) => {
 
     await promiseSerial(value, async (v, i) => {
       const vCtx = createArrayItemContextFrom(ctx, i)
-      await _validateSingleValue(vCtx, v, config)
+
+      await _validateSingleValue(vCtx, v, {
+        ...config,
+        type: extractScalarTypeFromArrayFieldType(config.type)
+      })
     })
   }
 }
 
 export const validateInputValue = async (ctx, value, config) => {
-  if (!_.get(config.validation, 'length')) {
-    return
-  }
-
   if (isArrayFieldType(config.type)) {
     await _validateArrayValue(ctx, value, config)
   } else {
