@@ -21,6 +21,7 @@ export const getTypeDefs = () => gql`
     cid: String!
     title: String!
     description: String!
+    production: Boolean!
     created: DateTime!
     bytecodeHashes: [String]!
   }

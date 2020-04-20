@@ -23,6 +23,7 @@ import {
   faExpandAlt,
   faCaretDown,
   faCheckCircle,
+  faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
 
 config.autoAddCss = false
@@ -46,6 +47,7 @@ library.add(
   faExpandAlt,
   faCaretDown,
   faCheckCircle,
+  faTimesCircle,
 )
 
 const MAP = {
@@ -68,6 +70,7 @@ const MAP = {
     'expand-alt',
     'caret-down',
     'check-circle',
+    'times-circle',
   ],
 }
 
