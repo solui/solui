@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.20.0](https://github.com/solui/solui/compare/v1.19.1...v1.20.0) (2020-04-20)
+
+
+### Features
+
+* added 'production' boolean flag - [#47](https://github.com/solui/solui/issues/47) ([43db7e4](https://github.com/solui/solui/commit/43db7e4b5c28f827d14409945a470ba7bc040c5e))
+
+
+
+
+
 # [1.17.0](https://github.com/solui/solui/compare/v1.16.0...v1.17.0) (2020-04-03)
 
 

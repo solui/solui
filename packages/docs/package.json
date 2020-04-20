@@ -1,7 +1,7 @@
 {
   "name": "@solui/docs",
   "private": true,
-  "version": "1.18.1",
+  "version": "1.20.0",
   "description": "Documentation for solUI.",
   "keywords": [
     "solui",

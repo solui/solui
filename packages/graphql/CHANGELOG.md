@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.20.0](https://github.com/solui/solui/compare/v1.19.1...v1.20.0) (2020-04-20)
+
+
+### Features
+
+* add times-circle icon ([2548a48](https://github.com/solui/solui/commit/2548a481629f0c6263d109a8cd2578c6348b465e))
+
+
+
+
+
 ## [1.19.1](https://github.com/solui/solui/compare/v1.19.0...v1.19.1) (2020-04-13)
 
 **Note:** Version bump only for package @solui/graphql
