@@ -248,6 +248,7 @@ export const signMessage = async (node, msg) => {
 export const getContractAt = async ({ abi, node, address, useReadOnlySigner }) => {
   if (useReadOnlySigner) {
     return new Contract(address, abi, Wallet.createRandom().connect(node))
+    return c
   } else {
     return new Contract(address, abi, node.getSigner(0))
   }

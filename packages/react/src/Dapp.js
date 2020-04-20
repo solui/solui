@@ -33,7 +33,11 @@ const StyledError = styled(ErrorBox)`
 `
 
 const StyledMainnetWarning = styled(MainnetWarning)`
-  margin: 1rem 2rem 0;
+  margin: 1rem 0 0;
+
+  ${media.when({ minW: 'mobile' })} {
+    max-width: 600px;
+  }
 `
 
 const Preamble = styled.div`

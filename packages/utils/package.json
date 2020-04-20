@@ -53,10 +53,10 @@
   },
   "dependencies": {
     "@ethersproject/address": "=5.0.0-beta.134",
-    "@ethersproject/contracts": "=5.0.0-beta.146",
+    "@ethersproject/contracts": "=5.0.0-beta.148",
     "@ethersproject/hash": "=5.0.0-beta.133",
     "@ethersproject/keccak256": "=5.0.0-beta.131",
-    "@ethersproject/providers": "=5.0.0-beta.160",
+    "@ethersproject/providers": "=5.0.0-beta.162",
     "@ethersproject/strings": "=5.0.0-beta.136",
     "@ethersproject/transactions": "=5.0.0-beta.134",
     "@ethersproject/wallet": "=5.0.0-beta.139",
