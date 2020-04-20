@@ -38,13 +38,13 @@ const Msg = styled.div`
  * Render an alert.
  * @return {ReactElement}
  */
-const AlertBox = ({ className, msg }) => {
+const AlertBox = ({ className, msg, children }) => {
   return (
     <Container className={className}>
       <Div>
         <StyledIcon name='info' />
         <Details>
-          <Msg>{msg}</Msg>
+          <Msg>{msg || children}</Msg>
         </Details>
       </Div>
     </Container>

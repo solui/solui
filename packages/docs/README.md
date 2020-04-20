@@ -26,6 +26,7 @@
 * [Dapp interface](DappInterface)
   * [Menu](DappInterface/Menu)
   * [Execution replay](DappInterface/ExecutionReplay)
+  * [Mainnet warning](DappInterface/Warning)
 * [Publishing](Publishing)
   * [Overview](Publishing/Overview)
   * [On-chain repository](Publishing/Repository)

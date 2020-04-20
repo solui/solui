@@ -60,6 +60,7 @@ const PanelContainer = styled.li`
 export const Interface = ({
   onExecutePanel,
   onValidatePanel,
+  showMainnetWarning,
   title,
   description,
   image,
@@ -91,7 +92,8 @@ export const Interface = ({
               onValidate: onValidatePanel,
               onExecute: onExecutePanel,
               onClick: onSelectPanel,
-              expanded: selectedPanel === panel.id
+              expanded: selectedPanel === panel.id,
+              showMainnetWarning,
             })}
           </PanelContainer>
         ))}

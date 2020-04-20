@@ -14,6 +14,7 @@ import Image from './Image'
 import Layout from './Layout'
 import LinkButton from './LinkButton'
 import LoadingIcon from './LoadingIcon'
+import MainnetWarning from './MainnetWarning'
 import MaxContentWidth from './MaxContentWidth'
 import Menu from './Menu'
 import NetworkInfoLabel from './NetworkInfoLabel'
@@ -42,6 +43,7 @@ export {
   Layout,
   LinkButton,
   LoadingIcon,
+  MainnetWarning,
   MaxContentWidth,
   Menu,
   NetworkInfoLabel,

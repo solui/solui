@@ -6,7 +6,7 @@ import { flex, boxShadow, childAnchors } from '@solui/styles'
 
 import { InterfaceBuilder } from './Interface'
 import ErrorBox from './ErrorBox'
-import Identicon from './Identicon'
+import MainnetWarning from './MainnetWarning'
 import Progress from './Progress'
 import Button from './Button'
 import NetworkInfoLabel from './NetworkInfoLabel'
@@ -30,6 +30,10 @@ const StyledProgress = styled(Progress)`
 
 const StyledError = styled(ErrorBox)`
   margin: 1rem;
+`
+
+const StyledMainnetWarning = styled(MainnetWarning)`
+  margin: 1rem 2rem 0;
 `
 
 const Preamble = styled.div`
@@ -84,7 +88,13 @@ const Dapp = ({
   const [buildResult, setBuildResult] = useState()
 
   const [refreshCounter, setRefreshCounter] = useState(0)
+
   const account = useMemo(() => _.get(network, 'account'), [ network, refreshCounter ])
+
+  const showMainnetWarning = useMemo(
+    () => (_.get(network, 'id') == '1') && !_.get(spec, 'production'),
+    [ spec, network ]
+  )
 
   // validate a panel's inputs
   const onValidatePanel = useCallback(async ({ panelId, inputs }) => {
@@ -173,12 +183,19 @@ const Dapp = ({
         <TopBar>
           <NetworkInfoLabel network={network} />
         </TopBar>
+        {showMainnetWarning ? (
+          <StyledMainnetWarning>
+            This Dapp has NOT been certified by the author for production use on the Ethereum Mainnet.
+            Please be careful.
+          </StyledMainnetWarning>
+        ) : null}
         {/* eslint-disable-next-line no-nested-ternary */}
         {(!buildResult) ? <StyledProgress>Rendering...</StyledProgress> : (
           buildResult.error ? <StyledError error={buildResult.error} /> : (
             buildResult.interface.buildContent({
               onValidatePanel,
               onExecutePanel,
+              showMainnetWarning,
             })
           )
         )}

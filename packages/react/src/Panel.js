@@ -13,6 +13,7 @@ import Result from './Result'
 import Tx from './Tx'
 import Icon from './Icon'
 import Button from './Button'
+import MainnetWarning from './MainnetWarning'
 import IconButton from './IconButton'
 import ExecutionHistoryModal from './ExecutionHistoryModal'
 
@@ -91,6 +92,10 @@ const HistoryButton = styled(IconButton)`
   margin-left: 1rem;
 `
 
+const StyledMainnetWarning = styled(MainnetWarning)`
+  margin-top: 1.5rem;
+`
+
 /**
  * Render a UI panel.
  * @return {ReactElement}
@@ -100,6 +105,7 @@ export const Panel = ({
   onClick,
   onExecute,
   onValidate,
+  showMainnetWarning,
   id: panelId,
   title,
   description,
@@ -243,6 +249,9 @@ export const Panel = ({
           <StyledTx tx={tx} />
         ) : null}
 
+        {showMainnetWarning ? (
+          <StyledMainnetWarning />
+        ) : null}
       </Content>
     </Container>
   )

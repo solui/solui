@@ -21,6 +21,7 @@ The general structure of a spec is as follows:
   "description": "...",
   "image": { ... },
   "aboutUrl": "...",
+  "production": "...",
   "constants": { ... },
   "panels": [ ... ]
 }
@@ -100,6 +101,22 @@ Example:
 ```js
 {
   "aboutUrl": "https://github.com/solui/demo"
+}
+```
+
+
+**production** _(optional)_
+
+By default a Dapp is considered unsafe for production use and when used against the Ethereum mainnet a
+warning will be displayed as such:
+
+![Warning](../../images/Warning.png)
+
+To disable this warning and mark a Dapp as safe for production use on Mainnet, set this property to `true`:
+
+```js
+{
+  "production": true
 }
 ```
 

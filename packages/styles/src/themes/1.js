@@ -154,6 +154,11 @@ export default {
   errorBgColor: opacify(red, 0.3),
   errorIconColor: red,
   errorTextColor: black,
+  // mainnet warning component
+  mainnetWarningBgColor: transparent,
+  mainnetWarningBorderColor: red,
+  mainnetWarningIconColor: red,
+  mainnetWarningTextColor: black,
   // progress component
   progressBgColor: opacify(yellow, 0.2),
   progressIconColor: yellow,
