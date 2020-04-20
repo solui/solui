@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.20.2](https://github.com/solui/solui/compare/v1.20.1...v1.20.2) (2020-04-20)
+
+
+### Bug Fixes
+
+* bug ([e794059](https://github.com/solui/solui/commit/e794059bcf58c5253efbd5089aa17dbb801436e7))
+
+
+
+
+
 ## [1.20.1](https://github.com/solui/solui/compare/v1.20.0...v1.20.1) (2020-04-20)
 
 
