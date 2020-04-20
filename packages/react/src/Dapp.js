@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from '@emotion/styled'
 import { _, createErrorWithDetails } from '@solui/utils'
-import { flex, boxShadow, childAnchors } from '@solui/styles'
+import { flex, media, boxShadow, childAnchors } from '@solui/styles'
 
 import { InterfaceBuilder } from './Interface'
 import ErrorBox from './ErrorBox'
