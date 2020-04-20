@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.20.3](https://github.com/solui/solui/compare/v1.20.2...v1.20.3) (2020-04-20)
+
+
+### Bug Fixes
+
+* styling of mainnet warning block ([f3ce8c4](https://github.com/solui/solui/commit/f3ce8c40d9596b1ac9bd35ff2a3e3644f28b5620))
+
+
+
+
+
 ## [1.20.2](https://github.com/solui/solui/compare/v1.20.1...v1.20.2) (2020-04-20)
 
 
