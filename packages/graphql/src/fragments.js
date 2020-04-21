@@ -96,6 +96,7 @@ export const ReleaseFragment = gql`
     description
     created
     bytecodeHashes
+    production
   }
 `
 
