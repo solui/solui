@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.20.5](https://github.com/solui/solui/compare/v1.20.4...v1.20.5) (2020-04-21)
+
+
+### Bug Fixes
+
+* add missin property to release graphql fragment ([ecb7289](https://github.com/solui/solui/commit/ecb7289cc4ebd17aa508c7292849e7f9610d884e))
+
+
+
+
+
 ## [1.20.4](https://github.com/solui/solui/compare/v1.20.3...v1.20.4) (2020-04-21)
 
 
