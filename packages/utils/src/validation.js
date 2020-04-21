@@ -1,7 +1,14 @@
 import validator from 'validator'
-import { isAddress } from '@ethersproject/address'
+import { ethers } from 'ethers'
 
-export const isEthereumAddress = isAddress
+export const isEthereumAddress = address => {
+  try {
+    ethers.utils.getAddress(address)
+  } catch (e) {
+    return false
+  }
+  return true
+}
 
 /**
  * Check if given value represents a valid email address.

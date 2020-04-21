@@ -1,7 +1,5 @@
 import axios from 'axios'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
-import { ContractFactory, Contract } from '@ethersproject/contracts'
-import { Wallet } from '@ethersproject/wallet'
+import { ethers } from 'ethers'
 
 import { isEthereumAddress } from './validation'
 import { _ } from './lodash'
@@ -105,7 +103,7 @@ export const getNodeConnection = async url => {
   })
 
   if (id) {
-    return new JsonRpcProvider(url)
+    return new ethers.providers.JsonRpcProvider(url)
   }
 
   throw new Error(`Unable to connect to network: ${url}`)
@@ -119,7 +117,7 @@ export const getNodeConnection = async url => {
  * @return {Promise<NetworkInfo>}
  */
 export const getNetworkInfoFromWeb3 = async web3 => {
-  const network = { node: new Web3Provider(web3) }
+  const network = { node: new ethers.providers.Web3Provider(web3) }
 
   await _finalizeNetwork(network)
 
@@ -135,7 +133,7 @@ export const getNetworkInfoFromWeb3 = async web3 => {
  * @return {Promise<NetworkInfo>}
  */
 export const getNetworkInfoFromUrl = async url => {
-  const network = { node: new JsonRpcProvider(url) }
+  const network = { node: new ethers.providers.JsonRpcProvider(url) }
 
   await _finalizeNetwork(network)
 
@@ -170,7 +168,7 @@ export const getNetworkInfoFromGlobalScope = async () => {
     }
 
     if (GLOBAL_SCOPE.ethereum) {
-      network.node = new Web3Provider(GLOBAL_SCOPE.ethereum)
+      network.node = new ethers.providers.Web3Provider(GLOBAL_SCOPE.ethereum)
       // See https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
       if (typeof _.get(GLOBAL_SCOPE.ethereum, 'enable') === 'function') {
         extraProps.askWalletOwnerForPermissionToViewAccounts =
@@ -190,7 +188,7 @@ export const getNetworkInfoFromGlobalScope = async () => {
         })
       }
     } else if (GLOBAL_SCOPE.web3 && GLOBAL_SCOPE.web3.currentProvider) {
-      network.node = new Web3Provider(GLOBAL_SCOPE.web3.currentProvider)
+      network.node = new ethers.providers.Web3Provider(GLOBAL_SCOPE.web3.currentProvider)
     } else {
       // try local node
       try {
@@ -247,10 +245,9 @@ export const signMessage = async (node, msg) => {
  */
 export const getContractAt = async ({ abi, node, address, useReadOnlySigner }) => {
   if (useReadOnlySigner) {
-    return new Contract(address, abi, Wallet.createRandom().connect(node))
-    return c
+    return new ethers.Contract(address, abi, node)
   } else {
-    return new Contract(address, abi, node.getSigner(0))
+    return new ethers.Contract(address, abi, node.getSigner(0))
   }
 }
 
@@ -266,7 +263,7 @@ export const getContractAt = async ({ abi, node, address, useReadOnlySigner }) =
  * @return {Object}
  */
 export const getContractDeployer = async ({ abi, bytecode, node }) => {
-  return new ContractFactory(abi, bytecode, node.getSigner(0))
+  return new ethers.ContractFactory(abi, bytecode, node.getSigner(0))
 }
 
 /**

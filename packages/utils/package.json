@@ -52,17 +52,10 @@
     "eslint-plugin-standard": "^4.0.1"
   },
   "dependencies": {
-    "@ethersproject/address": "=5.0.0-beta.134",
-    "@ethersproject/contracts": "=5.0.0-beta.148",
-    "@ethersproject/hash": "=5.0.0-beta.133",
-    "@ethersproject/keccak256": "=5.0.0-beta.131",
-    "@ethersproject/providers": "=5.0.0-beta.162",
-    "@ethersproject/strings": "=5.0.0-beta.136",
-    "@ethersproject/transactions": "=5.0.0-beta.134",
-    "@ethersproject/wallet": "=5.0.0-beta.139",
     "axios": "^0.19.0",
     "date-fns": "^2.3.0",
     "decimal.js": "^10.2.0",
+    "ethers": "^4.0.46",
     "ipfs-http-client": "https://github.com/solui/js-ipfs-http-client.git#b88027d98b0a8613e5cbfc7f86fed76f19ecda71",
     "lodash.camelcase": "^4.3.0",
     "lodash.foreach": "^4.5.0",

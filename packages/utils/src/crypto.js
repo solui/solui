@@ -1,7 +1,4 @@
-import { hashMessage } from '@ethersproject/hash'
-import { recoverAddress } from '@ethersproject/transactions'
-import { toUtf8Bytes } from '@ethersproject/strings'
-import { keccak256 } from '@ethersproject/keccak256'
+import { ethers } from 'ethers'
 
 /**
  * Get account which signed given string to obtain given signature.
@@ -11,7 +8,7 @@ import { keccak256 } from '@ethersproject/keccak256'
  * @return {String} Ethereum address.
  */
 export const recoverSigningAccount = (str, signature) => {
-  return recoverAddress(hashMessage(str), signature)
+  return ethers.utils.recoverAddress(ethers.utils.hashMessage(str), signature)
 }
 
 /**
@@ -24,8 +21,8 @@ export const recoverSigningAccount = (str, signature) => {
  */
 export const hash = (data, { omitPrefix = false, maxLen = 0 } = {}) => {
   const str = typeof data !== 'string' ? JSON.stringify(data) : data
-  const bytes = toUtf8Bytes(str)
-  const h = keccak256(bytes)
+  const bytes = ethers.utils.toUtf8Bytes(str)
+  const h = ethers.utils.keccak256(bytes)
   const prefixed = omitPrefix ? h.substr(2) : h
   return maxLen ? prefixed.substr(0, maxLen) : prefixed
 }
