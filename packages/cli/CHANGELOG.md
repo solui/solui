@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.20.4](https://github.com/solui/solui/compare/v1.20.3...v1.20.4) (2020-04-21)
+
+
+### Bug Fixes
+
+* network issues resolved by downgrading to ethers v4 ([47e2071](https://github.com/solui/solui/commit/47e20712cdc1caafbe3b9b588e370f35afbf3fdb))
+
+
+
+
+
+## [1.20.3](https://github.com/solui/solui/compare/v1.20.2...v1.20.3) (2020-04-20)
+
+**Note:** Version bump only for package @solui/cli
+
+
+
+
+
+## [1.20.2](https://github.com/solui/solui/compare/v1.20.1...v1.20.2) (2020-04-20)
+
+**Note:** Version bump only for package @solui/cli
+
+
+
+
+
+## [1.20.1](https://github.com/solui/solui/compare/v1.20.0...v1.20.1) (2020-04-20)
+
+**Note:** Version bump only for package @solui/cli
+
+
+
+
+
 # [1.20.0](https://github.com/solui/solui/compare/v1.19.1...v1.20.0) (2020-04-20)
 
 **Note:** Version bump only for package @solui/cli

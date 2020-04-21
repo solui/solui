@@ -89,8 +89,8 @@ const getCategory = name => Object.keys(MAP).find(c => MAP[c].includes(name))
  *
  * @return {ReactElement}
  */
-const Icon = forwardRef(({ className, name, ...props }, ref) => (
-  <FontAwesomeIcon className={className} icon={[ getCategory(name), name ]} {...props} />
+const Icon = forwardRef(({ name, ...props }, ref) => (
+  <FontAwesomeIcon ref={ref} icon={[ getCategory(name), name ]} {...props} />
 ))
 
 export default Icon

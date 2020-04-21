@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from '@emotion/styled'
 import { _, createErrorWithDetails } from '@solui/utils'
-import { flex, boxShadow, childAnchors } from '@solui/styles'
+import { flex, media, boxShadow, childAnchors } from '@solui/styles'
 
 import { InterfaceBuilder } from './Interface'
 import ErrorBox from './ErrorBox'
@@ -33,7 +33,12 @@ const StyledError = styled(ErrorBox)`
 `
 
 const StyledMainnetWarning = styled(MainnetWarning)`
-  margin: 1rem 2rem 0;
+  margin: 1rem auto 0;
+  max-width: 80%;
+
+  ${media.when({ minW: 'mobile' })} {
+    max-width: 550px;
+  }
 `
 
 const Preamble = styled.div`

@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.20.4](https://github.com/solui/solui/compare/v1.20.3...v1.20.4) (2020-04-21)
+
+
+### Bug Fixes
+
+* network issues resolved by downgrading to ethers v4 ([47e2071](https://github.com/solui/solui/commit/47e20712cdc1caafbe3b9b588e370f35afbf3fdb))
+
+
+
+
+
+## [1.20.3](https://github.com/solui/solui/compare/v1.20.2...v1.20.3) (2020-04-20)
+
+
+### Bug Fixes
+
+* styling of mainnet warning block ([f3ce8c4](https://github.com/solui/solui/commit/f3ce8c40d9596b1ac9bd35ff2a3e3644f28b5620))
+
+
+
+
+
+## [1.20.2](https://github.com/solui/solui/compare/v1.20.1...v1.20.2) (2020-04-20)
+
+
+### Bug Fixes
+
+* bug ([e794059](https://github.com/solui/solui/commit/e794059bcf58c5253efbd5089aa17dbb801436e7))
+
+
+
+
+
+## [1.20.1](https://github.com/solui/solui/compare/v1.20.0...v1.20.1) (2020-04-20)
+
+
+### Bug Fixes
+
+* warning message stretching beyond main limit ([686c16e](https://github.com/solui/solui/commit/686c16e11d2f2cdc3889a068b85a6a3769844f9a))
+
+
+
+
+
 # [1.20.0](https://github.com/solui/solui/compare/v1.19.1...v1.20.0) (2020-04-20)
 
 
