@@ -9,6 +9,7 @@ cd ../styles && yarn build
 cd ../react && yarn build
 cd ../processor && yarn build
 cd ../react && yarn build
+cd ../graphql && yarn build
 cd ../cli && yarn build
 
 cd ../..

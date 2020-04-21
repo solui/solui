@@ -94,9 +94,9 @@ export const ReleaseFragment = gql`
     cid
     title
     description
-    production
     created
     bytecodeHashes
+    production
   }
 `
 
