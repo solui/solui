@@ -1,6 +1,6 @@
 {
   "name": "@solui/graphql",
-  "version": "1.20.6",
+  "version": "1.20.7",
   "description": "GraphQL utilities for solUI",
   "publishConfig": {
     "access": "public"

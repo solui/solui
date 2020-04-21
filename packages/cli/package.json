@@ -1,7 +1,7 @@
 {
 	"name": "@solui/cli",
 	"description": "Generate Dapps for smart contracts",
-	"version": "1.20.6",
+	"version": "1.20.7",
 	"license": "AGPL-3.0-or-later",
 	"bin": {
 		"solui": "./dist/solui"
@@ -18,9 +18,9 @@
 		"@emotion/styled": "^10.0.15",
 		"@fortawesome/fontawesome-svg-core": "^1.2.25",
 		"@hot-loader/react-dom": "^16.9.0",
-		"@solui/graphql": "^1.20.6",
+		"@solui/graphql": "^1.20.7",
 		"@solui/processor": "^1.20.5",
-		"@solui/react": "^1.20.6",
+		"@solui/react": "^1.20.7",
 		"@solui/utils": "^1.20.5",
 		"axios": "^0.19.0",
 		"babel-loader": "^8.0.6",
