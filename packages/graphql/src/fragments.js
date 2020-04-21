@@ -100,6 +100,7 @@ export const ReleaseFragment = gql`
   }
 `
 
+
 /**
  * Auth token result.
  * @type {Fragment}
