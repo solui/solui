@@ -5,7 +5,7 @@ smart contract bytecode hashes. It is located on the Etherum mainnet at:
 
 To interact with the contract use the following Dapp:
 
-* https://solui.dev/ui/QmPKot3PdLSvuF3Aa3roxRhSsJxbWWK5jdsAw1YYYr8KBQ
+* https://solui.dev/ui/QmZVBNYNqCrJhXrPY6bwa836L3ahZogKrdGVBfdPiTQL5S
 
 The low-level smart contract interface is defined here:
 
