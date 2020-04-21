@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.20.6](https://github.com/solui/solui/compare/v1.20.5...v1.20.6) (2020-04-21)
+
+**Note:** Version bump only for package @solui/embed-client
+
+
+
+
+
 ## [1.20.5](https://github.com/solui/solui/compare/v1.20.4...v1.20.5) (2020-04-21)
 
 **Note:** Version bump only for package @solui/embed-client
