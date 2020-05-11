@@ -237,13 +237,15 @@ export const executePanel = async ({ artifacts, spec, panelId, inputs, network, 
             return null
           }
         },
-        sendTransaction: async (id, { contract, abi, method, address, args, successMessage, failureMessage }) => {
+        sendTransaction: async (id, { contract, abi, method, address, args, ethValue, successMessage, failureMessage }) => {
           try {
             await node.askWalletOwnerForPermissionToViewAccounts()
 
             const contractInstance = await getContractAt({ abi, node, address })
 
-            const tx = await (contractInstance[method](...args))
+            const tx = await (contractInstance[method](...args, {
+              value: ethValue
+            }))
 
             reportTransactionProgress(progressCallback, tx)
 

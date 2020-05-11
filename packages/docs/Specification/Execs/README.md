@@ -19,6 +19,7 @@ This allows for the output of an earlier task to be re-used as the input argumen
           "address": "...",
           "method": "...",
           "args": { ... },
+          "transferAmount": "...",
           "saveResultAsInput": "..."
           "successMessage": "...",
           "failureMessage": "..."
@@ -223,6 +224,39 @@ Example mapping from result of previous execution:
         "_address": "@input[newContractAddress]",
       }
       ...,
+    }
+  ]
+}
+```
+
+**transferAmount** _(optional)_
+
+The amount of ETH to send along with a transaction (equivalent to [msg.value](https://ethereum.stackexchange.com/questions/43362/what-is-msg-value)).
+
+This property only applies when the execution `type` is `send` and should only be used when calling [payable](https://medium.com/@rsripathi781/6-payable-functions-in-solidity-smartcontract-ethereum-d2535e346dc1) functions.
+
+It can be specified as one of:
+
+  * Name of a panel [input field](../Inputs).
+  * A named [constant](../Constants).
+  * An [environment variable](../EnvVars).
+  * The result of a previous execution task (see `saveResultAs` below).
+  * A fixed value.
+
+_Note: The processor will automatically convert the resolved value to its final hexadecimal representation prior to sending the transaction_.
+
+Example (specified as a user input field):
+
+```js
+{
+  "inputs": [
+    { name: "amount", ... },
+    ...
+  ],
+  "execs": [
+    {
+      ...,
+      "transferAmount": "@input[amount]"
     }
   ]
 }

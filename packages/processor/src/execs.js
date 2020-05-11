@@ -1,4 +1,4 @@
-import { _, promiseSerial } from '@solui/utils'
+import { _, promiseSerial, deriveDecimalVal } from '@solui/utils'
 
 import { resolveValue, methodArgExists, getBytecode, getAbi, getMethod } from './utils'
 import { createChildContextFrom } from './context'
@@ -169,7 +169,7 @@ const EXECS = {
         return
       }
 
-      const { contract, method, address, saveResultAsInput } = config
+      const { contract, method, address, transferAmount, saveResultAsInput } = config
 
       if (saveResultAsInput) {
         ctx.recordError(`must not save its result into a param`)
@@ -185,6 +185,18 @@ const EXECS = {
         ctx.recordError(`contract address value is invalid: ${address}`)
       }
 
+      let ethValue = '0x0'
+      try {
+        if (transferAmount) {
+          const ev = deriveDecimalVal(resolveValue(ctx, transferAmount))
+          if (ev) {
+            ethValue = ev.toHex()
+          }
+        }
+      } catch (err) {
+        ctx.recordError(`transferAmount invalid: ${err.message}`)
+      }
+
       // do it!
       await ctx.callbacks().sendTransaction(
         ctx.id, {
@@ -192,6 +204,7 @@ const EXECS = {
           abi,
           method,
           args,
+          ethValue,
           address: contractAddress,
         }
       )
