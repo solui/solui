@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.21.0](https://github.com/solui/solui/compare/v1.20.8...v1.21.0) (2020-05-11)
+
+
+### Features
+
+* enable sending ETH to payable functions ([2a56839](https://github.com/solui/solui/commit/2a568398e1c921f515e2eb37e998446430ff199d))
+
+
+
+
+
 ## [1.20.8](https://github.com/solui/solui/compare/v1.20.7...v1.20.8) (2020-04-21)
 
 **Note:** Version bump only for package root

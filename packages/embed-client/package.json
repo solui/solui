@@ -1,7 +1,7 @@
 {
   "name": "@solui/embed-client",
   "private": true,
-  "version": "1.20.8",
+  "version": "1.21.0",
   "description": "solUI embeddable client",
   "main": "src/ui.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "@emotion/core": "^10.0.5",
     "@emotion/styled": "^10.0.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
-    "@solui/processor": "^1.20.5",
+    "@solui/processor": "^1.21.0",
     "@solui/react": "^1.20.8",
     "@solui/styles": "^1.20.5",
     "@solui/utils": "^1.20.5",
