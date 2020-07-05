@@ -36,7 +36,7 @@
   * [Overview](Processor/Overview)
   * [Context](Processor/Context)
 * [Advanced usage](AdvancedUsage)
-  * [React Native](AdvancedUsage/ReactNative)
+  * [Mobile Native](AdvancedUsage/MobileNative)
   * [Headless testing](AdvancedUsage/HeadlessTesting)
 
 
