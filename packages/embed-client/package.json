@@ -8,7 +8,7 @@
     "build": "rm -rf ./build && webpack",
     "serve": "serve ./build",
     "publish:local": "./scripts/uploadToLocalIpfs.js",
-    "publish:cloud": "./scripts/uploadToTemporalIpfs.js"
+    "publish:cloud": "./scripts/uploadToCloudIpfs.js"
   },
   "dependencies": {
     "@babel/core": "^7.3.4",

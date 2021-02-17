@@ -44,8 +44,8 @@ To publish the code to local IPFS:
 npm run publish:local
 ```
 
-To publish to Temporal IPFS:
+To publish to cloud IPFS:
 
 ```
-TEMPORAL_PASSWORD='...password...' npm run publish:cloud
+PINATA_API_KEY='..' PINATA_SECRET_KEY='...' npm run publish:cloud
 ```

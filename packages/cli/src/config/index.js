@@ -48,7 +48,7 @@ const env = envalid.cleanEnv(
   {
     SOLUI_REPO_HOST: envalid.str({ default: 'https://solui.dev' }),
     SOLUI_TOKEN: envalid.str({ default: '' }),
-    SOLUI_RENDERER_HOST: envalid.str({ default: 'https://gateway.temporal.cloud/ipns/ui.solui.dev' }),
+    SOLUI_RENDERER_HOST: envalid.str({ default: 'https://gateway.pinata.cloud/ipns/ui.solui.dev' }),
   },
 )
 

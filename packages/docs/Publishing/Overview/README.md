@@ -7,7 +7,7 @@ at least one IPFS node has a copy of it.
 A standalone version of the solUI renderer is published to IPFS at:
 
 ```
-https://gateway.temporal.cloud/ipns/ui.solui.dev
+https://gateway.pinata.cloud/ipns/ui.solui.dev
 ```
 
 Your Dapp spec and associated contract artifacts, when published, will return an
@@ -15,13 +15,13 @@ IPFS _CID_ (a unique hash representing your content). To then view your Dapp you
 standalone renderer as follows:
 
 ```
-https://gateway.temporal.cloud/ipns/ui.solui.dev#l=<Your CID>
+https://gateway.pinata.cloud/ipns/ui.solui.dev#l=<Your CID>
 ```
 
 ## solUI cloud
 
 The default [publish command](../../CommandLine/Publish) will upload your Dapp spec and associated contract artifacts
-via our backend server to our public IPFS cloud (hosted by [Temporal](https://temporal.cloud/)). Our IPFS node will
+via our backend server to our public IPFS cloud (hosted by [Pinata](https://pinata.cloud/)). Our IPFS node will
 ensure your Dapp always
 remains accessible even if other nodes stop hosting it. Another benefit is that it saves you from having to
 host and manage an IPFS node yourself.
@@ -48,7 +48,7 @@ You can still use our IPFS-hosted viewer to render your Dapp by simplifying spec
 For example, if your Dapp is hosted at https://ipfs.yourdomain.com/QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY then render it using:
 
 ```
-https://gateway.temporal.cloud/ipns/ui.solui.dev/#l=https://ipfs.yourdomain.com/QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY
+https://gateway.pinata.cloud/ipns/ui.solui.dev/#l=https://ipfs.yourdomain.com/QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY
 ```
 
 ## Local folder

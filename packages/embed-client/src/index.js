@@ -58,7 +58,7 @@ const Bootstrap = ({ hash }) => {
       }
 
       if (!q.l.startsWith('http') && !q.l.startsWith('.')) {
-        q.l = `https://gateway.temporal.cloud/ipfs/${q.l}`
+        q.l = `https://gateway.pinata.cloud/ipfs/${q.l}`
       }
 
       const { l, ...s } = q

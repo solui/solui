@@ -1,7 +1,7 @@
 Published Dapps can be embedded in any webpage as using an `iframe` HTML tag. For example, if the content hash of your published Dapp is `QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY` then embed it in an existing page using:
 
 ```html
-<iframe src="https://gateway.temporal.cloud/ipns/ui.solui.dev/#l=QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY" width="800" height="600" />
+<iframe src="https://gateway.pinata.cloud/ipns/ui.solui.dev/#l=QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY" width="800" height="600" />
 ```
 
 Note that the `width` and `height` parameters can be set however you see fit. The solUI renderer will auto-fit the content as best as it can. All other normal `iframe` HTML attributes can also be customized you wish.
@@ -29,7 +29,7 @@ If you view your Dapp via this shorter URL then the sharing/embedding interface 
 The default colour scheme for the Dapp components can be customized on a per-embedded-instance basis. For example, to replace the default gradient background with a plain `black` colour, append `&layoutBgColor=black` to the view URL:
 
 ```
-https://gateway.temporal.cloud/ipns/ui.solui.dev/#l=QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY&layoutBgColor=black
+https://gateway.pinata.cloud/ipns/ui.solui.dev/#l=QmV8HMoH7FGgNdd6oysVfxNyVU6fgtKXQLffgWTohfmLyY&layoutBgColor=black
 ```
 
 When using the shorter embed URL you need to specify them as query arguments:
