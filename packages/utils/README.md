@@ -2,8 +2,6 @@
 
 This is a utility belt library for [solUI](https://solui.dev).
 
-_Note: This relies on a forked version of the [IPFS HTTP Client](https://github.com/solui/js-ipfs-http-client/tree/fix_cids_import)_.
-
 ## Installation
 
 ```shell
@@ -19,6 +17,13 @@ console.log( isEthereumAddress('0x0000000000000000000000000000000000000001') )
 ```
 
 [Read full documentation](https://solui.dev/docs/packages/utils).
+
+## Dependency information
+
+This relies on:
+
+* A forked version of the [IPFS HTTP Client](https://github.com/solui/js-ipfs-http-client/tree/fix_cids_import)
+* The [Pinata SDK](https://github.com/PinataCloud/Pinata-SDK), which internally relies on the `fs` node module. If you're building a browser-side library/app remember to polyfill this.
 
 ## License
 

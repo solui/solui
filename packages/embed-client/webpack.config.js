@@ -53,6 +53,9 @@ module.exports = {
   resolve: {
     extensions: [ '*', '.js', '.jsx' ],
     alias: {
+      /* BEGIN: ignore @pinata/sdk node deps */
+      fs: path.join(NPM_FOLDER, 'react'),
+      /* END: ignore @pinata/sdk node deps */
       react: path.join(NPM_FOLDER, 'react'),
       'react-dom': path.join(NPM_FOLDER, 'react-dom'),
     }
