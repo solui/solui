@@ -64,6 +64,10 @@ export const useInput = ({ inputs, validate }) => {
     }, {})
   ), [ updateInputValue, inputs ])
 
+  const isOptional = useMemo(() => inputId => (
+    inputs.reduce((m, { id, config: { optional } }) => m || (id === inputId && !!optional), false)
+  ), [ inputs ])
+
   // check input validity
   const allInputsAreValid = useMemo(() => (
     Object.values(inputValidation).reduce((m, { valid }) => m && valid, true)
@@ -82,7 +86,7 @@ export const useInput = ({ inputs, validate }) => {
 
       // update validation results for all inputs
       Object.keys(inputValue).forEach(inputId => {
-        if (inputIsEmpty(inputValue[inputId])) {
+        if (inputIsEmpty(inputValue[inputId]) && !isOptional(inputId)) {
           updateInputValidation({ id: inputId, valid: false, error: null })
         } else if (errorDetails[inputId]) {
           updateInputValidation({ id: inputId, valid: false, error: errorDetails[inputId] })

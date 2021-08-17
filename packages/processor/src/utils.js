@@ -99,7 +99,7 @@ const _finalizeSingleInputValue = (ctx, value, config) => {
       const fv = deriveDecimalVal(value, config)
       return (fv ? fv.toString(10) : fv)
     case 'bool':
-      return ['true', '1'].includes(value.toLowerCase()) ? true : false
+      return ['true', '1'].includes(`${value}`.toLowerCase()) ? true : false
     default:
       return value
   }

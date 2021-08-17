@@ -25,6 +25,12 @@ const StyledTextInput = styled(TextInput)`
   flex: 1;
 `
 
+const LabelDiv = styled.div`
+  ${flex({ direction: 'row', justify: 'space-between', align: 'center' })};
+  flex: 0;
+  width: 100%;
+`
+
 const Label = styled.label`
   ${({ theme }) => theme.font('body', 'regular')};
   display: block;
@@ -41,6 +47,12 @@ const StyledErrorBox = styled(ErrorBox)`
 
 const FieldTooltip = styled(IconButton)`
   margin-left: 0.5rem;
+`
+
+const OptionalText = styled.div`
+  ${({ theme }) => theme.font('body', 'regular', 'italic')};
+  font-size: 0.8rem;
+  padding-left: 1em;
 `
 
 const FieldEmbeddedButtonsContainer = styled.div`
@@ -106,17 +118,20 @@ const StyledListInput = styled(ListInput)`
 `
 
 
-const FieldFrame = ({ title, tooltip, metaText, helpText, validationStatus, children }) => (
+const FieldFrame = ({ title, tooltip, metaText, helpText, validationStatus, optional, children }) => (
   <Fragment>
-    <Label>
-      {title}
-      {tooltip ? (
-        <FieldTooltip
-          tooltip={<TooltipContent>{tooltip}</TooltipContent>}
-          icon={{ name: 'info' }}
-        />
-      ) : null}
-    </Label>
+    <LabelDiv>
+      <Label>
+        {title}
+        {tooltip ? (
+          <FieldTooltip
+            tooltip={<TooltipContent>{tooltip}</TooltipContent>}
+            icon={{ name: 'info' }}
+          />
+        ) : null}
+      </Label>
+      {optional ? <OptionalText>optional</OptionalText> : null}
+    </LabelDiv>
     {children}
     {metaText ? <MetaText>{metaText}</MetaText> : null}
     {helpText ? <HelpText>{helpText}</HelpText> : null}
@@ -134,7 +149,7 @@ const Field = ({
   name,
   value,
   onChange,
-  config: { title, type, resolvedOptions, helpText, placeholder, ...config },
+  config: { title, optional, type, resolvedOptions, helpText, placeholder, ...config },
   validationStatus,
 }) => {
   const [ largeEditorOpen, setLargeEditorOpen ] = useState(false)
@@ -157,7 +172,7 @@ const Field = ({
   }, [ type, resolvedOptions ])
 
   const frameProps = {
-    title, tooltip, metaText, helpText, validationStatus
+    title, tooltip, metaText, helpText, validationStatus, optional
   }
 
   return (

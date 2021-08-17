@@ -1,33 +1,36 @@
 import {
   _,
   promiseSerial,
+  EMPTY_INPUT_VALUES,
 } from '@solui/utils'
 
 import { validateInputValue, checkOptionsAreValid } from './validate'
 import { resolveValue, finalizeInputValue } from './utils'
 import { createChildContextFrom } from './context'
 
-const process = async (ctx, name, config) => {
+const buildProcessor = defaultVal => async (ctx, name, config) => {
   const result = await ctx.callbacks().processInput(ctx.id, name, config)
 
   if (result) {
     await validateInputValue(ctx, result, config)
 
     return finalizeInputValue(ctx, result, config)
+  } else if (_.get(config, 'optional')) {
+    return defaultVal
   }
 
   return undefined
 }
 
 const INPUTS = {
-  int: { process },
-  address: { process },
-  bool: { process },
-  string: { process },
-  bytes32: { process },
-  'int[]': { process },
-  'bytes32[]': { process },
-  'address[]': { process },
+  int: { process: buildProcessor(EMPTY_INPUT_VALUES.INT) },
+  address: { process: buildProcessor(EMPTY_INPUT_VALUES.ADDRESS) },
+  bool: { process: buildProcessor(EMPTY_INPUT_VALUES.BOOL) },
+  string: { process: buildProcessor(EMPTY_INPUT_VALUES.STRING) },
+  bytes32: { process: buildProcessor(EMPTY_INPUT_VALUES.BYTES32) },
+  'int[]': { process: buildProcessor(EMPTY_INPUT_VALUES.ARRAY) },
+  'bytes32[]': { process: buildProcessor(EMPTY_INPUT_VALUES.ARRAY) },
+  'address[]': { process: buildProcessor(EMPTY_INPUT_VALUES.ARRAY) },
 }
 
 export const processList = async (parentCtx, inputs) => (

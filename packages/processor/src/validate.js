@@ -231,6 +231,10 @@ const _validateSingleValue = async (ctx, value, config) => {
       }
       break
     }
+    default: {
+      // nothing to do!
+      return
+    }
   }
 
   const promises = _.get(config, 'validation', []).map(({ type, ...vConfig }) => {
@@ -259,7 +263,6 @@ const _validateSingleValue = async (ctx, value, config) => {
 const _validateArrayValue = async (ctx, value, config) => {
   if (!Array.isArray(value)) {
     ctx.recordError('must be an array')
-    return
   } else {
     const promises = _.get(config, 'validation', []).map(({ type, ...vConfig }) => {
       switch (type) {

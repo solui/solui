@@ -16,6 +16,7 @@ inputs are rendered in the order in which they're defined in a panel.
           "name": "...",
           "title": "...",
           "initialValue": "...",
+          "optional": "...",
           "options": "...",
           "type": "...",
           "placeholder": "...",
@@ -139,6 +140,20 @@ Example using an environment variable:
 ```js
 {
   "initialValue": "@env[account]"
+}
+```
+
+**optional** _(optional)_
+
+Specify whether this input field is optional or not (default is not).
+
+If optional and the user has not entered a value then the default _null_ value for the field type will be used.
+
+Example:
+
+```js
+{
+  "optional": true
 }
 ```
 
