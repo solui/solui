@@ -9,6 +9,10 @@ export const loadJson = f => JSON.parse(fs.readFileSync(f))
 
 export const loadArtifacts = dir => {
   const resolvedArtifactsDir = path.resolve(process.cwd(), dir)
+
+  let files
+
+  // assume it's a truffle project
   try {
     const resolvedArtifactsDirStat = fs.statSync(resolvedArtifactsDir)
     if (!resolvedArtifactsDirStat.isDirectory()) {
@@ -18,17 +22,27 @@ export const loadArtifacts = dir => {
     throw new Error(`Unable to load artifacts from ${dir}: ${err.message}`)
   }
 
-  const files = glob.sync(`${resolvedArtifactsDir}/*.json`, { absolute: true })
+  // assume it's Truffle
+  files = glob.sync(`${resolvedArtifactsDir}/*.json`, { absolute: true })
 
+  // not truffle, so let's do Hardhat
+  if (!files.length) {
+    files = glob.sync(`${resolvedArtifactsDir}/**/*.json`, { absolute: true })
+  }
+
+  // if still no files then it's bad :/
   if (!files.length) {
     throw new Error(`No artifacts found in ${dir}`)
   }
 
   return files.reduce((m, f) => {
     try {
-      const { abi, bytecode, deployedBytecode, contractName, networks } = loadJson(f)
+      const { abi, bytecode, deployedBytecode, contractName } = loadJson(f)
 
-      m[path.basename(f, '.json')] = { abi, bytecode, deployedBytecode, contractName, networks }
+      // if empty ABI (e.g. coz Hardhat outputs inner objects as JSON files) then don't include
+      if (abi && abi.length) {
+        m[path.basename(f, '.json')] = { abi, bytecode, deployedBytecode, contractName }
+      }
     } catch (err) {
       throw new Error(`Error loading artifact ${f}: ${err}`)
     }

@@ -21,7 +21,7 @@ import path from 'path'
 async function main () {
   // load spec definition
   const spec = loadSpec(path.join(__dirname, './spec.json'))
-  // load ABI JSON files from truffle contracts build folder
+  // load ABI JSON files from Hardhat/Truffle contracts build folder
   const artifacts = loadArtifacts(path.join(__dirname, './build/contracts'))
   // setup network connection
   const network = await getNetworkInfoFromUrl('http://localhost:8545')

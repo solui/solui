@@ -7,8 +7,7 @@ solui view --spec /path/to/json --artifacts /path/to/contract/artifacts
 What the arguments mean:
 
 * `/path/to/jon` - path to your Dapp spec `.json` file
-* `/path/to/contract/artifacts` - path to the Solidity compiler JSON build
-artifacts folder containing ABIs and bytecodes for your contracts.
+* `/path/to/contract/artifacts` - Path to the folder containing the Truffle/Hardhat contract JSON artifacts
 
 ## Example usage
 

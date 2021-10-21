@@ -13,7 +13,7 @@ export const getMeta = () => ({
     {
       name: 'artifacts',
       typeLabel: '{underline folder}',
-      description: 'Path to the folder containing the contract JSON artifacts.'
+      description: 'Path to the folder containing the Truffle/Hardhat contract JSON artifacts.'
     },
     {
       name: 'folder',
