@@ -37,7 +37,7 @@
 		"dotenv-stringify": "^2.0.1",
 		"envalid": "^5.0.0",
 		"glob": "^7.1.4",
-		"got": "^10.5.5",
+		"got": "^11.8.5",
 		"home": "^2.0.0",
 		"html-webpack-plugin": "^3.2.0",
 		"mkdirp": "^1.0.3",
